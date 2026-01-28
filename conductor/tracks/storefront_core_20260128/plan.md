@@ -22,7 +22,7 @@
 - [x] Task: Conductor - User Manual Verification 'Core Storefront Components' (Protocol in workflow.md)
 
 ## Phase 3: Routing & Pages
-- [ ] Task: Implement Main Shop Page (`/shop`)
+- [x] Task: Implement Main Shop Page (`/shop`) [134d7fb]
     - [ ] Write integration tests for page data loading
     - [ ] Implement `app/shop/page.tsx`
 - [ ] Task: Implement Dynamic Segment and Crop Pages
