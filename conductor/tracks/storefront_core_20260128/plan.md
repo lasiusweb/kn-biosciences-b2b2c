@@ -9,17 +9,17 @@
     - [x] Implement the services using Supabase client
 - [x] Task: Conductor - User Manual Verification 'Data Model & API Setup' (Protocol in workflow.md)
 
-## Phase 2: Core Storefront Components
+## Phase 2: Core Storefront Components [checkpoint: 4a2c9eb]
 - [x] Task: Implement ProductCard Component [2deb598]
-    - [ ] Write unit tests for rendering and price display logic
-    - [ ] Implement component with Tailwind and Mint Green accents
+    - [x] Write unit tests for rendering and price display logic
+    - [x] Implement component with Tailwind and Mint Green accents
 - [x] Task: Implement ProductGrid Component [1efbb8e]
-    - [ ] Write tests for responsive layout and empty states
-    - [ ] Implement component with performance optimizations (Next.js Image)
+    - [x] Write tests for responsive layout and empty states
+    - [x] Implement component with performance optimizations (Next.js Image)
 - [x] Task: Implement ProductFilters Component [c4c5644]
-    - [ ] Write tests for filter selection and state management
-    - [ ] Implement sidebar/top bar filter UI
-- [ ] Task: Conductor - User Manual Verification 'Core Storefront Components' (Protocol in workflow.md)
+    - [x] Write tests for filter selection and state management
+    - [x] Implement sidebar/top bar filter UI
+- [x] Task: Conductor - User Manual Verification 'Core Storefront Components' (Protocol in workflow.md)
 
 ## Phase 3: Routing & Pages
 - [ ] Task: Implement Main Shop Page (`/shop`)
