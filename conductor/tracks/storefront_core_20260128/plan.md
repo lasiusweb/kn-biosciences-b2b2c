@@ -28,7 +28,7 @@
 - [x] Task: Implement Dynamic Segment and Crop Pages [63fd167]
     - [ ] Write tests for route parameter handling
     - [ ] Implement `app/shop/segment/[slug]/page.tsx` and `app/shop/crop/[slug]/page.tsx`
-- [ ] Task: Implement Product Detail Page (`/product/[slug]`)
+- [x] Task: Implement Product Detail Page (`/product/[slug]`) [ae4021e]
     - [ ] Write tests for detail rendering and variant selection
     - [ ] Implement `app/product/[slug]/page.tsx`
 - [ ] Task: Conductor - User Manual Verification 'Routing & Pages' (Protocol in workflow.md)
