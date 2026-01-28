@@ -4,7 +4,7 @@
 - [x] Task: Define and verify Supabase types for Products and Categories [15e65bd]
     - [ ] Create TypeScript interfaces matching the database schema
     - [ ] Write unit tests to verify data parsing/validation
-- [ ] Task: Implement Product Data Fetching Service
+- [x] Task: Implement Product Data Fetching Service [054c2c8]
     - [ ] Write tests for `getProducts`, `getProductsBySegment`, and `getProductBySlug`
     - [ ] Implement the services using Supabase client
 - [ ] Task: Conductor - User Manual Verification 'Data Model & API Setup' (Protocol in workflow.md)
