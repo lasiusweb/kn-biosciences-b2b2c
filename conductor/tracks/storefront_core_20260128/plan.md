@@ -10,7 +10,7 @@
 - [x] Task: Conductor - User Manual Verification 'Data Model & API Setup' (Protocol in workflow.md)
 
 ## Phase 2: Core Storefront Components
-- [ ] Task: Implement ProductCard Component
+- [x] Task: Implement ProductCard Component [2deb598]
     - [ ] Write unit tests for rendering and price display logic
     - [ ] Implement component with Tailwind and Mint Green accents
 - [ ] Task: Implement ProductGrid Component
