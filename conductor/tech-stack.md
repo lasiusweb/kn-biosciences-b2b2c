@@ -1,10 +1,11 @@
 # Technology Stack
 
 ## Frontend
-- **Framework:** Next.js 14+ (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS + shadcn/ui
-- **Animations:** GSAP, Lottie, Framer Motion
+- **Framework:** Next.js 16+ (App Router with Turbopack) - Latest high-performance framework for server-side rendering.
+- **Language:** TypeScript - Ensures type safety and improves developer productivity.
+- **Styling:** Tailwind CSS v4 + shadcn/ui - Modern utility-first CSS using native CSS theme tokens for deep integration.
+- **PostCSS:** @tailwindcss/postcss - Required for v4 compatibility.
+- **Animations:** GSAP, Lottie, Framer Motion - Robust libraries for creating complex and smooth user interactions.
 
 ## Backend & Data
 - **Database:** Supabase (PostgreSQL)
