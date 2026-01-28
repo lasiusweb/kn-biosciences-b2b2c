@@ -1,7 +1,7 @@
 # Implementation Plan - Storefront Core and Product Catalog
 
 ## Phase 1: Data Model & API Setup
-- [~] Task: Define and verify Supabase types for Products and Categories
+- [x] Task: Define and verify Supabase types for Products and Categories [15e65bd]
     - [ ] Create TypeScript interfaces matching the database schema
     - [ ] Write unit tests to verify data parsing/validation
 - [ ] Task: Implement Product Data Fetching Service
