@@ -1,13 +1,13 @@
 # Implementation Plan - Storefront Core and Product Catalog
 
-## Phase 1: Data Model & API Setup
+## Phase 1: Data Model & API Setup [checkpoint: af9ce83]
 - [x] Task: Define and verify Supabase types for Products and Categories [15e65bd]
-    - [ ] Create TypeScript interfaces matching the database schema
-    - [ ] Write unit tests to verify data parsing/validation
+    - [x] Create TypeScript interfaces matching the database schema
+    - [x] Write unit tests to verify data parsing/validation
 - [x] Task: Implement Product Data Fetching Service [054c2c8]
-    - [ ] Write tests for `getProducts`, `getProductsBySegment`, and `getProductBySlug`
-    - [ ] Implement the services using Supabase client
-- [ ] Task: Conductor - User Manual Verification 'Data Model & API Setup' (Protocol in workflow.md)
+    - [x] Write tests for `getProducts`, `getProductsBySegment`, and `getProductBySlug`
+    - [x] Implement the services using Supabase client
+- [x] Task: Conductor - User Manual Verification 'Data Model & API Setup' (Protocol in workflow.md)
 
 ## Phase 2: Core Storefront Components
 - [ ] Task: Implement ProductCard Component
