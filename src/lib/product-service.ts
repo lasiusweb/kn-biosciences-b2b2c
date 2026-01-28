@@ -94,3 +94,19 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
   return data;
 }
+
+/**
+ * Fetches all product variants.
+ */
+export async function getVariants(): Promise<ProductVariant[]> {
+  const { data, error } = await supabase
+    .from('product_variants')
+    .select('*');
+
+  if (error) {
+    console.error('Error fetching variants:', error);
+    throw new Error('Failed to fetch variants');
+  }
+
+  return data || [];
+}

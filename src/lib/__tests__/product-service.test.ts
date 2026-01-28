@@ -1,4 +1,4 @@
-import { getProducts, getProductsBySegment, getProductBySlug, getProductsByCrop, getProductsByProblem } from '../product-service';
+import { getProducts, getProductsBySegment, getProductBySlug, getProductsByCrop, getProductsByProblem, getVariants } from '../product-service';
 import { supabase } from '../supabase';
 
 jest.mock('../supabase', () => ({
@@ -98,7 +98,17 @@ describe('Product Data Fetching Service', () => {
       it('should throw error when product by slug fetch fails with other error', async () => {
         mockQuery.single.mockResolvedValue({ data: null, error: { code: 'OTHER', message: 'Error' } });
     
-        await expect(getProductBySlug('error-slug')).rejects.toThrow('Failed to fetch product by slug');
-      });
-    });
-    
+            await expect(getProductBySlug('error-slug')).rejects.toThrow('Failed to fetch product by slug');
+          });
+        
+          it('should fetch all variants', async () => {
+            const mockVarData = [{ id: 'v1', product_id: '1' }];
+            mockQuery.select.mockResolvedValue({ data: mockVarData, error: null });
+        
+            const variants = await getVariants();
+            
+            expect(supabase.from).toHaveBeenCalledWith('product_variants');
+            expect(variants).toEqual(mockVarData);
+          });
+        });
+        
