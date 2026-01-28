@@ -25,7 +25,7 @@
 - [x] Task: Implement Main Shop Page (`/shop`) [134d7fb]
     - [ ] Write integration tests for page data loading
     - [ ] Implement `app/shop/page.tsx`
-- [ ] Task: Implement Dynamic Segment and Crop Pages
+- [x] Task: Implement Dynamic Segment and Crop Pages [63fd167]
     - [ ] Write tests for route parameter handling
     - [ ] Implement `app/shop/segment/[slug]/page.tsx` and `app/shop/crop/[slug]/page.tsx`
 - [ ] Task: Implement Product Detail Page (`/product/[slug]`)
