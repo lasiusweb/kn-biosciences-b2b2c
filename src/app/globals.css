@@ -1,8 +1,60 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-organic-50: #F5F5DC;
+  --color-organic-100: #E8E5C8;
+  --color-organic-200: #D1C996;
+  --color-organic-300: #B9AD64;
+  --color-organic-400: #8BC34A;
+  --color-organic-500: #7CB342;
+  --color-organic-600: #689F38;
+  --color-organic-700: #558B2F;
+  --color-organic-800: #33691E;
+  --color-organic-900: #1B5E20;
+
+  --color-earth-50: #EFEBE9;
+  --color-earth-100: #D7CCC8;
+  --color-earth-200: #BCAAA4;
+  --color-earth-300: #A1887F;
+  --color-earth-400: #795548;
+  --color-earth-500: #6D4C41;
+  --color-earth-600: #5D4037;
+  --color-earth-700: #4E342E;
+  --color-earth-800: #3E2723;
+  --color-earth-900: #2E1A17;
+
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+}
 
 @layer base {
   :root {
