@@ -21,14 +21,14 @@
     - [x] Implement sidebar/top bar filter UI
 - [x] Task: Conductor - User Manual Verification 'Core Storefront Components' (Protocol in workflow.md)
 
-## Phase 3: Routing & Pages
+## Phase 3: Routing & Pages [checkpoint: e138a39]
 - [x] Task: Implement Main Shop Page (`/shop`) [134d7fb]
-    - [ ] Write integration tests for page data loading
-    - [ ] Implement `app/shop/page.tsx`
+    - [x] Write integration tests for page data loading
+    - [x] Implement `app/shop/page.tsx`
 - [x] Task: Implement Dynamic Segment and Crop Pages [63fd167]
-    - [ ] Write tests for route parameter handling
-    - [ ] Implement `app/shop/segment/[slug]/page.tsx` and `app/shop/crop/[slug]/page.tsx`
+    - [x] Write tests for route parameter handling
+    - [x] Implement `app/shop/segment/[slug]/page.tsx` and `app/shop/crop/[slug]/page.tsx`
 - [x] Task: Implement Product Detail Page (`/product/[slug]`) [ae4021e]
-    - [ ] Write tests for detail rendering and variant selection
-    - [ ] Implement `app/product/[slug]/page.tsx`
-- [ ] Task: Conductor - User Manual Verification 'Routing & Pages' (Protocol in workflow.md)
+    - [x] Write tests for detail rendering and variant selection
+    - [x] Implement `app/product/[slug]/page.tsx`
+- [x] Task: Conductor - User Manual Verification 'Routing & Pages' (Protocol in workflow.md)
