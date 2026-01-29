@@ -18,13 +18,13 @@ This plan covers the development of the Admin Dashboard skeleton, core operation
     - [x] Write tests for CSV/Excel parsing logic
     - [x] Implement product CRUD and bulk upload in `src/app/admin/products/page.tsx`
     - [ ] Implement image upload integration with Supabase Storage
-- [ ] Task: Orders & Inventory Management
-    - [ ] Implement order list and processing workflow (status updates)
-    - [ ] Build inventory tracking UI with batch assignment and low-stock indicators
-    - [ ] Write tests for order status transitions and stock calculations
-- [ ] Task: Analytics Dashboard
-    - [ ] Implement `src/components/admin/analytics-dashboard.tsx` with revenue and performance charts
-    - [ ] Write tests for data aggregation logic used by charts
+- [x] Task: Orders & Inventory Management (7af1426)
+    - [x] Implement order list and processing workflow (status updates) (35f4467)
+    - [x] Build inventory tracking UI with batch assignment and low-stock indicators (35f4467)
+    - [x] Write tests for order status transitions and stock calculations (35f4467)
+- [x] Task: Analytics Dashboard (2163dcc)
+    - [x] Implement `src/components/admin/analytics-dashboard.tsx` with revenue and performance charts (2163dcc)
+    - [x] Write tests for data aggregation logic used by charts (2163dcc)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Operations' (Protocol in workflow.md)
 
 ## Phase 3: CMS & Marketing Management
