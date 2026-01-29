@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
-import { AdminAnalytics, BulkImportResult, SEOMetadata, CouponConfig, InventoryItem } from '@/types/admin';
-import { Order } from '@/types';
+import { AdminAnalytics, BulkImportResult, SEOMetadata, CouponConfig, InventoryItem, ContentPage } from '@/types/admin';
+import { Order, BlogPost } from '@/types';
 
 export async function getAdminAnalytics(): Promise<AdminAnalytics> {
   const { data, error } = await supabase.rpc('get_admin_analytics');
@@ -48,6 +48,57 @@ export async function getInventory(): Promise<InventoryItem[]> {
   }
 
   return data || [];
+}
+
+export async function getContentPage(slug: string): Promise<ContentPage | null> {
+  const { data, error } = await supabase
+    .from('content_pages')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') return null;
+    console.error(`Error fetching page ${slug}:`, error);
+    throw new Error('Failed to fetch content page');
+  }
+
+  return data;
+}
+
+export async function updateContentPage(slug: string, page: Partial<ContentPage>): Promise<void> {
+  const { error } = await supabase
+    .from('content_pages')
+    .update(page)
+    .eq('slug', slug);
+
+  if (error) {
+    console.error(`Error updating page ${slug}:`, error);
+    throw new Error('Failed to update content page');
+  }
+}
+
+export async function getBlogPosts(): Promise<BlogPost[]> {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching blog posts:', error);
+    throw new Error('Failed to fetch blog posts');
+  }
+
+  return data || [];
+}
+
+export async function createBlogPost(post: Partial<BlogPost>): Promise<void> {
+  const { error } = await supabase.from('blog_posts').insert(post);
+
+  if (error) {
+    console.error('Error creating blog post:', error);
+    throw new Error('Failed to create blog post');
+  }
 }
 
 export async function bulkImportProducts(data: any[]): Promise<BulkImportResult> {

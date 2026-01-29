@@ -5,7 +5,11 @@ import {
   createCoupon, 
   getOrders, 
   updateOrderStatus, 
-  getInventory 
+  getInventory,
+  getContentPage,
+  updateContentPage,
+  getBlogPosts,
+  createBlogPost
 } from '../admin-service';
 import { supabase } from '../supabase';
 
@@ -149,6 +153,55 @@ describe('Admin Service', () => {
     it('should throw error if RPC fails', async () => {
       (supabase.rpc as jest.Mock).mockResolvedValue({ data: null, error: { message: 'Inv Error' } });
       await expect(getInventory()).rejects.toThrow('Failed to fetch inventory');
+    });
+  });
+
+  describe('getContentPage', () => {
+    it('should fetch a content page by slug', async () => {
+      const mockPage = { slug: 'about', title: 'About' };
+      mockQuery.single.mockResolvedValue({ data: mockPage, error: null });
+
+      const page = await getContentPage('about');
+      
+      expect(supabase.from).toHaveBeenCalledWith('content_pages');
+      expect(page).toEqual(mockPage);
+    });
+
+    it('should return null if page not found', async () => {
+      mockQuery.single.mockResolvedValue({ data: null, error: { code: 'PGRST116' } });
+      const page = await getContentPage('none');
+      expect(page).toBeNull();
+    });
+  });
+
+  describe('updateContentPage', () => {
+    it('should update content page', async () => {
+      mockQuery.update.mockReturnThis();
+      mockQuery.eq.mockResolvedValue({ error: null });
+
+      await updateContentPage('about', { title: 'New' });
+
+      expect(supabase.from).toHaveBeenCalledWith('content_pages');
+      expect(mockQuery.update).toHaveBeenCalledWith({ title: 'New' });
+    });
+  });
+
+  describe('getBlogPosts', () => {
+    it('should fetch all blog posts', async () => {
+      const mockPosts = [{ id: '1', title: 'Post' }];
+      mockQuery.select.mockReturnThis();
+      mockQuery.order.mockResolvedValue({ data: mockPosts, error: null });
+
+      const posts = await getBlogPosts();
+      expect(posts).toEqual(mockPosts);
+    });
+  });
+
+  describe('createBlogPost', () => {
+    it('should insert a new blog post', async () => {
+      mockQuery.insert.mockResolvedValue({ error: null });
+      await createBlogPost({ title: 'New Post' });
+      expect(mockQuery.insert).toHaveBeenCalledWith({ title: 'New Post' });
     });
   });
 

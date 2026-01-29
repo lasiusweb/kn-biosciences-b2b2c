@@ -1,5 +1,5 @@
 import { Database } from './database.ts';
-import { Order, ProductBatch, ProductVariant, Product } from './index.ts';
+import { Order, ProductBatch, ProductVariant, Product, BlogPost } from './index.ts';
 
 export type TableName = keyof Database['public']['Tables'];
 
@@ -32,6 +32,14 @@ export interface InventoryItem {
   minStock: number;
   batch: string;
   expiry: string;
+}
+
+export interface ContentPage {
+  slug: string;
+  title: string;
+  content: string;
+  metadata: SEOMetadata;
+  last_updated: string;
 }
 
 export interface BulkImportResult {
