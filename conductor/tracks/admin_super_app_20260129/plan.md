@@ -7,10 +7,10 @@ This plan covers the development of the Admin Dashboard skeleton, core operation
     - [x] Define types for admin operations in `src/types/admin.ts`
     - [x] Implement `src/lib/admin-service.ts` with base Supabase/Hasura functions
     - [x] Write unit tests for the service layer in `src/lib/__tests__/admin-service.test.ts`
-- [ ] Task: Admin Layout & Security Middleware
-    - [ ] Create `src/app/admin/layout.tsx` with sidebar navigation and high-contrast theme
-    - [ ] Implement RBAC middleware/check to restrict `/admin/*` to 'Admin' role
-    - [ ] Write tests to verify unauthorized access is redirected to login
+- [x] Task: Admin Layout & Security Middleware (91574b9)
+    - [x] Create `src/app/admin/layout.tsx` with sidebar navigation and high-contrast theme
+    - [x] Implement RBAC middleware/check to restrict `/admin/*` to 'Admin' role
+    - [x] Write tests to verify unauthorized access is redirected to login
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure' (Protocol in workflow.md)
 
 ## Phase 2: Operations & Analytics Modules
