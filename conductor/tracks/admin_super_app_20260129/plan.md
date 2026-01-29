@@ -39,9 +39,9 @@ This plan covers the development of the Admin Dashboard skeleton, core operation
 - [x] Task: Conductor - User Manual Verification 'Phase 3: CMS & Marketing' (Protocol in workflow.md) (f98b48f)
 
 ## Phase 4: Platform Strategy & Documentation
-- [ ] Task: Project Roadmap & Integration Blueprints
-    - [ ] Create `conductor/ROADMAP.md` with 2-phase strategy
-    - [ ] Draft `conductor/integrations/zoho.md` and `conductor/integrations/delivery.md`
-- [ ] Task: SEO, Polish & Asset Guides
-    - [ ] Create `conductor/guides/seo-polish.md` covering JSON-LD, GSAP, Lottie, and Image Optimization
+- [x] Task: Project Roadmap & Integration Blueprints (ROADMAP.md, zoho.md, delivery.md)
+    - [x] Create `conductor/ROADMAP.md` with 2-phase strategy
+    - [x] Draft `conductor/integrations/zoho.md` and `conductor/integrations/delivery.md`
+- [x] Task: SEO, Polish & Asset Guides (6dfff90)
+    - [x] Create `conductor/guides/seo-polish.md` covering JSON-LD, GSAP, Lottie, and Image Optimization (6dfff90)
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Strategy' (Protocol in workflow.md)
