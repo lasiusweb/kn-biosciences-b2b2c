@@ -2,7 +2,7 @@
 
 This plan covers the development of the Admin Dashboard skeleton, core operational modules, marketing/CMS interfaces, and the technical documentation for platform-wide integrations.
 
-## Phase 1: Infrastructure & Admin Foundation
+## Phase 1: Infrastructure & Admin Foundation [checkpoint: d2b12db]
 - [x] Task: Create Admin Service Layer (99c1741)
     - [x] Define types for admin operations in `src/types/admin.ts`
     - [x] Implement `src/lib/admin-service.ts` with base Supabase/Hasura functions
@@ -11,7 +11,7 @@ This plan covers the development of the Admin Dashboard skeleton, core operation
     - [x] Create `src/app/admin/layout.tsx` with sidebar navigation and high-contrast theme
     - [x] Implement RBAC middleware/check to restrict `/admin/*` to 'Admin' role
     - [x] Write tests to verify unauthorized access is redirected to login
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure' (Protocol in workflow.md) (d2b12db)
 
 ## Phase 2: Operations & Analytics Modules
 - [ ] Task: Products Management & Bulk Import
