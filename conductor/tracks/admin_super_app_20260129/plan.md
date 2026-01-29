@@ -28,14 +28,14 @@ This plan covers the development of the Admin Dashboard skeleton, core operation
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Operations' (Protocol in workflow.md) (a29b8dc)
 
 ## Phase 3: CMS & Marketing Management
-- [ ] Task: Content Management (CMS)
-    - [ ] Implement editor for `/about`, `/contact`, and Landing Pages
-    - [ ] Build the Knowledge Center blog engine (CRUD for articles/tags)
-    - [ ] Write tests for CMS content persistence and slug generation
-- [ ] Task: Marketing & SEO Interface
-    - [ ] Implement SEO metadata management (titles, keywords, OG tags)
-    - [ ] Build UI for managing Coupon Codes, Banners, and Loyalty Config
-    - [ ] Create Twilio WhatsApp template configuration interface
+- [x] Task: Content Management (CMS) (d561123)
+    - [x] Implement editor for `/about`, `/contact`, and Landing Pages (d561123)
+    - [x] Build the Knowledge Center blog engine (CRUD for articles/tags) (d561123)
+    - [x] Write tests for CMS content persistence and slug generation (d561123)
+- [x] Task: Marketing & SEO Interface (394277a, 032f04e)
+    - [x] Implement SEO metadata management (titles, keywords, OG tags) (394277a)
+    - [x] Build UI for managing Coupon Codes, Banners, and Loyalty Config (394277a)
+    - [x] Create Twilio WhatsApp template configuration interface (032f04e)
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: CMS & Marketing' (Protocol in workflow.md)
 
 ## Phase 4: Platform Strategy & Documentation
