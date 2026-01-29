@@ -423,7 +423,7 @@ async function getTopViewedProducts(startDate?: string, endDate?: string, userId
     .order('timestamp', { ascending: false });
 
   const productViews = query.reduce((views, event) => {
-      views[event.product_id] = (views[event.product_id || 0) + 1;
+      views[event.product_id] = (views[event.product_id] || 0) + 1;
       return views;
     }, {});
 

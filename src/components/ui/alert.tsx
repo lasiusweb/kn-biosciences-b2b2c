@@ -24,3 +24,7 @@ export function Alert({ variant = "default", children }: AlertProps) {
 export function AlertDescription({ children }: { children: React.ReactNode }) {
   return <div>{children}</div>;
 }
+
+export function AlertTitle({ children }: { children: React.ReactNode }) {
+  return <h5 className="mb-1 font-medium leading-none tracking-tight">{children}</h5>;
+}

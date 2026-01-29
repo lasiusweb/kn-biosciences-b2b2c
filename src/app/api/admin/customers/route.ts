@@ -1,8 +1,21 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase";
+import { supabase, supabaseAdmin } from "@/lib/supabase";
+
+async function checkAdminAuth(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) return false;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+  return user?.user_metadata?.role === "admin";
+}
 
 export async function GET(request: Request) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
@@ -110,6 +123,10 @@ export async function GET(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { customerId, role, status, notes } = await request.json();
 
     if (!customerId) {

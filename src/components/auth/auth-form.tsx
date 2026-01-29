@@ -60,11 +60,7 @@ export function AuthForm() {
             first_name: formData.firstName,
             last_name: formData.lastName,
             phone: formData.phone,
-            role: formData.role as
-              | "customer"
-              | "b2b_client"
-              | "admin"
-              | "staff",
+            role: (['customer', 'b2b_client'].includes(formData.role) ? formData.role : 'customer') as "customer" | "b2b_client",
             company_name: formData.companyName,
             gst_number: formData.gstNumber,
           },

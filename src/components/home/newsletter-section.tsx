@@ -11,8 +11,8 @@ export function NewsletterSection() {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle newsletter subscription
-    console.log('Newsletter subscription:', email)
-    setIsSubscribed(true)
+    // TODO: Send to API
+    setSubscribed(true)
     setEmail('')
     setTimeout(() => setIsSubscribed(false), 3000)
   }
