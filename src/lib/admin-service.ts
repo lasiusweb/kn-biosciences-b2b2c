@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
-import { AdminAnalytics, BulkImportResult, SEOMetadata, CouponConfig } from '@/types/admin';
+import { AdminAnalytics, BulkImportResult, SEOMetadata, CouponConfig, InventoryItem } from '@/types/admin';
+import { Order } from '@/types';
 
 export async function getAdminAnalytics(): Promise<AdminAnalytics> {
   const { data, error } = await supabase.rpc('get_admin_analytics');
@@ -10,6 +11,43 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
   }
 
   return data;
+}
+
+export async function getOrders(): Promise<Order[]> {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*, shipping_address(*), billing_address(*)')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching orders:', error);
+    throw new Error('Failed to fetch orders');
+  }
+
+  return data || [];
+}
+
+export async function updateOrderStatus(orderId: string, status: string): Promise<void> {
+  const { error } = await supabase
+    .from('orders')
+    .update({ status })
+    .eq('id', orderId);
+
+  if (error) {
+    console.error(`Error updating status for order ${orderId}:`, error);
+    throw new Error('Failed to update order status');
+  }
+}
+
+export async function getInventory(): Promise<InventoryItem[]> {
+  const { data, error } = await supabase.rpc('get_inventory_status');
+
+  if (error) {
+    console.error('Error fetching inventory:', error);
+    throw new Error('Failed to fetch inventory');
+  }
+
+  return data || [];
 }
 
 export async function bulkImportProducts(data: any[]): Promise<BulkImportResult> {

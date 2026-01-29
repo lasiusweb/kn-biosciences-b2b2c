@@ -1,4 +1,12 @@
-import { getAdminAnalytics, bulkImportProducts, updatePageSEO, createCoupon } from '../admin-service';
+import { 
+  getAdminAnalytics, 
+  bulkImportProducts, 
+  updatePageSEO, 
+  createCoupon, 
+  getOrders, 
+  updateOrderStatus, 
+  getInventory 
+} from '../admin-service';
 import { supabase } from '../supabase';
 
 jest.mock('../supabase', () => ({
@@ -19,6 +27,7 @@ describe('Admin Service', () => {
       update: jest.fn().mockReturnThis(),
       eq: jest.fn().mockReturnThis(),
       single: jest.fn().mockReturnThis(),
+      order: jest.fn().mockReturnThis(),
     };
     (supabase.from as jest.Mock).mockReturnValue(mockQuery);
   });
@@ -85,6 +94,61 @@ describe('Admin Service', () => {
     it('should throw error if insert fails', async () => {
       mockQuery.insert.mockResolvedValue({ error: { message: 'Insert Error' } });
       await expect(createCoupon({ code: 'FAIL' } as any)).rejects.toThrow('Failed to create coupon');
+    });
+  });
+
+  describe('getOrders', () => {
+    it('should fetch all orders', async () => {
+      const mockOrders = [{ id: 'ORD-1', status: 'pending' }];
+      mockQuery.select.mockReturnThis();
+      mockQuery.order.mockResolvedValue({ data: mockOrders, error: null });
+
+      const orders = await getOrders();
+      
+      expect(supabase.from).toHaveBeenCalledWith('orders');
+      expect(orders).toEqual(mockOrders);
+    });
+
+    it('should throw error if fetching orders fails', async () => {
+      mockQuery.select.mockReturnThis();
+      mockQuery.order.mockResolvedValue({ data: null, error: { message: 'Order Error' } });
+      await expect(getOrders()).rejects.toThrow('Failed to fetch orders');
+    });
+  });
+
+  describe('updateOrderStatus', () => {
+    it('should update order status', async () => {
+      mockQuery.update.mockReturnThis();
+      mockQuery.eq.mockResolvedValue({ error: null });
+
+      await updateOrderStatus('ORD-1', 'shipped');
+
+      expect(supabase.from).toHaveBeenCalledWith('orders');
+      expect(mockQuery.update).toHaveBeenCalledWith({ status: 'shipped' });
+      expect(mockQuery.eq).toHaveBeenCalledWith('id', 'ORD-1');
+    });
+
+    it('should throw error if update fails', async () => {
+      mockQuery.update.mockReturnThis();
+      mockQuery.eq.mockResolvedValue({ error: { message: 'Update Fail' } });
+      await expect(updateOrderStatus('ORD-1', 'shipped')).rejects.toThrow('Failed to update order status');
+    });
+  });
+
+  describe('getInventory', () => {
+    it('should fetch inventory status via RPC', async () => {
+      const mockInventory = [{ id: '1', name: 'Item 1', stock: 10 }];
+      (supabase.rpc as jest.Mock).mockResolvedValue({ data: mockInventory, error: null });
+
+      const inventory = await getInventory();
+      
+      expect(supabase.rpc).toHaveBeenCalledWith('get_inventory_status');
+      expect(inventory).toEqual(mockInventory);
+    });
+
+    it('should throw error if RPC fails', async () => {
+      (supabase.rpc as jest.Mock).mockResolvedValue({ data: null, error: { message: 'Inv Error' } });
+      await expect(getInventory()).rejects.toThrow('Failed to fetch inventory');
     });
   });
 

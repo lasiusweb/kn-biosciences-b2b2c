@@ -1,19 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter, Eye, Truck, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Filter, Eye, Truck, CheckCircle, XCircle, Download, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-
-const mockOrders = [
-  { id: 'ORD-001', customer: 'Ramesh Kumar', date: '2026-01-28', total: 4500, status: 'pending', type: 'B2C' },
-  { id: 'ORD-002', customer: 'Green Valley Distributors', date: '2026-01-27', total: 85000, status: 'processing', type: 'B2B' },
-  { id: 'ORD-003', customer: 'Suresh Patil', date: '2026-01-26', total: 1200, status: 'shipped', type: 'B2C' },
-];
+import { getOrders, updateOrderStatus } from '@/lib/admin-service';
+import { Order } from '@/types';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const statusMap: Record<string, { label: string; color: string; icon: any }> = {
   pending: { label: 'Pending', color: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20', icon: Filter },
@@ -24,11 +21,34 @@ const statusMap: Record<string, { label: string; color: string; icon: any }> = {
 };
 
 export default function OrdersAdminPage() {
-  const [orders, setOrders] = useState(mockOrders);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleStatusChange = (orderId: string, newStatus: string) => {
-    setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+  useEffect(() => {
+    async function loadOrders() {
+      try {
+        const data = await getOrders();
+        setOrders(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadOrders();
+  }, []);
+
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      await updateOrderStatus(orderId, newStatus);
+      setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus as any } : o));
+    } catch (err: any) {
+      alert(`Failed to update status: ${err.message}`);
+    }
   };
+
+  if (loading) return <div className="text-white p-8">Loading orders...</div>;
 
   return (
     <div className="space-y-6">
@@ -41,6 +61,14 @@ export default function OrdersAdminPage() {
           </Button>
         </div>
       </div>
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
       <Card className="bg-zinc-950 border-zinc-800">
         <CardHeader>
@@ -66,74 +94,57 @@ export default function OrdersAdminPage() {
               <TableRow className="border-zinc-800">
                 <TableHead className="text-zinc-400">Order ID</TableHead>
                 <TableHead className="text-zinc-400">Customer</TableHead>
-                <TableHead className="text-zinc-400">Type</TableHead>
                 <TableHead className="text-zinc-400">Total</TableHead>
                 <TableHead className="text-zinc-400">Status</TableHead>
                 <TableHead className="text-zinc-400">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {orders.map((order) => {
-                const status = statusMap[order.status];
-                return (
-                  <TableRow key={order.id} className="border-zinc-800">
-                    <TableCell className="text-white font-medium">{order.id}</TableCell>
-                    <TableCell className="text-zinc-300">{order.customer}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={order.type === 'B2B' ? 'border-purple-500 text-purple-500' : 'border-zinc-500 text-zinc-500'}>
-                        {order.type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-white">₹{order.total.toLocaleString()}</TableCell>
-                    <TableCell>
-                      <Select
-                        defaultValue={order.status}
-                        onValueChange={(val) => handleStatusChange(order.id, val)}
-                      >
-                        <SelectTrigger className={`w-32 ${status.color} border`}>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                          {Object.entries(statusMap).map(([key, val]) => (
-                            <SelectItem key={key} value={key}>{val.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </TableCell>
-                    <TableCell>
-                      <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white">
-                        <Eye className="h-4 w-4 mr-2" />
-                        Details
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {orders.length === 0 ? (
+                <TableRow className="border-zinc-800">
+                  <TableCell colSpan={5} className="text-center py-10 text-zinc-500">
+                    No orders found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                orders.map((order) => {
+                  const status = statusMap[order.status] || statusMap.pending;
+                  return (
+                    <TableRow key={order.id} className="border-zinc-800">
+                      <TableCell className="text-white font-medium">{order.order_number}</TableCell>
+                      <TableCell className="text-zinc-300">
+                        {order.shipping_address?.first_name} {order.shipping_address?.last_name}
+                      </TableCell>
+                      <TableCell className="text-white">₹{order.total_amount.toLocaleString()}</TableCell>
+                      <TableCell>
+                        <Select
+                          defaultValue={order.status}
+                          onValueChange={(val) => handleStatusChange(order.id, val)}
+                        >
+                          <SelectTrigger className={`w-32 ${status.color} border`}>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                            {Object.entries(statusMap).map(([key, val]) => (
+                              <SelectItem key={key} value={key}>{val.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+                      <TableCell>
+                        <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white">
+                          <Eye className="h-4 w-4 mr-2" />
+                          Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function Download(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" x2="12" y1="15" y2="3" />
-    </svg>
   );
 }

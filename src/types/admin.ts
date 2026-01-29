@@ -1,4 +1,5 @@
 import { Database } from './database.ts';
+import { Order, ProductBatch, ProductVariant, Product } from './index.ts';
 
 export type TableName = keyof Database['public']['Tables'];
 
@@ -22,6 +23,15 @@ export interface AdminAnalytics {
     productName: string;
     rate: number;
   }[];
+}
+
+export interface InventoryItem {
+  id: string;
+  name: string;
+  stock: number;
+  minStock: number;
+  batch: string;
+  expiry: string;
 }
 
 export interface BulkImportResult {
