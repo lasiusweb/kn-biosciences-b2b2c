@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Tag, Megaphone, Clock, Percent, AlertCircle } from 'lucide-react';
+import { Plus, Tag, Megaphone, Clock, Percent, AlertCircle, MessageSquare, Save } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
@@ -40,6 +40,10 @@ export default function MarketingAdminPage() {
           <TabsTrigger value="loyalty" className="text-zinc-400 data-[state=active]:text-white">
             <Percent className="mr-2 h-4 w-4" />
             Loyalty Points
+          </TabsTrigger>
+          <TabsTrigger value="whatsapp" className="text-zinc-400 data-[state=active]:text-white">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            WhatsApp Config
           </TabsTrigger>
         </TabsList>
 
@@ -140,6 +144,61 @@ export default function MarketingAdminPage() {
                   <Input defaultValue="0.5" className="bg-black border-zinc-800 text-white" />
                 </div>
                 <Button>Update Config</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="whatsapp">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="bg-zinc-950 border-zinc-800">
+              <CardHeader>
+                <CardTitle className="text-white text-lg">Twilio API Integration</CardTitle>
+                <CardDescription className="text-zinc-500">Configure your WhatsApp Business API</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-zinc-400">Account SID</Label>
+                  <Input type="password" value="ACxxxxxxxxxxxxxxxxxxxxxxxx" className="bg-black border-zinc-800 text-white" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-zinc-400">Auth Token</Label>
+                  <Input type="password" value="••••••••••••••••" className="bg-black border-zinc-800 text-white" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-zinc-400">WhatsApp Number</Label>
+                  <Input defaultValue="+91 1234567890" className="bg-black border-zinc-800 text-white" />
+                </div>
+                <Button>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save API Keys
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-zinc-950 border-zinc-800">
+              <CardHeader>
+                <CardTitle className="text-white text-lg">Message Templates</CardTitle>
+                <CardDescription className="text-zinc-500">Automated notification triggers</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 rounded-lg bg-zinc-900 border border-zinc-800">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-bold text-white">Order Confirmation</span>
+                    <Badge variant="outline" className="text-[10px]">Approved</Badge>
+                  </div>
+                  <p className="text-xs text-zinc-400">Hello {'{{1}}'}, your order {'#{{2}}'} has been confirmed!</p>
+                </div>
+                <div className="p-4 rounded-lg bg-zinc-900 border border-zinc-800">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-bold text-white">Shipping Update</span>
+                    <Badge variant="outline" className="text-[10px]">Approved</Badge>
+                  </div>
+                  <p className="text-xs text-zinc-400">Your order {'#{{1}}'} is on the way. Track here: {'{{2}}'}</p>
+                </div>
+                <Button variant="outline" className="w-full border-zinc-800 text-zinc-400">
+                  Sync with Twilio Console
+                </Button>
               </CardContent>
             </Card>
           </div>
