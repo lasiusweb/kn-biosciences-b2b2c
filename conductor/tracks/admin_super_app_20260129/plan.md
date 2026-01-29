@@ -14,9 +14,9 @@ This plan covers the development of the Admin Dashboard skeleton, core operation
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure' (Protocol in workflow.md) (d2b12db)
 
 ## Phase 2: Operations & Analytics Modules
-- [ ] Task: Products Management & Bulk Import
-    - [ ] Write tests for CSV/Excel parsing logic
-    - [ ] Implement product CRUD and bulk upload in `src/app/admin/products/page.tsx`
+- [x] Task: Products Management & Bulk Import (d86cea1)
+    - [x] Write tests for CSV/Excel parsing logic
+    - [x] Implement product CRUD and bulk upload in `src/app/admin/products/page.tsx`
     - [ ] Implement image upload integration with Supabase Storage
 - [ ] Task: Orders & Inventory Management
     - [ ] Implement order list and processing workflow (status updates)
