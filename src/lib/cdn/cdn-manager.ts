@@ -1,5 +1,4 @@
 // CDN Integration for Static Assets and Media
-import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { cacheManager } from "@/lib/cache/advanced-cache";
 
@@ -114,6 +113,11 @@ class CDNManager {
   private async getImageDimensions(
     file: File,
   ): Promise<{ width: number; height: number }> {
+    if (typeof window === "undefined") {
+      // Server-side: Skip for now or use a library like sharp if added
+      return { width: 0, height: 0 };
+    }
+
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {

@@ -257,7 +257,7 @@ export function B2BPortal() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {quotes.length === 0 ? (
+                  {!Array.isArray(quotes) || quotes.length === 0 ? (
                     <TableRow>
                       <TableCell
                         colSpan={6}

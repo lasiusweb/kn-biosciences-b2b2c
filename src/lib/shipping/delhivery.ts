@@ -151,10 +151,10 @@ class DelhiveryService {
 
       const response = await fetch(url, config);
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+      if (!response || !response.ok) {
+        const errorData = response ? await response.json().catch(() => ({})) : { message: "No response from server" };
         throw new Error(
-          `Delhivery API Error: ${response.status} - ${JSON.stringify(errorData)}`,
+          `Delhivery API Error: ${response ? response.status : 'No Response'} - ${JSON.stringify(errorData)}`,
         );
       }
 
@@ -439,4 +439,4 @@ class DelhiveryService {
 }
 
 export const delhiveryService = new DelhiveryService();
-export default DelhiveryService;
+export default delhiveryService;

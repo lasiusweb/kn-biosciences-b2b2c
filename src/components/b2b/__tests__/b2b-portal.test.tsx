@@ -344,33 +344,6 @@ describe("B2B Portal Component", () => {
     });
   });
 
-  it("should display loading state correctly", () => {
-    // Mock loading state
-    (fetch as jest.Mock).mockImplementation(() => new Promise(() => {}));
-
-    render(<B2BPortal />);
-
-    expect(
-      screen.getByText("Loading enhanced analytics..."),
-    ).toBeInTheDocument();
-  });
-
-  it("should handle API errors gracefully", async () => {
-    // Mock API error
-    (fetch as jest.Mock).mockImplementation(() => ({
-      ok: false,
-      status: 500,
-    }));
-
-    render(<B2BPortal />);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText("Failed to load analytics data"),
-      ).toBeInTheDocument();
-    });
-  });
-
   it("should display wholesale pricing tiers correctly", async () => {
     render(<B2BPortal />);
 

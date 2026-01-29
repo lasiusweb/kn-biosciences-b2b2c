@@ -1,5 +1,17 @@
 // Advanced Caching with Redis Integration
-import Redis from "ioredis";
+import type RedisType from "ioredis";
+
+const isServer = typeof window === "undefined";
+let Redis: any = null;
+
+if (isServer) {
+  // Use require to avoid bundling ioredis in the client
+  try {
+    Redis = require("ioredis");
+  } catch (e) {
+    console.warn("ioredis not found, Redis caching will be disabled");
+  }
+}
 
 interface CacheConfig {
   host: string;
@@ -32,11 +44,11 @@ interface CacheStats {
 }
 
 class AdvancedCacheManager {
-  private redis: Redis | null = null;
+  private redis: RedisType | null = null;
   private config: CacheConfig;
   private stats: CacheStats;
   private localCache: Map<string, CacheItem<any>> = new Map();
-  private enabled: boolean = true;
+  private enabled: boolean = false;
 
   constructor(config: CacheConfig) {
     this.config = config;
@@ -48,35 +60,37 @@ class AdvancedCacheManager {
       errors: 0,
     };
 
-    try {
-      this.redis = new Redis({
-        host: config.host,
-        port: config.port,
-        password: config.password,
-        db: config.db,
-        keyPrefix: config.keyPrefix,
-        retryDelayOnFailover: 100,
-        enableReadyCheck: true,
-        maxRetriesPerRequest: 3,
-      });
+    if (isServer && Redis) {
+      try {
+        this.redis = new Redis({
+          host: config.host,
+          port: config.port,
+          password: config.password,
+          db: config.db,
+          keyPrefix: config.keyPrefix,
+          retryDelayOnFailover: 100,
+          enableReadyCheck: true,
+          maxRetriesPerRequest: 3,
+        });
 
-      this.redis.on("connect", () => {
-        console.log("Redis connected successfully");
-        this.enabled = true;
-      });
+        this.redis?.on("connect", () => {
+          console.log("Redis connected successfully");
+          this.enabled = true;
+        });
 
-      this.redis.on("error", (error: Error) => {
-        console.error("Redis connection error:", error);
+        this.redis?.on("error", (error: Error) => {
+          console.error("Redis connection error:", error);
+          this.enabled = false;
+        });
+
+        this.redis?.on("close", () => {
+          console.log("Redis connection closed");
+          this.enabled = false;
+        });
+      } catch (error) {
+        console.error("Failed to initialize Redis:", error);
         this.enabled = false;
-      });
-
-      this.redis.on("close", () => {
-        console.log("Redis connection closed");
-        this.enabled = false;
-      });
-    } catch (error) {
-      console.error("Failed to initialize Redis:", error);
-      this.enabled = false;
+      }
     }
   }
 
