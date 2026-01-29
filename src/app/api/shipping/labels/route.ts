@@ -2,8 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { delhiveryService } from "@/lib/shipping/delhivery";
 import { supabase } from "@/lib/supabase";
 
+async function checkAdminAuth(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) return false;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+  return user?.user_metadata?.role === "admin";
+}
+
 export async function POST(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const {
       order_id,
       waybill_format = "pdf",
@@ -60,7 +73,7 @@ export async function POST(request: NextRequest) {
       "Cache-Control": "public, max-age=3600",
     });
 
-    return new NextResponse(waybillBuffer, {
+    return new NextResponse(waybillBuffer as any, {
       status: 200,
       headers: responseHeaders,
     });
@@ -80,6 +93,10 @@ export async function POST(request: NextRequest) {
 // Bulk waybill generation for multiple orders
 export async function PUT(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { order_ids, waybill_format = "pdf" } = await request.json();
 
     if (!Array.isArray(order_ids) || order_ids.length === 0) {
@@ -134,7 +151,7 @@ export async function PUT(request: NextRequest) {
       "Cache-Control": "public, max-age=3600",
     });
 
-    return new NextResponse(waybillBuffer, {
+    return new NextResponse(waybillBuffer as any, {
       status: 200,
       headers: responseHeaders,
     });
@@ -150,6 +167,10 @@ export async function PUT(request: NextRequest) {
 // Get waybill preview/image
 export async function GET(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const order_id = searchParams.get("order_id");
     const preview = searchParams.get("preview") === "true";
@@ -223,6 +244,10 @@ export async function GET(request: NextRequest) {
 // Create shipment and generate waybill in one step
 export async function POST_create(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const shipmentData = await request.json();
 
     // Validate shipment data
@@ -273,7 +298,7 @@ export async function POST_create(request: NextRequest) {
 
       // Bulk update orders
       await Promise.all(
-        updates.map(async (update) => {
+        updates.map(async (update: any) => {
           await supabase
             .from("orders")
             .update({
@@ -293,7 +318,7 @@ export async function POST_create(request: NextRequest) {
       "Content-Disposition": `attachment; filename="shipping_waybills_${Date.now()}.pdf"`,
     });
 
-    return new NextResponse(waybillBuffer, {
+    return new NextResponse(waybillBuffer as any, {
       status: 200,
       headers: responseHeaders,
     });

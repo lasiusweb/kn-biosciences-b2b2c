@@ -1,8 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
+async function checkAdminAuth(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) return false;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+  return user?.user_metadata?.role === "admin";
+}
+
 export async function GET(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const period = searchParams.get("period") || "30d";
     const startDate = getStartDate(period);
@@ -117,26 +130,20 @@ export async function GET(request: NextRequest) {
       .eq("status", "active");
 
     // Calculate comprehensive metrics
-    const totalSales = salesData.reduce(
-      (sum, order) => sum + order.total_amount,
-      0,
-    );
-    const totalOrders = salesData.length;
+    const totalSales =
+      salesData?.reduce((sum, order) => sum + order.total_amount, 0) || 0;
+    const totalOrders = salesData?.length || 0;
     const averageOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0;
 
-    const totalB2BQuotes = b2bData.length;
-    const totalB2BValue = b2bData.reduce(
-      (sum, quote) => sum + quote.total_amount,
-      0,
-    );
-    const approvedB2BQuotes = b2bData.filter(
-      (quote) => quote.status === "approved",
-    ).length;
+    const totalB2BQuotes = b2bData?.length || 0;
+    const totalB2BValue =
+      b2bData?.reduce((sum, quote) => sum + quote.total_amount, 0) || 0;
+    const approvedB2BQuotes =
+      b2bData?.filter((quote) => quote.status === "approved").length || 0;
 
     // Advanced metrics
-    const paidOrders = salesData.filter(
-      (order) => order.payment_status === "paid",
-    );
+    const paidOrders =
+      salesData?.filter((order) => order.payment_status === "paid") || [];
     const totalPaidSales = paidOrders.reduce(
       (sum, order) => sum + order.total_amount,
       0,
@@ -149,8 +156,8 @@ export async function GET(request: NextRequest) {
       retentionData?.map((order) => order.user_id).filter(Boolean) || [],
     );
     const customerRetention =
-      uniqueCustomers.size > 0
-        ? (retentionData?.filter(
+      uniqueCustomers.size > 0 && retentionData
+        ? (retentionData.filter(
             (order, index, arr) =>
               arr.findIndex((o) => o.user_id === order.user_id) === index,
           ).length /
@@ -167,33 +174,37 @@ export async function GET(request: NextRequest) {
       inventoryData?.reduce(
         (sum, variant) => sum + variant.stock_quantity * 100,
         0, // Using estimated cost
-        0,
       ) || 0;
 
-    const revenueByMonth = groupRevenueByMonth(salesData, period);
-    const b2bRevenueByMonth = groupRevenueByMonth(b2bData, period);
+    const revenueByMonth = groupRevenueByMonth(salesData || [], period);
+    const b2bRevenueByMonth = groupRevenueByMonth(b2bData || [], period);
 
     // Segment performance analysis
-    const segmentPerformance = calculateSegmentPerformance(topProducts);
+    const segmentPerformance = calculateSegmentPerformance(topProducts || []);
 
     // Customer growth tracking
-    const customerGrowth = calculateCustomerGrowth(customerData, period);
+    const customerGrowth = calculateCustomerGrowth(customerData || [], period);
 
     // Order status distribution
     const orderStatusDistribution = {
-      confirmed: salesData.filter((o) => o.status === "confirmed").length,
-      processing: salesData.filter((o) => o.status === "processing").length,
-      shipped: salesData.filter((o) => o.status === "shipped").length,
-      delivered: salesData.filter((o) => o.status === "delivered").length,
+      confirmed:
+        salesData?.filter((o: any) => o.status === "confirmed").length || 0,
+      processing:
+        salesData?.filter((o: any) => o.status === "processing").length || 0,
+      shipped: salesData?.filter((o: any) => o.status === "shipped").length || 0,
+      delivered:
+        salesData?.filter((o: any) => o.status === "delivered").length || 0,
     };
 
     // B2B quote status distribution
     const b2bStatusDistribution = {
-      draft: b2bData.filter((q) => q.status === "draft").length,
-      submitted: b2bData.filter((q) => q.status === "submitted").length,
-      under_review: b2bData.filter((q) => q.status === "under_review").length,
-      approved: b2bData.filter((q) => q.status === "approved").length,
-      rejected: b2bData.filter((q) => q.status === "rejected").length,
+      draft: b2bData?.filter((q: any) => q.status === "draft").length || 0,
+      submitted:
+        b2bData?.filter((q: any) => q.status === "submitted").length || 0,
+      under_review:
+        b2bData?.filter((q: any) => q.status === "under_review").length || 0,
+      approved: b2bData?.filter((q: any) => q.status === "approved").length || 0,
+      rejected: b2bData?.filter((q: any) => q.status === "rejected").length || 0,
     };
 
     const analytics = {
@@ -212,7 +223,7 @@ export async function GET(request: NextRequest) {
       },
       revenueByMonth,
       b2bRevenueByMonth,
-      topProducts: topProducts.map((item) => ({
+      topProducts: (topProducts || []).map((item: any) => ({
         name: item.product_variants.products.name,
         sku: item.product_variants.sku,
         segment: item.product_variants.products.segment,
@@ -225,11 +236,16 @@ export async function GET(request: NextRequest) {
           item.product_variants.low_stock_threshold,
       })),
       customerSegments: {
-        b2c: customerData.filter((user) => user.role === "customer").length,
-        b2b: customerData.filter((user) => user.role === "b2b_client").length,
-        other: customerData.filter(
-          (user) => !["customer", "b2b_client"].includes(user.role),
-        ).length,
+        b2c:
+          customerData?.filter((user: any) => user.role === "customer")
+            .length || 0,
+        b2b:
+          customerData?.filter((user: any) => user.role === "b2b_client")
+            .length || 0,
+        other:
+          customerData?.filter(
+            (user: any) => !["customer", "b2b_client"].includes(user.role),
+          ).length || 0,
       },
       segmentPerformance,
       customerGrowth,

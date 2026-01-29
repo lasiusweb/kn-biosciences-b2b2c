@@ -113,7 +113,7 @@ export default function OrdersAdminPage() {
                     <TableRow key={order.id} className="border-zinc-800">
                       <TableCell className="text-white font-medium">{order.order_number}</TableCell>
                       <TableCell className="text-zinc-300">
-                        {order.shipping_address?.first_name} {order.shipping_address?.last_name}
+                        {order.user?.first_name || 'Guest'} {order.user?.last_name || ''}
                       </TableCell>
                       <TableCell className="text-white">₹{order.total_amount.toLocaleString()}</TableCell>
                       <TableCell>

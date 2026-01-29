@@ -31,23 +31,23 @@ interface SearchFilters {
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams: urlSearchParams } = new URL(request.url);
 
     // Parse search parameters
     const searchParams: SearchParams = {
-      q: searchParams.get("q") || "",
-      category: searchParams.get("category") || "",
-      subcategory: searchParams.get("subcategory") || "",
-      min_price: searchParams.get("min_price") || "",
-      max_price: searchParams.get("max_price") || "",
-      in_stock: searchParams.get("in_stock") || "",
-      organic: searchParams.get("organic") || "",
-      rating: searchParams.get("rating") || "",
-      sort_by: searchParams.get("sort_by") || "relevance",
-      page: searchParams.get("page") || "1",
-      limit: searchParams.get("limit") || "20",
-      tags: searchParams.getAll("tags") || [],
-      brand: searchParams.get("brand") || "",
+      q: urlSearchParams.get("q") || "",
+      category: urlSearchParams.get("category") || "",
+      subcategory: urlSearchParams.get("subcategory") || "",
+      min_price: urlSearchParams.get("min_price") || "",
+      max_price: urlSearchParams.get("max_price") || "",
+      in_stock: urlSearchParams.get("in_stock") || "",
+      organic: urlSearchParams.get("organic") || "",
+      rating: urlSearchParams.get("rating") || "",
+      sort_by: urlSearchParams.get("sort_by") || "relevance",
+      page: urlSearchParams.get("page") || "1",
+      limit: urlSearchParams.get("limit") || "20",
+      tags: urlSearchParams.getAll("tags") || [],
+      brand: urlSearchParams.get("brand") || "",
     };
 
     // Build search query
@@ -81,12 +81,15 @@ export async function GET(request: NextRequest) {
       success: true,
       products: products || [],
       pagination: {
-        page: parseInt(searchParams.page),
-        limit: parseInt(searchParams.limit),
+        page: parseInt(searchParams.page || "1"),
+        limit: parseInt(searchParams.limit || "20"),
         total: count || 0,
-        totalPages: Math.ceil((count || 0) / parseInt(searchParams.limit)),
+        totalPages: Math.ceil(
+          (count || 0) / parseInt(searchParams.limit || "20"),
+        ),
         hasNext:
-          parseInt(searchParams.page) * parseInt(searchParams.limit) <
+          parseInt(searchParams.page || "1") *
+            parseInt(searchParams.limit || "20") <
           (count || 0),
       },
       filters: {
@@ -194,7 +197,7 @@ export async function PUT(request: NextRequest) {
 }
 
 // Helper functions
-function buildSearchQuery(params: SearchParams): string {
+function buildSearchQuery(params: SearchParams): any {
   let query = supabase.from("products").select(`
       *,
       product_variants!inner(
@@ -262,7 +265,7 @@ function buildSearchQuery(params: SearchParams): string {
   }
 
   // Apply tags filter
-  if (params.tags.length > 0) {
+  if (params.tags && params.tags.length > 0) {
     query = query.contains("tags", params.tags);
   }
 
@@ -298,7 +301,7 @@ function buildSearchQuery(params: SearchParams): string {
 }
 
 function buildAdvancedSearchQuery(searchRequest: any): any {
-  let query = supabase.from("products").select("*");
+  let query: any = supabase.from("products").select("*");
 
   // Handle complex filter combinations
   if (searchRequest.filters) {
@@ -322,20 +325,11 @@ function buildAdvancedSearchQuery(searchRequest: any): any {
           case "custom":
             // Handle custom filter logic
             if (filter.field && filter.operator && filter.value) {
-              switch (filter.operator) {
-                case "equals":
-                  query = query.eq(filter.field, filter.value);
-                  break;
-                case "contains":
-                  query = query.ilike(filter.field, `%${filter.value}%`);
-                  break;
-                case "greater_than":
-                  query = query.gt(filter.field, filter.value);
-                  break;
-                case "less_than":
-                  query = query.lt(filter.field, filter.value);
-                  break;
-              }
+              const { field, operator, value } = filter;
+              if (operator === "equals") query = query.eq(field, value);
+              if (operator === "contains") query = query.ilike(field, `%${value}%`);
+              if (operator === "greater_than") query = query.gt(field, value);
+              if (operator === "less_than") query = query.lt(field, value);
             }
             break;
         }
@@ -348,7 +342,6 @@ function buildAdvancedSearchQuery(searchRequest: any): any {
     query = query.textSearch("name", searchRequest.query, {
       config: "websearch_to_tsvector",
       type: "plain",
-      weights: { name: 2, description: 1 },
     });
   }
 
@@ -372,11 +365,11 @@ async function executeSearch(
     }
 
     // Apply pagination
-    const page = parseInt(params.page);
-    const limit = parseInt(params.limit);
+    const page = parseInt(params.page || "1");
+    const limit = parseInt(params.limit || "20");
     const offset = (page - 1) * limit;
 
-    const { data, error } = await query.range(offset, limit);
+    const { data, error } = await query.range(offset, offset + limit - 1);
 
     return { data, error, count: count || 0 };
   } catch (error) {
@@ -455,7 +448,7 @@ async function getSearchFacets(query: any): Promise<any> {
 
     return {
       categories:
-        categories?.map((cat) => ({
+        categories?.map((cat: any) => ({
           name: cat.categories.name,
           slug: cat.categories.slug,
           count: 0, // Would need aggregation query
@@ -528,7 +521,7 @@ function buildAppliedFilters(params: SearchParams): any {
   if (params.in_stock === "true") filters.in_stock_only = true;
   if (params.organic === "true") filters.organic_only = true;
   if (params.rating) filters.min_rating = parseFloat(params.rating);
-  if (params.tags.length > 0) filters.tags = params.tags;
+  if (params.tags && params.tags.length > 0) filters.tags = params.tags;
   if (params.brand) filters.brand = params.brand;
 
   return filters;

@@ -214,7 +214,8 @@ class DelhiveryService {
       return trackingData;
     } else if (trackingData && typeof trackingData === "object") {
       // Some endpoints return object with shipments array
-      return trackingData.packages || trackingData.shipments || [trackingData];
+      const data = trackingData as any;
+      return data.packages || data.shipments || [trackingData];
     }
 
     return [];
@@ -244,13 +245,13 @@ class DelhiveryService {
       ...(rateData.height && { h: rateData.height.toString() }),
     });
 
-    const response = await this.makeRequest(
+    const response = (await this.makeRequest(
       `kinko/v1/fetch/rates/?${params}`,
       "GET",
-    );
+    )) as any;
 
     // Handle response format
-    if (response.rates && Array.isArray(response.rates)) {
+    if (response && response.rates && Array.isArray(response.rates)) {
       return response.rates;
     } else if (Array.isArray(response)) {
       return response;

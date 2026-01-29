@@ -2,8 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { delhiveryService } from "@/lib/shipping/delhivery";
 import { supabase } from "@/lib/supabase";
 
+async function checkAdminAuth(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) return false;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+  return user?.user_metadata?.role === "admin";
+}
+
 export async function POST(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const pickupData = await request.json();
 
     // Validate required fields
@@ -35,13 +48,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate pickup date (should not be in past or too far in future)
     const pickupDate = new Date(pickupData.pickup_date);
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const maxFutureDate = new Date();
     maxFutureDate.setDate(today.getDate() + 7); // Max 7 days ahead
 
-    if (pickupDate < today.setHours(0, 0, 0, 0)) {
+    if (pickupDate.getTime() < today.getTime()) {
       return NextResponse.json(
         { error: "Pickup date cannot be in the past" },
         { status: 400 },
@@ -169,6 +182,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const pickup_id = searchParams.get("pickup_id");
     const date = searchParams.get("date");

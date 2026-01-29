@@ -2,7 +2,7 @@
 import { supabase } from "@/lib/supabase";
 
 // Recommendation types
-interface RecommendationContext {
+export interface RecommendationContext {
   userId?: string;
   currentProductId?: string;
   searchQuery?: string;
@@ -11,9 +11,10 @@ interface RecommendationContext {
   viewedProducts?: string[];
   purchasedProducts?: string[];
   userSegment?: string;
+  limit?: number;
 }
 
-interface ProductRecommendation {
+export interface ProductRecommendation {
   productId: string;
   score: number;
   reason: string;
@@ -27,7 +28,7 @@ interface ProductRecommendation {
   confidence: number;
 }
 
-interface RecommendationResult {
+export interface RecommendationResult {
   products: any[];
   recommendations: ProductRecommendation[];
   metadata: {

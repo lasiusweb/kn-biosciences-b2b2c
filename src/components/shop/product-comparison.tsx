@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
-  ArrowUpDown, 
   BarChart3, 
   Check, 
   Eye, 
@@ -13,9 +12,8 @@ import {
   ShoppingCart,
   Star,
   Package,
-  Truck,
-  Tag,
-  X
+  X,
+  Zap
 } from 'lucide-react'
 
 interface Product {
@@ -45,55 +43,25 @@ interface ProductComparisonProps {
 
 export function ProductComparison({ productIds = [], products = [], className }: ProductComparisonProps) {
   const [comparisonData, setComparisonData] = useState({
-    products: [],
+    products: [] as Product[],
     comparisonId: '',
     createdAt: ''
   })
-  const [selectedProducts, setSelectedProducts] = useState<Product[]>([])
+  const [selectedProducts, setSelectedProducts] = useState<Product[]>(products)
   const [loading, setLoading] = useState(false)
 
   // Initialize comparison from URL params or props
   React.useEffect(() => {
     if (productIds.length > 0) {
-      initializeComparison(productIds)
+      // Mock initialization
+      setLoading(true)
+      setTimeout(() => {
+        setLoading(false)
+      }, 500)
     } else if (products.length > 0) {
       setSelectedProducts(products)
     }
   }, [productIds, products])
-
-  const addProductToComparison = async (productId: string) => {
-    if (selectedProducts.length >= 4) {
-      alert('Maximum 4 products can be compared at once')
-      return
-    }
-
-    try {
-      const product = await fetchProductById(productId)
-      if (product) {
-        const updatedProducts = [...selectedProducts, product]
-        setSelectedProducts(updatedProducts)
-        setComparisonData(prev => ({
-          ...prev,
-          products: updatedProducts,
-          comparisonId: `comp_${Date.now()}`,
-          createdAt: new Date().toISOString()
-        }))
-      }
-    } catch (error) {
-      console.error('Error adding product to comparison:', error)
-    }
-  }
-
-  const removeProductFromComparison = (productId: string) => {
-    const updatedProducts = selectedProducts.filter(p => p.id !== productId)
-    setSelectedProducts(updatedProducts)
-    setComparisonData(prev => ({
-      ...prev,
-      products: updatedProducts,
-      comparisonId: `comp_${Date.now()}`,
-      createdAt: new Date().toISOString()
-    }))
-  }
 
   const clearComparison = () => {
     setSelectedProducts([])
@@ -119,10 +87,31 @@ export function ProductComparison({ productIds = [], products = [], className }:
     }
   }
 
+  const getComparisonScore = (product: Product): number => {
+    let score = 0
+    
+    // Price score (lower is better)
+    const prices = selectedProducts.map(p => p.price)
+    const avgPrice = prices.length > 0 ? prices.reduce((sum, price) => sum + price, 0) / prices.length : 0
+    if (product.price < avgPrice) score += 2
+    else if (product.price === avgPrice) score += 1
+
+    // Rating score
+    score += (product.average_rating || 0) * 2
+
+    // Stock availability
+    if (product.in_stock) score += 1
+
+    // Organic bonus
+    if (product.is_organic) score += 1
+
+    return Math.round(score * 10) / 10
+  }
+
   const getWinner = (): Product | null => {
     if (selectedProducts.length < 2) return null
     
-    const scores = selectedProducts.map(p => getComparisonScore(p, 0))
+    const scores = selectedProducts.map(p => getComparisonScore(p))
     const maxScore = Math.max(...scores)
     const winnerIndex = scores.indexOf(maxScore)
     
@@ -145,7 +134,7 @@ export function ProductComparison({ productIds = [], products = [], className }:
   }
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${className}`}>
       {/* Comparison Header */}
       <Card>
         <CardHeader>
@@ -155,7 +144,7 @@ export function ProductComparison({ productIds = [], products = [], className }:
               Product Comparison
               {selectedProducts.length > 0 && (
                 <Badge variant="secondary" className="ml-2">
-                  {selectedProducts.length} items}
+                  {selectedProducts.length} items
                 </Badge>
               )}
             </div>
@@ -190,28 +179,32 @@ export function ProductComparison({ productIds = [], products = [], className }:
         <Card>
           <CardContent className="text-center py-12">
             <div className="text-muted-foreground">
-              <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded"></div>
+              <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded flex items-center justify-center">
+                <ShoppingCart className="h-8 w-8 opacity-20" />
+              </div>
               <h3 className="text-lg font-semibold mb-2">Start Comparing Products</h3>
               <p className="mb-6">Search for products and add them to comparison to see detailed analysis.</p>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Button
                   onClick={() => window.location.href = '/shop'}
-                  className="flex flex-col items-center p-6 bg-primary text-white hover:bg-primary/90"
+                  className="flex flex-col items-center p-6 h-auto"
                 >
                   <ShoppingCart className="h-6 w-6 mb-2" />
                   <span>Browse Products</span>
                 </Button>
                 <Button
                   onClick={() => window.location.href = '/shop?category=fertilizers'}
-                  className="flex flex-col items-center p-6 bg-secondary hover:bg-secondary/90"
+                  variant="secondary"
+                  className="flex flex-col items-center p-6 h-auto"
                 >
                   <Package className="h-6 w-6 mb-2" />
                   <span>Fertilizers</span>
                 </Button>
                 <Button
                   onClick={() => window.location.href = '/shop?category=seeds'}
-                  className="flex flex-col items-center p-6 bg-accent hover:bg-accent/90"
+                  variant="outline"
+                  className="flex flex-col items-center p-6 h-auto"
                 >
                   <Package className="h-6 w-6 mb-2" />
                   <span>Seeds</span>
@@ -228,7 +221,7 @@ export function ProductComparison({ productIds = [], products = [], className }:
               <CardContent className="text-center py-4">
                 <Check className="h-8 w-8 text-green-600 mx-auto mb-2" />
                 <h3 className="text-green-800 font-semibold">Best Value: {winner.name}</h3>
-                <p className="text-green-700">Recommended choice based on price, quality, and ratings</p>
+                <p className="text-green-700 text-sm">Recommended choice based on price, quality, and ratings</p>
               </CardContent>
             </Card>
           )}
@@ -237,14 +230,12 @@ export function ProductComparison({ productIds = [], products = [], className }:
           <Card>
             <CardHeader>
               <CardTitle>Comparison Results</CardTitle>
-              <CardDescription>
-                {comparisonData.createdAt && (
-                  <span className="text-xs text-muted-foreground">
-                    Comparison ID: {comparisonData.comparisonId} • 
-                    Created: {new Date(comparisonData.createdAt).toLocaleString()}
-                  </span>
-                )}
-              </CardDescription>
+              {comparisonData.createdAt && (
+                <CardDescription>
+                  Comparison ID: {comparisonData.comparisonId} • 
+                  Created: {new Date(comparisonData.createdAt).toLocaleString()}
+                </CardDescription>
+              )}
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
@@ -259,244 +250,176 @@ export function ProductComparison({ productIds = [], products = [], className }:
                     </tr>
                   </thead>
                   <tbody>
-                    {selectedProducts.map((product, index) => {
-                      const score = getComparisonScore(product, index)
+                    {selectedProducts.map((product) => {
+                      const score = getComparisonScore(product)
                       const isWinner = winner?.id === product.id
                       
                       return (
-                        <tr key={product.id} className={`border-b ${isWinner ? 'bg-green-50' : ''}`}>
+                        <tr key={product.id} className={`border-b ${isWinner ? 'bg-green-50/50' : ''}`}>
                           <td className="p-4">
                             <div className="flex items-start space-x-3">
-                              <div className="w-16 h-16 bg-muted rounded overflow-hidden">
-                                {product.image_url && (
+                              <div className="w-16 h-16 bg-muted rounded overflow-hidden flex-shrink-0 relative">
+                                {product.image_url ? (
                                   <img
                                     src={product.image_url}
                                     alt={product.name}
-                                    className="w-full h-full object-cover rounded"
-                                    loading="lazy"
+                                    className="w-full h-full object-cover"
                                   />
-                                  {product.is_organic && (
-                                    <Badge className="absolute top-1 left-1 bg-green-500 text-white text-xs">
-                                      Organic
-                                    </Badge>
-                                  )}
-                                </div>
-                              )}
-                              <div className="flex-1 min-w-0">
-                                <div>
-                                  <h4 className="font-semibold text-sm mb-1">{product.name}</h4>
-                                  {product.brand && (
-                                    <p className="text-xs text-muted-foreground mb-2">{product.brand}</p>
-                                  )}
-                                </div>
-                              </div>
-                            </td>
-                          <td className="p-4 text-center">
-                            <div className="space-y-1">
-                              <div>
-                                {product.original_price > product.price && (
-                                  <>
-                                    <span className="text-gray-400 line-through">₹{product.original_price}</span>
-                                    <br />
-                                  </>
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <Package className="h-6 w-6 text-muted-foreground opacity-20" />
+                                  </div>
                                 )}
-                                <span className={`font-bold ${isWinner ? 'text-green-600' : 'text-primary'}`}>
-                                  ₹{product.price}
-                                </span>
-                                {product.original_price > product.price && (
-                                  <Badge variant="secondary" className="ml-2 text-xs">
-                                    Save ₹{product.original_price - product.price}
+                                {product.is_organic && (
+                                  <Badge className="absolute top-0 left-0 bg-green-500 text-white text-[8px] px-1 py-0 rounded-none rounded-br">
+                                    Organic
                                   </Badge>
                                 )}
                               </div>
-                            </td>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-sm mb-1 truncate">{product.name}</h4>
+                                {product.brand && (
+                                  <p className="text-xs text-muted-foreground">{product.brand}</p>
+                                )}
+                              </div>
+                            </div>
+                          </td>
                           <td className="p-4 text-center">
-                            <div className="flex items-center">
-                              <div className="flex items-center space-x-2">
-                                {[1, 2, 3, 4, 5].map((_, i) => (
+                            <div className="space-y-1">
+                              {product.original_price > product.price && (
+                                <span className="text-xs text-muted-foreground line-through block">₹{product.original_price}</span>
+                              )}
+                              <span className={`font-bold block ${isWinner ? 'text-green-600' : 'text-primary'}`}>
+                                ₹{product.price}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="p-4 text-center">
+                            <div className="inline-flex flex-col items-center">
+                              <div className="flex items-center gap-0.5">
+                                {[1, 2, 3, 4, 5].map((i) => (
                                   <Star
                                     key={i}
-                                    className={`h-4 w-4 ${
-                                      i <= Math.floor(product.average_rating) ? 'fill-yellow-400' : 'fill-gray-300'
+                                    className={`h-3 w-3 ${
+                                      i <= Math.floor(product.average_rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
                                     }`}
                                   />
                                 ))}
                               </div>
-                              <span className="text-sm text-muted-foreground ml-2">
-                                ({product.average_rating || 'N/A'}).toFixed(1)}
+                              <span className="text-[10px] text-muted-foreground mt-1">
+                                {product.average_rating?.toFixed(1) || 'N/A'} ({product.review_count || 0})
                               </span>
-                              <div className="text-xs text-muted-foreground">
-                                ({product.review_count || 0} reviews)
-                              </div>
                             </div>
                           </td>
                           <td className="p-4 text-center">
-                            <div className="flex items-center space-x-2">
-                              {product.in_stock ? (
-                                <Badge variant="outline" className="bg-green-100 text-green-800">
-                                  <Check className="h-3 w-3 mr-1" />
-                                  In Stock
-                                </Badge>
-                              ) : (
-                                <Badge variant="destructive" className="bg-red-100 text-red-800">
-                                  <Eye className="h-3 w-3 mr-1" />
-                                  Out of Stock
-                                </Badge>
-                              )}
-                            </div>
-                            </div>
+                            {product.in_stock ? (
+                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-[10px]">
+                                In Stock
+                              </Badge>
+                            ) : (
+                              <Badge variant="destructive" className="text-[10px]">
+                                Out of Stock
+                              </Badge>
+                            )}
                           </td>
                           <td className="p-4 text-center">
-                            <div className="flex items-center space-x-2">
-                              <span className={`text-lg font-bold ${isWinner ? 'text-green-600' : 'text-gray-600'}`}>
-                                {score}
-                              </span>
-                            </div>
+                            <span className={`text-lg font-bold ${isWinner ? 'text-green-600' : 'text-muted-foreground'}`}>
+                              {score}
+                            </span>
                           </td>
                         </tr>
-                      )}
-                    </tbody>
+                      )
+                    })}
+                  </tbody>
                 </table>
               </div>
             </CardContent>
           </Card>
 
-          {/* Product Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Details</CardTitle>
-              <CardDescription>
-                Detailed specifications and features for each product
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {selectedProducts.map(product => (
-                  <Card key={product.id} className="overflow-hidden">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start space-x-3">
-                        <div className="w-20 h-20 bg-muted rounded overflow-hidden">
-                          {product.image_url ? (
-                            <img
-                              src={product.image_url}
-                              alt={product.name}
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-muted">
-                              <Package className="h-8 w-8 text-muted-foreground" />
-                            </div>
-                          )}
+          {/* Product Details Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {selectedProducts.map(product => (
+              <Card key={product.id} className="overflow-hidden">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-16 h-16 bg-muted rounded overflow-hidden flex-shrink-0">
+                      {product.image_url ? (
+                        <img
+                          src={product.image_url}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Package className="h-6 w-6 text-muted-foreground opacity-20" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-                          {product.brand && (
-                            <p className="text-sm text-muted-foreground mb-2">{product.brand}</p>
-                          )}
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div>
-                        <h4 className="font-medium mb-2">Specifications</h4>
-                        {product.specifications && Object.keys(product.specifications).length > 0 ? (
-                          <dl className="space-y-2">
-                            {Object.entries(product.specifications).map(([key, value]) => (
-                              <div key={key} className="flex justify-between">
-                                <dt className="font-medium text-sm text-muted-foreground capitalize">
-                                  {key.replace(/_/g, ' ')}
-                                </dt>
-                                <dd className="text-sm">
-                                  {Array.isArray(value) ? value.join(', ') : value}
-                                </dd>
-                              </div>
-                            ))}
-                          </dl>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">No specifications available</p>
-                        )}
-                      </div>
-                      
-                      <div>
-                        <h4 className="font-medium mb-2">Description</h4>
-                        <p className="text-sm">{product.description || 'No description available'}</p>
-                      </div>
-                      
-                      <div>
-                        <h4 className="font-medium mb-2">Tags</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {product.tags?.map(tag => (
-                            <Badge key={tag} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          )) || (
-                            <span className="text-xs text-muted-foreground">No tags</span>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="flex gap-2 mt-4">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => addToWishlist(product.id)}
-                          className="flex-1"
-                        >
-                          <Heart className="h-4 w-4 mr-1" />
-                          Save
-                        </Button>
-                        <Button
-                          variant="default"
-                          size="sm"
-                          onClick={() => addToCart(product.id)}
-                          className="flex-1"
-                          disabled={!product.in_stock}
-                        >
-                          <ShoppingCart className="h-4 w-4 mr-1" />
-                          Add to Cart
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </Card>
-          </Card>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-base mb-1 truncate">{product.name}</h3>
+                      {product.brand && (
+                        <p className="text-xs text-muted-foreground">{product.brand}</p>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <h4 className="font-medium text-sm mb-2">Specifications</h4>
+                    {product.specifications && Object.keys(product.specifications).length > 0 ? (
+                      <dl className="space-y-1.5">
+                        {Object.entries(product.specifications).map(([key, value]) => (
+                          <div key={key} className="flex justify-between border-b border-muted pb-1">
+                            <dt className="text-xs text-muted-foreground capitalize">
+                              {key.replace(/_/g, ' ')}
+                            </dt>
+                            <dd className="text-xs font-medium">
+                              {Array.isArray(value) ? value.join(', ') : String(value)}
+                            </dd>
+                          </div>
+                        ))}
+                      </dl>
+                    ) : (
+                      <p className="text-xs text-muted-foreground italic">No specifications available</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-medium text-sm mb-1">Description</h4>
+                    <p className="text-xs text-muted-foreground line-clamp-3">
+                      {product.short_description || product.description || 'No description available'}
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => console.log('Wishlist:', product.id)}
+                      className="flex-1"
+                    >
+                      <Heart className="h-3 w-3 mr-1" />
+                      Save
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => console.log('Cart:', product.id)}
+                      className="flex-1"
+                      disabled={!product.in_stock}
+                    >
+                      <ShoppingCart className="h-3 w-3 mr-1" />
+                      Add to Cart
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </>
       )}
     </div>
   )
-}
-
-// Helper functions
-function addToWishlist(productId: string) {
-  console.log('Added to wishlist:', productId)
-}
-
-function addToCart(productId: string) {
-  console.log('Added to cart:', productId)
-}
-
-function getComparisonScore(product: Product, index: number): number {
-  let score = 0
-  
-  // Price score (lower is better)
-  const prices = selectedProducts.map(p => p.price)
-  const avgPrice = prices.reduce((sum, price) => sum + price, 0) / prices.length)
-  if (product.price < avgPrice) score += 2
-  else if (product.price === avgPrice) score += 1
-
-  // Rating score
-  score += (product.average_rating || 0) * 2
-
-  // Stock availability
-  if (product.in_stock) score += 1
-
-  // Organic bonus
-  if (product.is_organic) score += 1
-
-  return score
 }
 
 export default ProductComparison

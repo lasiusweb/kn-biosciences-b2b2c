@@ -21,8 +21,21 @@ interface UpdateUserRequest {
   gst_number?: string;
 }
 
+async function checkAdminAuth(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) return false;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+  return user?.user_metadata?.role === "admin";
+}
+
 export async function GET(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("id");
     const role = searchParams.get("role");
@@ -44,10 +57,8 @@ export async function GET(request: NextRequest) {
     }
 
     if (offset) {
-      query = query.range(
-        parseInt(offset),
-        parseInt(offset) + (parseInt(limit) || 10) - 1,
-      );
+      const limitVal = parseInt(limit || "10");
+      query = query.range(parseInt(offset), parseInt(offset) + limitVal - 1);
     }
 
     const { data, error } = await query;
@@ -76,6 +87,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const body: CreateUserRequest = await request.json();
 
     // Validate required fields
@@ -84,6 +99,11 @@ export async function POST(request: NextRequest) {
         { error: "Missing required fields" },
         { status: 400 },
       );
+    }
+
+    // Sanitize role - don't allow creating admins via this API
+    if (!["customer", "b2b_client"].includes(body.role)) {
+      return NextResponse.json({ error: "Invalid role" }, { status: 400 });
     }
 
     // Check if user already exists
@@ -140,6 +160,10 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("id");
 
@@ -183,6 +207,10 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("id");
 
@@ -232,8 +260,12 @@ export async function DELETE(request: NextRequest) {
 }
 
 // Health check endpoint
-export async function PATCH() {
+export async function PATCH(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const startTime = Date.now();
 
     // Test database connection

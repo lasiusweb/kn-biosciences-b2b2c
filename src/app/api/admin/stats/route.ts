@@ -17,6 +17,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { error: "Internal server error: Admin client not initialized" },
+        { status: 500 },
+      );
+    }
+
     const supabaseAdminClient = supabaseAdmin;
 
     // Get basic stats

@@ -52,7 +52,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           </div>
           {/* Gallery placeholder */}
           <div className="grid grid-cols-4 gap-4">
-            {mainVariant?.image_urls.slice(1, 5).map((url, i) => (
+            {mainVariant?.image_urls.slice(1, 5).map((url: string, i: number) => (
               <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-earth-50 border border-earth-100">
                 <Image src={url} alt={`${product.name} ${i + 1}`} fill className="object-cover" />
               </div>

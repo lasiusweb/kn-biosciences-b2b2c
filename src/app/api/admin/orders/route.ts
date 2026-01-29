@@ -24,6 +24,13 @@ export async function GET(request: Request) {
 
     const offset = (page - 1) * limit;
 
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { error: "Internal server error: Admin client not initialized" },
+        { status: 500 },
+      );
+    }
+
     let query = supabaseAdmin.from("orders").select(
       `
         *,
@@ -128,6 +135,13 @@ export async function PATCH(request: Request) {
     if (status) updateData.status = status;
     if (trackingNumber) updateData.tracking_number = trackingNumber;
     if (notes) updateData.admin_notes = notes;
+
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { error: "Internal server error: Admin client not initialized" },
+        { status: 500 },
+      );
+    }
 
     const { data, error } = await supabaseAdmin
       .from("orders")

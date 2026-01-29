@@ -266,6 +266,7 @@ export interface Order {
   total_amount: number;
   shipping_address: Address;
   billing_address: Address;
+  user?: User;
   notes?: string;
   created_at: string;
   updated_at: string;

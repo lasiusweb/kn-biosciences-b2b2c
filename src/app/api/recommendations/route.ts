@@ -5,6 +5,15 @@ import {
 } from "@/lib/recommendations/engine";
 import { supabase } from "@/lib/supabase";
 
+async function checkAdminAuth(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) return false;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+  return user?.user_metadata?.role === "admin";
+}
+
 export async function POST(request: NextRequest) {
   try {
     const recommendationRequest = await request.json();

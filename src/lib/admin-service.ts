@@ -16,7 +16,7 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
 export async function getOrders(): Promise<Order[]> {
   const { data, error } = await supabase
     .from('orders')
-    .select('*, shipping_address(*), billing_address(*)')
+    .select('*, shipping_address(*), billing_address(*), user:users(*)')
     .order('created_at', { ascending: false });
 
   if (error) {

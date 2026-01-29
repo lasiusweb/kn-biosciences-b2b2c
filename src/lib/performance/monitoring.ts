@@ -130,16 +130,18 @@ class PerformanceMonitor {
     }
   }
 
-  private addAlert(
+  public addAlert(
     level: "info" | "warning" | "error" | "critical",
     message: string,
     service: string,
+    metadata?: any,
   ) {
     this.alerts.push({
       level,
       message,
       service,
       timestamp: new Date(),
+      ...metadata,
     });
 
     // Keep only last 500 alerts
@@ -268,6 +270,10 @@ class LoadBalancer {
 
   constructor(config: LoadBalancerConfig) {
     this.config = config;
+  }
+
+  getConfig(): LoadBalancerConfig {
+    return this.config;
   }
 
   registerService(

@@ -2,8 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { delhiveryService } from "@/lib/shipping/delhivery";
 import { supabase } from "@/lib/supabase";
 
+async function checkAdminAuth(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) return false;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+  return user?.user_metadata?.role === "admin";
+}
+
 export async function GET(request: NextRequest) {
   try {
+    // Only allow authenticated users to track orders
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const waybill = searchParams.get("waybill");
     const order_id = searchParams.get("order_id");
@@ -35,7 +52,7 @@ export async function GET(request: NextRequest) {
       if (order.shipping_waybill) {
         trackingWaybills = order.shipping_waybill
           .split(",")
-          .map((w) => w.trim());
+          .map((w: string) => w.trim());
       } else {
         return NextResponse.json(
           { error: "No tracking information available for this order" },
@@ -98,6 +115,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { waybills, order_ids } = await request.json();
 
     if (!waybills && !order_ids) {
@@ -118,10 +139,10 @@ export async function POST(request: NextRequest) {
         .select("id, shipping_waybill")
         .in("id", Array.isArray(order_ids) ? order_ids : [order_ids]);
 
-      trackingWaybills = orders
+      trackingWaybills = (orders || [])
         .filter((order) => order.shipping_waybill)
         .flatMap((order) =>
-          order.shipping_waybill.split(",").map((w) => w.trim()),
+          order.shipping_waybill.split(",").map((w: string) => w.trim()),
         );
     }
 

@@ -2,21 +2,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { performanceMonitor, loadBalancer } from "@/lib/performance/monitoring";
 
+import { supabase } from "@/lib/supabase";
+
+async function checkAdminAuth(request: Request) {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader) return false;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+  return user?.user_metadata?.role === "admin";
+}
+
 export async function GET(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type");
     const service = searchParams.get("service");
 
     switch (type) {
-      case "system":
+      case "system": {
         const systemHealth = performanceMonitor.getSystemHealth();
         return NextResponse.json({
           success: true,
           data: systemHealth,
         });
+      }
 
-      case "service":
+      case "service": {
         if (!service) {
           return NextResponse.json(
             { error: "Service name is required" },
@@ -36,13 +52,14 @@ export async function GET(request: NextRequest) {
           success: true,
           data: serviceMetrics,
         });
+      }
 
-      case "load-balancer":
+      case "load-balancer": {
         const loadBalancerHealth = loadBalancer.getServiceHealth();
         return NextResponse.json({
           success: true,
           data: {
-            algorithm: loadBalancer.config.algorithm,
+            algorithm: loadBalancer.getConfig().algorithm,
             services: Array.from(loadBalancerHealth.entries()).map(
               ([name, health]) => ({
                 name,
@@ -51,15 +68,17 @@ export async function GET(request: NextRequest) {
             ),
           },
         });
+      }
 
-      case "alerts":
+      case "alerts": {
         const alerts = performanceMonitor.getAlerts();
         return NextResponse.json({
           success: true,
           data: alerts,
         });
+      }
 
-      default:
+      default: {
         // Return comprehensive monitoring data
         const systemHealth = performanceMonitor.getSystemHealth();
         const loadBalancerHealth = loadBalancer.getServiceHealth();
@@ -69,7 +88,7 @@ export async function GET(request: NextRequest) {
           data: {
             system: systemHealth,
             loadBalancer: {
-              algorithm: loadBalancer.config.algorithm,
+              algorithm: loadBalancer.getConfig().algorithm,
               services: Array.from(loadBalancerHealth.entries()).map(
                 ([name, health]) => ({
                   name,
@@ -80,6 +99,7 @@ export async function GET(request: NextRequest) {
             timestamp: new Date().toISOString(),
           },
         });
+      }
     }
   } catch (error) {
     console.error("Performance monitoring GET error:", error);
@@ -92,6 +112,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const body = await request.json();
     const { action, serviceName, algorithm } = body;
 
@@ -156,6 +180,10 @@ export async function POST(request: NextRequest) {
 // Webhook endpoint for receiving alerts from external systems
 export async function PUT(request: NextRequest) {
   try {
+    if (!(await checkAdminAuth(request))) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const alert = await request.json();
     const { level, message, service, metadata } = alert;
 

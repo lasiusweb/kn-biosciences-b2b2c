@@ -12,7 +12,7 @@ export function NewsletterSection() {
     e.preventDefault()
     // Handle newsletter subscription
     // TODO: Send to API
-    setSubscribed(true)
+    setIsSubscribed(true)
     setEmail('')
     setTimeout(() => setIsSubscribed(false), 3000)
   }

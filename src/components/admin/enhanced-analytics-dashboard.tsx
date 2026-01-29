@@ -49,10 +49,8 @@ import {
   Package,
   AlertTriangle,
   CheckCircle,
-  Clock,
   XCircle,
   Download,
-  Filter,
 } from "lucide-react";
 
 interface EnhancedAnalyticsData {
@@ -157,8 +155,6 @@ export function EnhancedAnalyticsDashboard() {
       if (response.ok) {
         const analyticsData = await response.json();
         setData(analyticsData);
-      } else {
-        console.error("Failed to fetch enhanced analytics");
       }
     } catch (error) {
       console.error("Error fetching enhanced analytics:", error);
@@ -167,13 +163,13 @@ export function EnhancedAnalyticsDashboard() {
     }
   };
 
-  const formatCurrency = (amount: number | undefined) => {
-    if (typeof amount !== "number") return "₹0";
+  const formatCurrency = (amount: any) => {
+    const val = typeof amount === "number" ? amount : 0;
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
       maximumFractionDigits: 0,
-    }).format(amount);
+    }).format(val);
   };
 
   const MetricCard = ({
@@ -214,9 +210,7 @@ export function EnhancedAnalyticsDashboard() {
         <CardContent>
           <div className="text-2xl font-bold">{displayValue}</div>
           {change !== undefined && (
-            <p
-              className={`text-xs ${colorClasses[change >= 0 ? "success" : "danger"]}`}
-            >
+            <p className={`text-xs ${change >= 0 ? "text-green-600" : "text-red-600"}`}>
               {change >= 0 ? (
                 <TrendingUp className="inline h-3 w-3 mr-1" />
               ) : (
@@ -230,31 +224,8 @@ export function EnhancedAnalyticsDashboard() {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-organic-500 mx-auto mb-4"></div>
-            <p className="text-earth-600">Loading enhanced analytics...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-8">
-          <p className="text-earth-600">Failed to load analytics data</p>
-          <Button onClick={fetchEnhancedAnalytics} className="mt-4">
-            Retry
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (!data) return <div className="p-8 text-center text-red-500">Failed to load data</div>;
 
   const orderStatusChartData = Object.entries(data.orderStatusDistribution).map(
     ([status, count]) => ({
@@ -264,132 +235,62 @@ export function EnhancedAnalyticsDashboard() {
     }),
   );
 
-  const b2bStatusChartData = Object.entries(data.b2bStatusDistribution).map(
-    ([status, count]) => ({
-      name:
-        status.replace("_", " ").charAt(0).toUpperCase() +
-        status.replace("_", " ").slice(1),
-      value: count,
-      fill: B2B_STATUS_COLORS[status as keyof typeof B2B_STATUS_COLORS],
-    }),
-  );
-
   const radarData = data.segmentPerformance.map((item) => ({
-    segment:
-      item.segment.replace("_", " ").charAt(0).toUpperCase() +
-      item.segment.replace("_", " ").slice(1),
-    revenue: item.revenue / 1000, // Scale down for better visualization
-    quantity: item.quantity * 10, // Scale up for better visualization
+    segment: item.segment.replace("_", " "),
+    revenue: item.revenue / 1000,
+    quantity: item.quantity * 10,
   }));
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-earth-900 mb-2">
-            Advanced Analytics Dashboard
-          </h1>
-          <p className="text-earth-600">
-            Comprehensive business intelligence and insights
-          </p>
-        </div>
+        <h1 className="text-3xl font-bold">Advanced Analytics Dashboard</h1>
         <div className="flex gap-2">
           <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue />
-            </SelectTrigger>
+            <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="7d">Last 7 days</SelectItem>
               <SelectItem value="30d">Last 30 days</SelectItem>
-              <SelectItem value="90d">Last 90 days</SelectItem>
               <SelectItem value="1y">Last year</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export
-          </Button>
+          <Button variant="outline" size="sm"><Download className="h-4 w-4 mr-2" />Export</Button>
         </div>
       </div>
 
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="space-y-6"
-      >
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="sales">Sales Analysis</TabsTrigger>
+          <TabsTrigger value="sales">Sales</TabsTrigger>
           <TabsTrigger value="customers">Customers</TabsTrigger>
           <TabsTrigger value="inventory">Inventory</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard
-              title="Total Sales"
-              value={data.overview.totalSales}
-              icon={DollarSign}
-              format="currency"
-              color="success"
-            />
-            <MetricCard
-              title="Total Orders"
-              value={data.overview.totalOrders}
-              icon={ShoppingCart}
-              color="default"
-            />
-            <MetricCard
-              title="Payment Rate"
-              value={data.overview.paymentRate}
-              icon={CheckCircle}
-              format="percentage"
-              color="success"
-            />
-            <MetricCard
-              title="Customer Retention"
-              value={data.overview.customerRetentionRate}
-              icon={Users}
-              format="percentage"
-              color="success"
-            />
+            <MetricCard title="Total Sales" value={data.overview.totalSales} icon={DollarSign} format="currency" />
+            <MetricCard title="Total Orders" value={data.overview.totalOrders} icon={ShoppingCart} />
+            <MetricCard title="Payment Rate" value={data.overview.paymentRate} icon={CheckCircle} format="percentage" />
+            <MetricCard title="Customer Retention" value={data.overview.customerRetentionRate} icon={Users} format="percentage" />
           </div>
 
-          {/* Revenue Trends */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Revenue Trend</CardTitle>
-                <CardDescription>Monthly revenue from sales</CardDescription>
-              </CardHeader>
+              <CardHeader><CardTitle>Revenue Trend</CardTitle></CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <AreaChart data={data.revenueByMonth}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
                     <YAxis />
-                    <Tooltip
-                      formatter={(value: number) => formatCurrency(value)}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="revenue"
-                      stroke="#8BC34A"
-                      fill="#8BC34A"
-                      fillOpacity={0.3}
-                    />
+                    <Tooltip formatter={(v: any) => formatCurrency(v)} />
+                    <Area type="monotone" dataKey="revenue" stroke="#8BC34A" fill="#8BC34A" fillOpacity={0.3} />
                   </AreaChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
-
             <Card>
-              <CardHeader>
-                <CardTitle>Customer Growth</CardTitle>
-                <CardDescription>New customers by month</CardDescription>
-              </CardHeader>
+              <CardHeader><CardTitle>Customer Growth</CardTitle></CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={data.customerGrowth}>
@@ -406,55 +307,14 @@ export function EnhancedAnalyticsDashboard() {
         </TabsContent>
 
         <TabsContent value="sales" className="space-y-6">
-          {/* Sales Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard
-              title="Average Order Value"
-              value={data.overview.averageOrderValue}
-              icon={TrendingUp}
-              format="currency"
-              color="success"
-            />
-            <MetricCard
-              title="B2B Quotes"
-              value={data.overview.totalB2BQuotes}
-              icon={FileText}
-              color="default"
-            />
-            <MetricCard
-              title="B2B Conversion Rate"
-              value={data.overview.b2bConversionRate}
-              icon={CheckCircle}
-              format="percentage"
-              color="success"
-            />
-          </div>
-
-          {/* Sales Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Order Status Distribution</CardTitle>
-                <CardDescription>Current status of all orders</CardDescription>
-              </CardHeader>
+              <CardHeader><CardTitle>Order Status Distribution</CardTitle></CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
-                    <Pie
-                      data={orderStatusChartData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
-                      }
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {orderStatusChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                      ))}
+                    <Pie data={orderStatusChartData} outerRadius={80} fill="#8884d8" dataKey="value" label={({ name }) => name}>
+                      {orderStatusChartData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.fill} />)}
                     </Pie>
                     <Tooltip />
                     <Legend />
@@ -462,197 +322,21 @@ export function EnhancedAnalyticsDashboard() {
                 </ResponsiveContainer>
               </CardContent>
             </Card>
-
             <Card>
-              <CardHeader>
-                <CardTitle>Top Products Performance</CardTitle>
-                <CardDescription>
-                  Best performing products by revenue
-                </CardDescription>
-              </CardHeader>
+              <CardHeader><CardTitle>Top Products Performance</CardTitle></CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={data.topProducts.slice(0, 8)}
-                    layout="horizontal"
-                  >
+                  <BarChart data={data.topProducts.slice(0, 8)} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" />
-                    <YAxis dataKey="name" type="category" width={100} />
-                    <Tooltip
-                      formatter={(value: number) => formatCurrency(value)}
-                    />
+                    <YAxis dataKey="name" type="category" width={100} hide />
+                    <Tooltip formatter={(v: any) => formatCurrency(v)} />
                     <Bar dataKey="totalRevenue" fill="#8BC34A" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
-
-        <TabsContent value="customers" className="space-y-6">
-          {/* Customer Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard
-              title="B2C Customers"
-              value={data.customerSegments.b2c}
-              icon={Users}
-              color="success"
-            />
-            <MetricCard
-              title="B2B Clients"
-              value={data.customerSegments.b2b}
-              icon={Users}
-              color="warning"
-            />
-            <MetricCard
-              title="Customer Retention"
-              value={data.overview.customerRetentionRate}
-              icon={TrendingUp}
-              format="percentage"
-              color="success"
-            />
-          </div>
-
-          {/* Customer Analytics */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Customer Segments</CardTitle>
-                <CardDescription>
-                  Distribution of customer types
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={[
-                        { name: "B2C", value: data.customerSegments.b2c },
-                        { name: "B2B", value: data.customerSegments.b2b },
-                        { name: "Other", value: data.customerSegments.other },
-                      ]}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
-                      }
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      <Cell fill="#8BC34A" />
-                      <Cell fill="#795548" />
-                      <Cell fill="#FF9800" />
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Segment Performance</CardTitle>
-                <CardDescription>
-                  Revenue and quantity by segment
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <RadarChart data={radarData}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="segment" />
-                    <PolarRadiusAxis />
-                    <Radar
-                      name="Revenue (K)"
-                      dataKey="revenue"
-                      stroke="#8BC34A"
-                      fill="#8BC34A"
-                      fillOpacity={0.3}
-                    />
-                    <Radar
-                      name="Quantity (x10)"
-                      dataKey="quantity"
-                      stroke="#795548"
-                      fill="#795548"
-                      fillOpacity={0.3}
-                    />
-                    <Legend />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="inventory" className="space-y-6">
-          {/* Inventory Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <MetricCard
-              title="Total Inventory Value"
-              value={data.overview.totalInventoryValue}
-              icon={Package}
-              format="currency"
-              color="success"
-            />
-            <MetricCard
-              title="Low Stock Alerts"
-              value={data.inventoryAlerts.lowStock}
-              icon={AlertTriangle}
-              color="warning"
-            />
-            <MetricCard
-              title="Out of Stock"
-              value={data.inventoryAlerts.outOfStock}
-              icon={XCircle}
-              color="danger"
-            />
-            <MetricCard
-              title="Active Coupons"
-              value={data.couponAnalytics.activeCoupons}
-              icon={FileText}
-              color="default"
-            />
-          </div>
-
-          {/* Low Stock Products */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Low Stock Products</CardTitle>
-              <CardDescription>Products that need restocking</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {data.topProducts
-                  .filter((product) => product.isLowStock)
-                  .slice(0, 10)
-                  .map((product, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-3 border rounded-lg"
-                    >
-                      <div>
-                        <p className="font-medium">{product.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {product.sku}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium text-orange-600">
-                          {product.currentStock} units
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {formatCurrency(product.totalRevenue)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>
