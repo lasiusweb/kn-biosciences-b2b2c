@@ -27,6 +27,12 @@
 - **Serviceability:** Pincode validation with delivery date estimation.
 - **Documents:** Automated PDF invoices with Zoho Books sync.
 
+## Integrations & Strategy (Blueprints)
+- **Zoho Ecosystem:** CRM for customer data sync and Books for automated invoicing.
+- **Logistics:** Delhivery API integration for real-time rates and tracking.
+- **Communications:** Twilio WhatsApp Business API for automated transaction notifications.
+- **SEO:** Structured JSON-LD schemas for Organization, Product, and LocalBusiness.
+
 ## Infrastructure & Quality
 - **Deployment:** Vercel
 - **Testing:** Jest + React Testing Library
