@@ -11,10 +11,10 @@ Focuses on the backend and routing logic for the Hybrid Smart Redirect System.
 - [x] Task: Implement Redirect Management Service [8083b68]
     - [x] Create `src/lib/redirect-service.ts` to handle URL lookups.
     - [x] Implement caching logic for redirect lookups to minimize DB hits.
-- [ ] Task: Write Tests for Redirect Middleware
-    - [ ] Write tests in `src/middleware.test.ts` to verify redirect logic.
-- [ ] Task: Implement Next.js Middleware for Redirects
-    - [ ] Update `src/middleware.ts` to intercept requests and check against `legacy_redirects`.
+- [x] Task: Write Tests for Redirect Middleware [8083b68]
+    - [x] Write tests in `src/__tests__/middleware.test.ts` to verify redirect logic (logic extracted to `src/lib/middleware-logic.ts`).
+- [x] Task: Implement Next.js Middleware for Redirects [5bd882c]
+    - [x] Update `src/middleware.ts` to intercept requests and check against `legacy_redirects`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Database & Middleware Infrastructure' (Protocol in workflow.md)
 
 ## Phase 2: Core Error Pages (UX & SEO)
