@@ -5,9 +5,9 @@ This plan follows the project's TDD-first methodology and incorporates the Hybri
 ## Phase 1: Database & Middleware Infrastructure
 Focuses on the backend and routing logic for the Hybrid Smart Redirect System.
 
-- [~] Task: Create Supabase migration for `legacy_redirects` table
-    - [ ] Define schema: `id`, `source_url`, `target_url`, `status_code` (default 301), `is_active`, `created_at`, `updated_at`.
-    - [ ] Add RLS policies (read-only for public, full access for admin).
+- [x] Task: Create Supabase migration for `legacy_redirects` table [d4a3e2a]
+    - [x] Define schema: `id`, `source_url`, `target_url`, `status_code` (default 301), `is_active`, `created_at`, `updated_at`.
+    - [x] Add RLS policies (read-only for public, full access for admin).
 - [ ] Task: Implement Redirect Management Service
     - [ ] Create `src/lib/redirect-service.ts` to handle URL lookups.
     - [ ] Implement caching logic for redirect lookups to minimize DB hits.
