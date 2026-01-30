@@ -11,3 +11,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: Admin Super-App & Platform Foundation**
   *Link: [./tracks/admin_super_app_20260129/](./tracks/admin_super_app_20260129/)*
+
+---
+
+- [~] **Track: implement pending 404 displaced pages**
+*Link: [./tracks/404_pages_20260130/](./tracks/404_pages_20260130/)*
