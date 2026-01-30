@@ -8,9 +8,9 @@ Focuses on the backend and routing logic for the Hybrid Smart Redirect System.
 - [x] Task: Create Supabase migration for `legacy_redirects` table [d4a3e2a]
     - [x] Define schema: `id`, `source_url`, `target_url`, `status_code` (default 301), `is_active`, `created_at`, `updated_at`.
     - [x] Add RLS policies (read-only for public, full access for admin).
-- [ ] Task: Implement Redirect Management Service
-    - [ ] Create `src/lib/redirect-service.ts` to handle URL lookups.
-    - [ ] Implement caching logic for redirect lookups to minimize DB hits.
+- [x] Task: Implement Redirect Management Service [8083b68]
+    - [x] Create `src/lib/redirect-service.ts` to handle URL lookups.
+    - [x] Implement caching logic for redirect lookups to minimize DB hits.
 - [ ] Task: Write Tests for Redirect Middleware
     - [ ] Write tests in `src/middleware.test.ts` to verify redirect logic.
 - [ ] Task: Implement Next.js Middleware for Redirects
