@@ -15,14 +15,14 @@ Focuses on the backend and routing logic for the Hybrid Smart Redirect System.
     - [x] Write tests in `src/__tests__/middleware.test.ts` to verify redirect logic (logic extracted to `src/lib/middleware-logic.ts`).
 - [x] Task: Implement Next.js Middleware for Redirects [5bd882c]
     - [x] Update `src/middleware.ts` to intercept requests and check against `legacy_redirects`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Database & Middleware Infrastructure' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 1: Database & Middleware Infrastructure' (Protocol in workflow.md)
 
 ## Phase 2: Core Error Pages (UX & SEO)
 Implementation of the specialized "Category Not Found" and the animated 404 page.
 
-- [ ] Task: Create Specialized Category Not Found Page
-    - [ ] Write tests for `src/app/shop/category-not-found/page.tsx`.
-    - [ ] Implement page with Search API integration and AI recommendations.
+- [x] Task: Create Specialized Category Not Found Page [0ed0d51]
+    - [x] Write tests for `src/app/shop/category-not-found/page.tsx`.
+    - [x] Implement page with Search API integration and AI recommendations.
 - [ ] Task: Write Tests for Experimental 404 Page
     - [ ] Create `src/app/not-found.test.tsx`.
 - [ ] Task: Implement Animated 404 Page
