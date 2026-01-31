@@ -23,11 +23,11 @@ Implementation of the specialized "Category Not Found" and the animated 404 page
 - [x] Task: Create Specialized Category Not Found Page [0ed0d51]
     - [x] Write tests for `src/app/shop/category-not-found/page.tsx`.
     - [x] Implement page with Search API integration and AI recommendations.
-- [ ] Task: Write Tests for Experimental 404 Page
-    - [ ] Create `src/app/not-found.test.tsx`.
-- [ ] Task: Implement Animated 404 Page
-    - [ ] Create `src/app/not-found.tsx`.
-    - [ ] Implement GSAP/Framer Motion animations for the "Experimental" layout.
+- [x] Task: Write Tests for Experimental 404 Page [78cc657]
+    - [x] Create `src/app/not-found.test.tsx`.
+- [x] Task: Implement Animated 404 Page [e970a2c]
+    - [x] Create `src/app/not-found.tsx`.
+    - [x] Implement GSAP/Framer Motion animations for the "Experimental" layout.
 - [ ] Task: Implement Fuzzy-Matching Fallback Logic
     - [ ] Integrate Search API into the 404 page to suggest potential matches based on the invalid URL slug.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Error Pages' (Protocol in workflow.md)
