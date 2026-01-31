@@ -17,7 +17,7 @@ Focuses on the backend and routing logic for the Hybrid Smart Redirect System.
     - [x] Update `src/middleware.ts` to intercept requests and check against `legacy_redirects`.
 - [~] Task: Conductor - User Manual Verification 'Phase 1: Database & Middleware Infrastructure' (Protocol in workflow.md)
 
-## Phase 2: Core Error Pages (UX & SEO)
+## Phase 2: Core Error Pages (UX & SEO) [checkpoint: 0b545e8]
 Implementation of the specialized "Category Not Found" and the animated 404 page.
 
 - [x] Task: Create Specialized Category Not Found Page [0ed0d51]
@@ -30,7 +30,7 @@ Implementation of the specialized "Category Not Found" and the animated 404 page
     - [x] Implement GSAP/Framer Motion animations for the "Experimental" layout.
 - [x] Task: Implement Fuzzy-Matching Fallback Logic [2d78e1a]
     - [x] Integrate Search API into the 404 page to suggest potential matches based on the invalid URL slug.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Error Pages' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Core Error Pages' (Protocol in workflow.md) [0b545e8]
 
 ## Phase 3: Legal & Policy Documentation
 Implementation of static content routes and layouts.
