@@ -3,6 +3,30 @@ import { Order, ProductBatch, ProductVariant, Product, BlogPost } from './index.
 
 export type TableName = keyof Database['public']['Tables'];
 
+export interface AdminUser {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone?: string;
+  role: "customer" | "b2b_client" | "vendor" | "admin" | "staff";
+  status: "active" | "suspended" | "pending";
+  company_name?: string;
+  created_at: string;
+  last_sign_in_at?: string;
+  totalOrders?: number;
+  totalQuotes?: number;
+  totalSpent?: number;
+}
+
+export interface UserFilters {
+  role?: string;
+  status?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
 export interface AdminAnalytics {
   revenue: {
     period: string;

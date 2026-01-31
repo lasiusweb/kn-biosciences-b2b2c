@@ -7,7 +7,9 @@ class ResizeObserver {
   disconnect() {}
 }
 
-window.ResizeObserver = ResizeObserver;
+if (typeof window !== "undefined") {
+  window.ResizeObserver = ResizeObserver;
+}
 
 // Set required environment variables for tests
 process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
