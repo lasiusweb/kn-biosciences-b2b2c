@@ -28,8 +28,8 @@ Implementation of the specialized "Category Not Found" and the animated 404 page
 - [x] Task: Implement Animated 404 Page [e970a2c]
     - [x] Create `src/app/not-found.tsx`.
     - [x] Implement GSAP/Framer Motion animations for the "Experimental" layout.
-- [ ] Task: Implement Fuzzy-Matching Fallback Logic
-    - [ ] Integrate Search API into the 404 page to suggest potential matches based on the invalid URL slug.
+- [x] Task: Implement Fuzzy-Matching Fallback Logic [2d78e1a]
+    - [x] Integrate Search API into the 404 page to suggest potential matches based on the invalid URL slug.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Core Error Pages' (Protocol in workflow.md)
 
 ## Phase 3: Legal & Policy Documentation
