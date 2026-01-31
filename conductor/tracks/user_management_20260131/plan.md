@@ -10,10 +10,10 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: API & Types' [67694d2]
 
 ## Phase 2: User Directory UI
-- [ ] Task: Implement User Directory Page
-    - [ ] Create `src/app/admin/users/page.tsx`.
-    - [ ] Build the searchable/filterable user table using shadcn/ui.
-    - [ ] Implement pagination controls.
+- [x] Task: Implement User Directory Page [fa78013]
+    - [x] Create `src/app/admin/users/page.tsx`.
+    - [x] Build the searchable/filterable user table using shadcn/ui.
+    - [x] Implement pagination controls.
 - [ ] Task: Write Tests for User Directory
     - [ ] Verify rendering and search behavior in `src/app/admin/users/page.test.tsx`.
 
