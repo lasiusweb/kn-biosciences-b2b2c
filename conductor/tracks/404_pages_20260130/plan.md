@@ -40,8 +40,8 @@ Implementation of static content routes and layouts.
 - [x] Task: Implement Legal Routes [f7568f4]
     - [x] Create pages for `/privacy-policy`, `/terms-and-conditions`, `/refund-policy`, `/shipping-policy`, and `/disclaimer`.
     - [x] Ensure WCAG 2.1 AA compliance and mobile responsiveness.
-- [ ] Task: Write Tests for Legal Pages
-    - [ ] Verify accessibility and routing for all five legal paths.
+- [x] Task: Write Tests for Legal Pages [98c7b60]
+    - [x] Verify accessibility and routing for all five legal paths.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Legal & Policy Documentation' (Protocol in workflow.md)
 
 ## Phase 4: Final Verification & SEO Audit
