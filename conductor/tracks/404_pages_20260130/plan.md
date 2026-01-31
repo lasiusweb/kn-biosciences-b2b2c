@@ -32,7 +32,7 @@ Implementation of the specialized "Category Not Found" and the animated 404 page
     - [x] Integrate Search API into the 404 page to suggest potential matches based on the invalid URL slug.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Core Error Pages' (Protocol in workflow.md) [0b545e8]
 
-## Phase 3: Legal & Policy Documentation
+## Phase 3: Legal & Policy Documentation [checkpoint: a175565]
 Implementation of static content routes and layouts.
 
 - [x] Task: Create Base Policy Layout and Components [b846f25]
@@ -42,7 +42,7 @@ Implementation of static content routes and layouts.
     - [x] Ensure WCAG 2.1 AA compliance and mobile responsiveness.
 - [x] Task: Write Tests for Legal Pages [98c7b60]
     - [x] Verify accessibility and routing for all five legal paths.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Legal & Policy Documentation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Legal & Policy Documentation' (Protocol in workflow.md) [a175565]
 
 ## Phase 4: Final Verification & SEO Audit
 Ensures all systems work together and meet quality gates.
