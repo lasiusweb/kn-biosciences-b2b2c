@@ -19,8 +19,8 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: User Directory UI' [fa78013]
 
 ## Phase 3: User Details & Management
-- [ ] Task: Implement User Detail Modal/View
-    - [ ] Build the detailed profile view with stats and addresses.
+- [x] Task: Implement User Detail Modal/View [9994feb]
+    - [x] Build the detailed profile view with stats and addresses.
 - [ ] Task: Implement Role/Status Update Logic
     - [ ] Create confirmation modals for sensitive changes.
     - [ ] Integrate with the PATCH API.
