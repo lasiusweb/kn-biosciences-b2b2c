@@ -37,9 +37,9 @@ Implementation of static content routes and layouts.
 
 - [x] Task: Create Base Policy Layout and Components [b846f25]
     - [x] Implement a reusable `PolicyLayout` component for legal pages.
-- [ ] Task: Implement Legal Routes
-    - [ ] Create pages for `/privacy-policy`, `/terms-and-conditions`, `/refund-policy`, `/shipping-policy`, and `/disclaimer`.
-    - [ ] Ensure WCAG 2.1 AA compliance and mobile responsiveness.
+- [x] Task: Implement Legal Routes [f7568f4]
+    - [x] Create pages for `/privacy-policy`, `/terms-and-conditions`, `/refund-policy`, `/shipping-policy`, and `/disclaimer`.
+    - [x] Ensure WCAG 2.1 AA compliance and mobile responsiveness.
 - [ ] Task: Write Tests for Legal Pages
     - [ ] Verify accessibility and routing for all five legal paths.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Legal & Policy Documentation' (Protocol in workflow.md)
