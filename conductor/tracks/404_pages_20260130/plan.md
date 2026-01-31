@@ -50,6 +50,6 @@ Ensures all systems work together and meet quality gates.
 - [x] Task: End-to-End Redirect & Error Flow Test [f9d0a0e]
     - [x] Verify legacy URL -> New Target flow.
     - [x] Verify broken category -> AI recommendation flow.
-- [ ] Task: Run Performance and Accessibility Audit
-    - [ ] Execute Lighthouse/Core Web Vitals check on 404 and Legal pages.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Verification & SEO Audit' (Protocol in workflow.md)
+- [x] Task: Run Performance and Accessibility Audit [39cd022]
+    - [x] Execute Lighthouse/Core Web Vitals check on 404 and Legal pages.
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Verification & SEO Audit' (Protocol in workflow.md) [39cd022]
