@@ -5,8 +5,8 @@
     - [x] Update `src/types/admin.ts` with `AdminUser` and related interfaces.
     - [x] Create `/api/admin/users/route.ts` (based on customers API but role-agnostic).
     - [x] Implement robust RBAC checks in the API.
-- [ ] Task: Write Tests for User API
-    - [ ] Verify role filtering, search, and update logic in `src/app/api/admin/users/route.test.ts`.
+- [x] Task: Write Tests for User API [52c6ba1]
+    - [x] Verify role filtering, search, and update logic in `src/app/api/admin/users/route.test.ts`.
 
 ## Phase 2: User Directory UI
 - [ ] Task: Implement User Directory Page
