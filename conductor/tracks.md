@@ -16,3 +16,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: implement pending 404 displaced pages**
 *Link: [./tracks/404_pages_20260130/](./tracks/404_pages_20260130/)*
+
+---
+
+- [~] **Track: User & Role Management**
+*Link: [./tracks/user_management_20260131/](./tracks/user_management_20260131/)*
