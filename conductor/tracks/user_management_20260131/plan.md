@@ -14,8 +14,8 @@
     - [x] Create `src/app/admin/users/page.tsx`.
     - [x] Build the searchable/filterable user table using shadcn/ui.
     - [x] Implement pagination controls.
-- [ ] Task: Write Tests for User Directory
-    - [ ] Verify rendering and search behavior in `src/app/admin/users/page.test.tsx`.
+- [x] Task: Write Tests for User Directory [c0e4bde]
+    - [x] Verify rendering and search behavior in `src/app/admin/users/page.test.tsx`.
 
 ## Phase 3: User Details & Management
 - [ ] Task: Implement User Detail Modal/View
