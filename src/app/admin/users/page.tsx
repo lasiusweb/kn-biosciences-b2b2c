@@ -28,9 +28,11 @@ import {
   MoreVertical,
   UserCheck,
   UserX,
-  Shield
+  Shield,
+  Eye
 } from 'lucide-react';
 import { AdminUser } from '@/types/admin';
+import { UserDetailModal } from '@/components/admin/user-detail-modal';
 
 export default function UserDirectoryPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -40,6 +42,8 @@ export default function UserDirectoryPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -188,9 +192,22 @@ export default function UserDirectoryPage() {
                     ₹{(user.totalSpent || 0).toLocaleString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
+                    <div className="flex justify-end gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="text-zinc-400 hover:text-white"
+                        onClick={() => {
+                          setSelectedUser(user);
+                          setIsDetailModalOpen(true);
+                        }}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
@@ -226,6 +243,12 @@ export default function UserDirectoryPage() {
           </Button>
         </div>
       </div>
+
+      <UserDetailModal
+        user={selectedUser}
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+      />
     </div>
   );
 }
