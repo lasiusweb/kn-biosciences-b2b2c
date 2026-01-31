@@ -35,8 +35,8 @@ Implementation of the specialized "Category Not Found" and the animated 404 page
 ## Phase 3: Legal & Policy Documentation
 Implementation of static content routes and layouts.
 
-- [ ] Task: Create Base Policy Layout and Components
-    - [ ] Implement a reusable `PolicyLayout` component for legal pages.
+- [x] Task: Create Base Policy Layout and Components [b846f25]
+    - [x] Implement a reusable `PolicyLayout` component for legal pages.
 - [ ] Task: Implement Legal Routes
     - [ ] Create pages for `/privacy-policy`, `/terms-and-conditions`, `/refund-policy`, `/shipping-policy`, and `/disclaimer`.
     - [ ] Ensure WCAG 2.1 AA compliance and mobile responsiveness.
