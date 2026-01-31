@@ -1,12 +1,13 @@
 # Implementation Plan: User & Role Management (Track: user_management_20260131)
 
-## Phase 1: API & Types
+## Phase 1: API & Types [checkpoint: 67694d2]
 - [x] Task: Extend User Types and API [52c6ba1]
     - [x] Update `src/types/admin.ts` with `AdminUser` and related interfaces.
     - [x] Create `/api/admin/users/route.ts` (based on customers API but role-agnostic).
     - [x] Implement robust RBAC checks in the API.
 - [x] Task: Write Tests for User API [52c6ba1]
     - [x] Verify role filtering, search, and update logic in `src/app/api/admin/users/route.test.ts`.
+- [x] Task: Conductor - User Manual Verification 'Phase 1: API & Types' [67694d2]
 
 ## Phase 2: User Directory UI
 - [ ] Task: Implement User Directory Page
