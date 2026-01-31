@@ -9,13 +9,14 @@
     - [x] Verify role filtering, search, and update logic in `src/app/api/admin/users/route.test.ts`.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: API & Types' [67694d2]
 
-## Phase 2: User Directory UI
+## Phase 2: User Directory UI [checkpoint: fa78013]
 - [x] Task: Implement User Directory Page [fa78013]
     - [x] Create `src/app/admin/users/page.tsx`.
     - [x] Build the searchable/filterable user table using shadcn/ui.
     - [x] Implement pagination controls.
 - [x] Task: Write Tests for User Directory [c0e4bde]
     - [x] Verify rendering and search behavior in `src/app/admin/users/page.test.tsx`.
+- [x] Task: Conductor - User Manual Verification 'Phase 2: User Directory UI' [fa78013]
 
 ## Phase 3: User Details & Management
 - [ ] Task: Implement User Detail Modal/View
