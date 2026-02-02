@@ -25,9 +25,9 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Storefront UI Enhancements' (Protocol in workflow.md)
 
 ## Phase 3: Admin & Order Management
-- [ ] Task: Update Admin Order Detail View
-    - [ ] Modify `src/app/admin/orders/[id]/page.tsx` to show logistics type and selected carrier.
-    - [ ] Add fields for manual tracking updates for Godown deliveries.
+- [x] Task: Update Admin Order Detail View [5dbf5a2]
+    - [x] Modify `src/app/admin/orders/[id]/page.tsx` to show logistics type and selected carrier.
+    - [x] Add fields for manual tracking updates for Godown deliveries.
 - [ ] Task: Integrate Shipping with Order Creation
     - [ ] Ensure the handling fee or shipping cost is correctly saved to the database during checkout.
 - [ ] Task: Write Integration Tests
