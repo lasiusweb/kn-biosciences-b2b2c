@@ -10,7 +10,7 @@
 - [x] Task: Conductor - User Manual Verification 'Schema & RBAC Extensions' (Protocol in workflow.md) [f6536c5]
 
 ## Phase 2: Sales Manager Quote Management
-- [ ] Task: Implement Admin Quote Directory
+- [x] Task: Implement Admin Quote Directory [e3253bf]
     - [ ] Create `src/app/admin/quotes/page.tsx` for Sales Managers.
     - [ ] Build a filterable list of quotes (Submitted, Under Review, etc.).
 - [ ] Task: Implement Quote Review & Edit Interface
