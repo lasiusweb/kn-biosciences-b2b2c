@@ -9,7 +9,7 @@
     - [ ] Add environment variables for Delhivery API keys.
 - [x] Task: Create Shipping Calculation Logic [c46b234]
     - [ ] Implement a unified utility `calculateShippingOptions(pincode, weight)` that handles the Delhivery-to-Transport fallback logic.
-- [ ] Task: Write Tests for Shipping Logic
+- [x] Task: Write Tests for Shipping Logic [47bea1c]
     - [ ] Verify courier rates, godown fallback, and handling fee calculations in `src/lib/shipping/__tests__/delhivery.test.ts`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: API Integration & Data Layer' (Protocol in workflow.md)
 
