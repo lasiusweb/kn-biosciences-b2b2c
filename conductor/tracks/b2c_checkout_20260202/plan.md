@@ -4,9 +4,9 @@
 - [x] Task: Implement Secure Hash Generator [61e44cd]
     - [x] Create `src/lib/payments/easebuzz.ts` with SHA-512 hash logic.
     - [x] Implement server-side verification for Easebuzz responses.
-- [ ] Task: Create Payment Initiation API
-    - [ ] Create `/api/payments/easebuzz/initiate` to handle payload creation.
-    - [ ] Integrate with existing `CheckoutFlow` component to trigger Easebuzz.
+- [x] Task: Create Payment Initiation API [fcdcb43]
+    - [x] Create `/api/payments/easebuzz/initiate` to handle payload creation.
+    - [x] Integrate with existing `CheckoutFlow` component to trigger Easebuzz.
 - [ ] Task: Write Tests for Payment Logic
     - [ ] Verify hash calculation accuracy against Easebuzz documentation.
     - [ ] Test API response handling for various payment scenarios (Success, Failure, User Cancelled).
