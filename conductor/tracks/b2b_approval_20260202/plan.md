@@ -13,7 +13,7 @@
 - [x] Task: Implement Admin Quote Directory [e3253bf]
     - [ ] Create `src/app/admin/quotes/page.tsx` for Sales Managers.
     - [ ] Build a filterable list of quotes (Submitted, Under Review, etc.).
-- [ ] Task: Implement Quote Review & Edit Interface
+- [x] Task: Implement Quote Review & Edit Interface [437cd9e]
     - [ ] Create `src/components/admin/quote-review-modal.tsx`.
     - [ ] Add functionality to modify unit prices and quantities with real-time total recalculation.
 - [ ] Task: Write Tests for Quote Management
