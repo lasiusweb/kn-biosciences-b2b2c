@@ -13,11 +13,11 @@
 - [ ] Task: Conductor - User Manual Verification 'Easebuzz Core Integration' (Protocol in workflow.md)
 
 ## Phase 2: Post-Payment Fulfillment Engine [checkpoint: ]
-- [ ] Task: Implement Atomic Fulfillment Transaction
-    - [ ] Create a Supabase RPC or server-side transaction for:
-        - [ ] FEFO Batch Inventory Deduction.
-        - [ ] Order Status Update (Confirmed).
-        - [ ] Cart Clearance.
+- [x] Task: Implement Atomic Fulfillment Transaction [687fcb4]
+    - [x] Create a Supabase RPC or server-side transaction for:
+        - [x] FEFO Batch Inventory Deduction.
+        - [x] Order Status Update (Confirmed).
+        - [x] Cart Clearance.
 - [ ] Task: Create Webhook Handler
     - [ ] Implement `/api/payments/easebuzz/webhook` for async status updates.
     - [ ] Add idempotency checks to prevent duplicate processing.
