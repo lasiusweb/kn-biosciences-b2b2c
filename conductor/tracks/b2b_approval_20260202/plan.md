@@ -16,7 +16,7 @@
 - [x] Task: Implement Quote Review & Edit Interface [437cd9e]
     - [ ] Create `src/components/admin/quote-review-modal.tsx`.
     - [ ] Add functionality to modify unit prices and quantities with real-time total recalculation.
-- [ ] Task: Write Tests for Quote Management
+- [x] Task: Write Tests for Quote Management [e9a1ee7]
     - [ ] Verify that Sales Managers can edit quote items and save notes.
 - [ ] Task: Conductor - User Manual Verification 'Sales Manager Quote Management' (Protocol in workflow.md)
 
