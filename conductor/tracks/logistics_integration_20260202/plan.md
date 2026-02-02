@@ -17,11 +17,11 @@
 - [x] Task: Build Serviceability Checker Component [f5301c4]
     - [ ] Create a reusable `ServiceabilityChecker` component for product pages.
     - [ ] Implement caching for pincode checks in local storage/session.
-- [ ] Task: Implement Shipping Step in Checkout
-    - [ ] Update the checkout flow to display the calculated shipping methods.
-    - [ ] Build the "Transport Godown" selection UI (dropdown for carriers).
-- [ ] Task: Write UI Component Tests
-    - [ ] Verify the serviceability display and carrier selection logic in `src/components/shop/__tests__/checkout-flow.test.tsx`.
+- [x] Task: Implement Shipping Step in Checkout [380f9f5]
+    - [x] Update the checkout flow to display the calculated shipping methods.
+    - [x] Build the "Transport Godown" selection UI (dropdown for carriers).
+- [x] Task: Write UI Component Tests [380f9f5]
+    - [x] Verify the serviceability display and carrier selection logic in `src/components/shop/__tests__/checkout-flow.test.tsx`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Storefront UI Enhancements' (Protocol in workflow.md)
 
 ## Phase 3: Admin & Order Management
