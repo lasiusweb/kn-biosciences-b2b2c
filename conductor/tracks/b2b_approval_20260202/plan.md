@@ -34,6 +34,6 @@
 ## Phase 4: B2B Customer Portal Sync
 - [x] Task: Update B2B Portal Quote View [f36bbe0]
     - [x] Display the linked Order Number and a "Pay Now" button for approved quotes.
-- [ ] Task: Write UI Integration Tests
-    - [ ] Verify that customers can see their finalized prices and access payment links.
+- [x] Task: Write UI Integration Tests [382fe49]
+    - [x] Verify that customers can see their finalized prices and access payment links.
 - [ ] Task: Conductor - User Manual Verification 'B2B Approval Workflow' (Protocol in workflow.md)
