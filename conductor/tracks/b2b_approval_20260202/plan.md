@@ -27,8 +27,8 @@
 - [x] Task: Integrate Automated Payment Link [a15de11]
     - [x] Trigger Razorpay/Easebuzz payment link creation for the resulting order.
     - [x] Store the payment link URL in the `orders` table.
-- [ ] Task: Write Workflow Integration Tests
-    - [ ] Verify full end-to-end flow: Review -> Edit -> Approve -> Order Created.
+- [x] Task: Write Workflow Integration Tests [c718143]
+    - [x] Verify full end-to-end flow: Review -> Edit -> Approve -> Order Created.
 - [ ] Task: Conductor - User Manual Verification 'Approval Logic & Order Conversion' (Protocol in workflow.md)
 
 ## Phase 4: B2B Customer Portal Sync
