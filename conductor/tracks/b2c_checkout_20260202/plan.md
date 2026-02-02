@@ -12,7 +12,7 @@
     - [x] Test API response handling for various payment scenarios (Success, Failure, User Cancelled).
 - [ ] Task: Conductor - User Manual Verification 'Easebuzz Core Integration' (Protocol in workflow.md)
 
-## Phase 2: Post-Payment Fulfillment Engine [checkpoint: ]
+## Phase 2: Post-Payment Fulfillment Engine [checkpoint: 5eccc4a]
 - [x] Task: Implement Atomic Fulfillment Transaction [687fcb4]
     - [x] Create a Supabase RPC or server-side transaction for:
         - [x] FEFO Batch Inventory Deduction.
