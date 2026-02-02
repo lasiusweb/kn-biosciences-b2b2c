@@ -11,7 +11,8 @@
 - **Database:** Supabase (PostgreSQL)
 - **API Layer:** Hasura GraphQL + Supabase SDK
 - **Authentication:** Supabase Auth (Email/Password, Phone OTP)
-- **Roles:** Customer (default), Dealer, Distributor, Admin
+- **Roles:** Admin, Staff, Vendor, B2B Client, Customer (default)
+- **RBAC:** Server-side JWT validation and role-based route protection.
 
 ## Phase 3: Storefront Core
 - **Routing:** `/shop`, `/shop/segment/[slug]`, `/shop/crop/[slug]`, `/product/[slug]`, `/cart`.
