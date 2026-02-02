@@ -2,8 +2,9 @@
  * @jest-environment node
  */
 import { POST } from "@/app/api/payments/easebuzz/webhook/route";
-import { supabase } from "@/lib/supabase";
 import { easebuzzService } from "@/lib/payments/easebuzz";
+import { supabase } from "@/lib/supabase";
+import { notificationService } from "@/lib/notifications";
 
 // Mock Supabase
 jest.mock("@/lib/supabase", () => {
@@ -20,6 +21,13 @@ jest.mock("@/lib/supabase", () => {
     supabase: chain,
   };
 });
+
+// Mock Notification Service
+jest.mock("@/lib/notifications", () => ({
+  notificationService: {
+    sendOrderConfirmation: jest.fn().mockResolvedValue({ success: true }),
+  },
+}));
 
 // Mock Easebuzz Service
 jest.mock("@/lib/payments/easebuzz", () => ({
@@ -75,6 +83,9 @@ describe("Fulfillment Integration", () => {
       p_payment_id: "EP123",
       p_payment_method: "easebuzz"
     });
+
+    // Verify notification was triggered
+    expect(notificationService.sendOrderConfirmation).toHaveBeenCalled();
   });
 
   it("should not clear cart if payment failed", async () => {

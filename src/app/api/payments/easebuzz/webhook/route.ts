@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { easebuzzService } from "@/lib/payments/easebuzz";
 import { supabase } from "@/lib/supabase";
+import { notificationService } from "@/lib/notifications";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
       // 2. Check Order Status (Idempotency)
       const { data: order, error: orderError } = await supabase
         .from("orders")
-        .select("status")
+        .select("*")
         .eq("id", orderId)
         .single();
 
@@ -44,6 +45,11 @@ export async function POST(request: NextRequest) {
         console.error("Easebuzz webhook: Fulfillment error", fulfillmentError);
         return NextResponse.json({ error: "Fulfillment failed" }, { status: 500 });
       }
+
+      // 4. Trigger Notifications (Async)
+      notificationService.sendOrderConfirmation(order).catch(err => 
+        console.error("Webhook notification error:", err)
+      );
 
       return NextResponse.json({ message: "Order confirmed successfully" }, { status: 200 });
     } else {
