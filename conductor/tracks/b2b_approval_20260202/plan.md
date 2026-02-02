@@ -5,7 +5,7 @@
     - [ ] Update `public.users` role constraint to include `sales_manager` in `database/schema.sql`.
     - [ ] Add `linked_order_id` (UUID) to `b2b_quotes` table.
     - [ ] Update `src/types/index.ts` and `src/types/database.ts` with new role and field.
-- [ ] Task: Write RBAC Integration Tests
+- [x] Task: Write RBAC Integration Tests [4c4c4eb]
     - [ ] Verify that only `admin` and `sales_manager` can access the new quote management APIs.
 - [ ] Task: Conductor - User Manual Verification 'Schema & RBAC Extensions' (Protocol in workflow.md)
 
