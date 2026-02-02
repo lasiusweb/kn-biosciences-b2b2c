@@ -18,9 +18,9 @@
         - [x] FEFO Batch Inventory Deduction.
         - [x] Order Status Update (Confirmed).
         - [x] Cart Clearance.
-- [ ] Task: Create Webhook Handler
-    - [ ] Implement `/api/payments/easebuzz/webhook` for async status updates.
-    - [ ] Add idempotency checks to prevent duplicate processing.
+- [x] Task: Create Webhook Handler [08eb8bb]
+    - [x] Implement `/api/payments/easebuzz/webhook` for async status updates.
+    - [x] Add idempotency checks to prevent duplicate processing.
 - [ ] Task: Write Integration Tests for Fulfillment
     - [ ] Mock Easebuzz webhook and verify inventory deduction logic.
     - [ ] Confirm cart is cleared only after successful confirmation.
