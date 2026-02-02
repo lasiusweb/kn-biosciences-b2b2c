@@ -4,7 +4,7 @@
 - [x] Task: Define Logistics Types and Interfaces [7f4c932]
     - [ ] Update `src/types/index.ts` with `LogisticsType` (COURIER, TRANSPORT) and `ShippingRate` interfaces.
     - [ ] Add constants for Transport Carriers (Navata, VRL, etc.).
-- [ ] Task: Implement Delhivery API Client
+- [x] Task: Implement Delhivery API Client [545c39d]
     - [ ] Create `src/lib/shipping/delhivery.ts` for serviceability and rate calculation.
     - [ ] Add environment variables for Delhivery API keys.
 - [ ] Task: Create Shipping Calculation Logic
