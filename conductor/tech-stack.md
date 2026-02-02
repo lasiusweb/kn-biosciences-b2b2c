@@ -11,7 +11,7 @@
 - **Database:** Supabase (PostgreSQL)
 - **API Layer:** Hasura GraphQL + Supabase SDK
 - **Authentication:** Supabase Auth (Email/Password, Phone OTP)
-- **Roles:** Admin, Staff, Vendor, B2B Client, Customer (default)
+- **Roles:** Admin, Staff, Sales Manager, Vendor, B2B Client, Customer (default)
 - **RBAC:** Server-side JWT validation and role-based route protection.
 
 ## Phase 3: Storefront Core
@@ -24,7 +24,7 @@
 - **Features:** Tiered pricing display, MOQ enforcement, Credit terms, Order approval workflow.
 
 ## Checkout & Payments
-- **Gateway:** Easebuzz (SHA-512 Hash verification).
+- **Gateway:** Easebuzz (Main), Razorpay (B2B Payment Links).
 - **Serviceability:** Pincode validation with delivery date estimation.
 - **Documents:** Automated PDF invoices with Zoho Books sync.
 
