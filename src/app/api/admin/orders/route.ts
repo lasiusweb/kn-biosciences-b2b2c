@@ -119,7 +119,7 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { orderId, status, trackingNumber, notes } = await request.json();
+    const { orderId, status, trackingNumber, notes, shippingType, shippingCarrier } = await request.json();
 
     if (!orderId) {
       return NextResponse.json(
@@ -135,6 +135,8 @@ export async function PATCH(request: Request) {
     if (status) updateData.status = status;
     if (trackingNumber) updateData.tracking_number = trackingNumber;
     if (notes) updateData.admin_notes = notes;
+    if (shippingType) updateData.shipping_type = shippingType;
+    if (shippingCarrier) updateData.shipping_carrier = shippingCarrier;
 
     if (!supabaseAdmin) {
       return NextResponse.json(
