@@ -85,6 +85,8 @@ interface Order {
     postal_code: string;
     country: string;
   };
+  shipping_type?: string;
+  shipping_carrier?: string;
   tracking_number?: string;
   admin_notes?: string;
 }
@@ -438,6 +440,23 @@ export function OrdersManagement() {
                       {selectedOrder.addresses.postal_code}
                     </div>
                     <div>{selectedOrder.addresses.country}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Shipping Info */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-3 bg-zinc-50 rounded-lg border border-zinc-200">
+                <div className="space-y-1">
+                  <Label className="text-xs font-semibold uppercase text-earth-500">Logistics Type</Label>
+                  <div className="text-sm font-medium flex items-center gap-2">
+                    {selectedOrder.shipping_type === 'TRANSPORT' ? <Package className="h-4 w-4" /> : <Truck className="h-4 w-4" />}
+                    {selectedOrder.shipping_type || 'Not specified'}
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs font-semibold uppercase text-earth-500">Selected Carrier</Label>
+                  <div className="text-sm font-medium">
+                    {selectedOrder.shipping_carrier || 'Not specified'}
                   </div>
                 </div>
               </div>
