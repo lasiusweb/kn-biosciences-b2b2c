@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PaymentMethodSelector } from "@/components/shop/payment-method-selector";
 import { PaymentConfirmation } from "@/components/shop/payment-confirmation";
+import { ShippingMethodSelector } from "@/components/shop/shipping-method-selector";
+import { ShippingRate } from "@/types";
 
 interface CheckoutFlowProps {
   orderId: string;
@@ -20,10 +22,11 @@ interface CheckoutFlowProps {
     name: string;
     email: string;
     phone: string;
+    pincode?: string; // Added for shipping calculation
   };
 }
 
-type CheckoutStep = "payment-method" | "processing" | "success" | "failure";
+type CheckoutStep = "shipping-method" | "payment-method" | "processing" | "success" | "failure";
 
 export function CheckoutFlow({
   orderId,
@@ -31,11 +34,100 @@ export function CheckoutFlow({
   customerInfo,
 }: CheckoutFlowProps) {
   const [currentStep, setCurrentStep] =
-    useState<CheckoutStep>("payment-method");
+    useState<CheckoutStep>("shipping-method");
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const [shippingOptions, setShippingOptions] = useState<ShippingRate[]>([]);
+  const [selectedShippingOption, setSelectedShippingOption] = useState<ShippingRate | null>(null);
+  const [selectedTransportCarrier, setSelectedTransportCarrier] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [paymentId, setPaymentId] = useState("");
+
+  const fetchShippingOptions = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      // Pincode is needed for shipping calculation. Fallback to a default or require it.
+      const pincode = customerInfo.pincode || "500001"; 
+      const response = await fetch(`/api/shipping/serviceability?pincode=${pincode}&weight=1000`);
+      
+      // The serviceability API returns a single result. 
+      // We need a more comprehensive API or client-side calculation.
+      // For now, let's assume we call our unified calculation utility (simulated via API or direct)
+      // Actually, let's mock the options for now if the API isn't fully ready for all options.
+      
+      const data = await response.json();
+      
+      const options: ShippingRate[] = [];
+      if (data.serviceable) {
+        options.push({
+          type: "COURIER",
+          carrier_name: "Delhivery",
+          cost: 100, // Dynamic cost would be calculated here
+          handling_fee: 0,
+          is_serviceable: true,
+          description: "Home Delivery",
+          estimated_delivery_days: 5
+        });
+      }
+      
+      // Always add Transport as fallback/alternative
+      options.push({
+        type: "TRANSPORT",
+        carrier_name: "Regional Transport (Godown Delivery)",
+        cost: 0,
+        handling_fee: 150,
+        is_serviceable: true,
+        description: "Pay freight at Godown. Carriers: Navata, VRL, etc."
+      });
+
+      setShippingOptions(options);
+      // Auto-select first available
+      if (options.length > 0) setSelectedShippingOption(options[0]);
+    } catch (err) {
+      console.error("Failed to fetch shipping options:", err);
+      setError("Failed to load shipping methods.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [customerInfo.pincode]);
+
+  useEffect(() => {
+    if (currentStep === "shipping-method") {
+      fetchShippingOptions();
+    }
+  }, [currentStep, fetchShippingOptions]);
+
+  const handleShippingProceed = async () => {
+    if (!selectedShippingOption) return;
+    
+    // If Transport is selected, ensure a carrier is chosen
+    if (selectedShippingOption.type === "TRANSPORT" && !selectedTransportCarrier) {
+      setError("Please select a transport carrier.");
+      return;
+    }
+
+    // Update order with shipping info
+    try {
+      setIsLoading(true);
+      await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          shipping_type: selectedShippingOption.type,
+          shipping_carrier: selectedShippingOption.type === "TRANSPORT" ? selectedTransportCarrier : selectedShippingOption.carrier_name,
+          shipping_amount: selectedShippingOption.cost + selectedShippingOption.handling_fee,
+        }),
+      });
+      setCurrentStep("payment-method");
+    } catch (err) {
+      console.error("Error updating shipping:", err);
+      setError("Failed to save shipping preference.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handlePaymentMethodProceed = async () => {
     if (!selectedPaymentMethod) return;
@@ -58,7 +150,7 @@ export function CheckoutFlow({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          amount,
+          amount: amount + (selectedShippingOption?.cost || 0) + (selectedShippingOption?.handling_fee || 0),
           orderId,
           customerInfo,
           paymentMethod: selectedPaymentMethod,
@@ -91,7 +183,7 @@ export function CheckoutFlow({
       }
 
       // Initialize Razorpay
-      const { Razorpay } = await import("razorpay");
+      const { Razorpay } = await (window as any).Razorpay ? { Razorpay: (window as any).Razorpay } : import("razorpay");
 
       const options = {
         key: paymentData.key,
@@ -158,13 +250,40 @@ export function CheckoutFlow({
   };
 
   const handleRetry = () => {
-    setCurrentStep("payment-method");
+    setCurrentStep("shipping-method");
     setError("");
     setSelectedPaymentMethod("");
   };
 
   const renderStep = () => {
     switch (currentStep) {
+      case "shipping-method":
+        return (
+          <div className="space-y-6">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {isLoading && shippingOptions.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+                <p>Calculating shipping options...</p>
+              </div>
+            ) : (
+              <ShippingMethodSelector
+                options={shippingOptions}
+                selectedOption={selectedShippingOption}
+                onSelect={setSelectedShippingOption}
+                selectedTransportCarrier={selectedTransportCarrier}
+                onTransportCarrierChange={setSelectedTransportCarrier}
+                onProceed={handleShippingProceed}
+                disabled={isLoading}
+              />
+            )}
+          </div>
+        );
+
       case "payment-method":
         return (
           <div className="space-y-6">
@@ -180,6 +299,9 @@ export function CheckoutFlow({
               onProceed={handlePaymentMethodProceed}
               disabled={isLoading}
             />
+            <Button variant="ghost" onClick={() => setCurrentStep("shipping-method")} className="mt-4">
+              Back to Shipping
+            </Button>
           </div>
         );
 
@@ -236,7 +358,7 @@ export function CheckoutFlow({
           <CardHeader>
             <CardTitle>Checkout</CardTitle>
             <CardDescription>
-              Complete your purchase by selecting a payment method
+              {currentStep === 'shipping-method' ? 'Choose how you want your items delivered' : 'Complete your purchase by selecting a payment method'}
             </CardDescription>
           </CardHeader>
           <CardContent>{renderStep()}</CardContent>
