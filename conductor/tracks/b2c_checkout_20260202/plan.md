@@ -7,9 +7,9 @@
 - [x] Task: Create Payment Initiation API [fcdcb43]
     - [x] Create `/api/payments/easebuzz/initiate` to handle payload creation.
     - [x] Integrate with existing `CheckoutFlow` component to trigger Easebuzz.
-- [ ] Task: Write Tests for Payment Logic
-    - [ ] Verify hash calculation accuracy against Easebuzz documentation.
-    - [ ] Test API response handling for various payment scenarios (Success, Failure, User Cancelled).
+- [x] Task: Write Tests for Payment Logic [e5c693b]
+    - [x] Verify hash calculation accuracy against Easebuzz documentation.
+    - [x] Test API response handling for various payment scenarios (Success, Failure, User Cancelled).
 - [ ] Task: Conductor - User Manual Verification 'Easebuzz Core Integration' (Protocol in workflow.md)
 
 ## Phase 2: Post-Payment Fulfillment Engine [checkpoint: ]
