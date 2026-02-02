@@ -155,9 +155,58 @@ export default function QuotesAdminPage() {
   const handleApproveQuote = async (updatedData: any) => {
     if (!selectedQuote) return;
     
-    // Approval logic will be expanded in Phase 3
-    console.log("Approving quote...", updatedData);
-    alert("Approval logic will be implemented in the next phase.");
+    try {
+      // 1. First save any changes made in the modal
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      // We call the standard PATCH first to ensure price changes are saved
+      const saveResponse = await fetch(`/api/admin/quotes`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({
+          quoteId: selectedQuote.id,
+          status: 'under_review',
+          items: updatedData.items,
+          notes: updatedData.adminNotes,
+          customerNotes: updatedData.customerNotes,
+          subtotal: updatedData.subtotal,
+          taxAmount: updatedData.tax,
+          totalAmount: updatedData.total,
+        }),
+      });
+
+      if (!saveResponse.ok) {
+        throw new Error("Failed to save quote changes before approval");
+      }
+
+      // 2. Now call the approve API
+      const approveResponse = await fetch(`/api/admin/quotes/approve`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({
+          quoteId: selectedQuote.id,
+        }),
+      });
+
+      if (approveResponse.ok) {
+        const data = await approveResponse.json();
+        alert(`Quote approved successfully! Order ${data.orderNumber} created.`);
+        setIsModalOpen(false);
+        fetchQuotes();
+      } else {
+        const errorData = await approveResponse.json();
+        alert(`Approval failed: ${errorData.error}`);
+      }
+    } catch (error: any) {
+      console.error("Approval error:", error);
+      alert(error.message || "An unexpected error occurred during approval");
+    }
   };
 
   const getStatusBadge = (status: string) => {
