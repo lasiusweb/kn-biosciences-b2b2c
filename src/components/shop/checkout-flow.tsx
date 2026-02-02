@@ -143,8 +143,12 @@ export function CheckoutFlow({
         return;
       }
 
-      // Create payment order
-      const response = await fetch("/api/payments/checkout", {
+      // 1. Initiate Payment with chosen gateway
+      const apiPath = selectedPaymentMethod === "easebuzz" 
+        ? "/api/payments/easebuzz/initiate" 
+        : "/api/payments/checkout";
+
+      const response = await fetch(apiPath, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -158,10 +162,42 @@ export function CheckoutFlow({
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create payment order");
+        const errData = await response.json();
+        throw new Error(errData.error || "Failed to create payment order");
       }
 
       const paymentData = await response.json();
+
+      // 2. Handle Easebuzz
+      if (selectedPaymentMethod === "easebuzz") {
+        // Load Easebuzz script if not present
+        if (!(window as any).EasebuzzCheckout) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement("script");
+            script.src = "https://ebz-static.s3.ap-south-1.amazonaws.com/easecheckout/easebuzz-checkout.js";
+            script.onload = resolve;
+            script.onerror = reject;
+            document.body.appendChild(script);
+          });
+        }
+
+        const easebuzzCheckout = new (window as any).EasebuzzCheckout(paymentData.key, process.env.NEXT_PUBLIC_EASEBUZZ_ENV || "test");
+        
+        const options = {
+          access_key: paymentData.access_key,
+          onResponse: (response: any) => {
+            if (response.status === "success") {
+              handlePaymentSuccess(response.easepayid);
+            } else {
+              setIsLoading(false);
+              setError(response.error_Message || "Payment failed or cancelled");
+            }
+          },
+        };
+
+        easebuzzCheckout.initiatePayment(options);
+        return;
+      }
 
       if (paymentData.paymentMethod === "payu") {
         // Redirect to PayU payment page

@@ -32,26 +32,18 @@ interface PaymentMethodSelectorProps {
 
 const paymentMethods: PaymentMethod[] = [
   {
-    id: "razorpay",
-    name: "Credit/Debit Card",
-    description: "Pay securely with Visa, Mastercard, Rupay, and more",
+    id: "easebuzz",
+    name: "Online Payment (Cards, UPI, Net Banking)",
+    description: "Pay securely with Easebuzz - supports all major cards and apps",
     icon: <CreditCard className="h-5 w-5" />,
-    badges: ["Fast", "Secure"],
+    badges: ["Fast", "Secure", "Recommended"],
     isRecommended: true,
   },
   {
-    id: "razorpay-upi",
-    name: "UPI",
-    description: "Pay using UPI apps like GPay, PhonePe, Paytm",
-    icon: <Smartphone className="h-5 w-5" />,
-    badges: ["Instant"],
-  },
-  {
-    id: "razorpay-netbanking",
-    name: "Net Banking",
-    description: "Pay through your bank's online banking portal",
-    icon: <Building className="h-5 w-5" />,
-    badges: ["All Banks"],
+    id: "razorpay",
+    name: "Razorpay",
+    description: "Pay securely with Visa, Mastercard, Rupay, and more",
+    icon: <CreditCard className="h-5 w-5" />,
   },
   {
     id: "payu",
