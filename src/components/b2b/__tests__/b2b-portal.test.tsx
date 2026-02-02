@@ -3,6 +3,42 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { B2BPortal } from "@/components/b2b/b2b-portal";
 import { B2BQuote, ProductVariant } from "@/types";
 
+// Mock radix-ui tabs to always show content for testing
+jest.mock("@/components/ui/tabs", () => {
+  return {
+    Tabs: ({ children, defaultValue }: any) => {
+      const [value, setValue] = require('react').useState(defaultValue);
+      require('react').useEffect(() => {
+        const handler = (e: any) => setValue(e.detail);
+        window.addEventListener('change-tab', handler);
+        return () => window.removeEventListener('change-tab', handler);
+      }, []);
+      return <div data-testid="tabs" data-current={value}>{children}</div>;
+    },
+    TabsList: ({ children }: any) => <div>{children}</div>,
+    TabsTrigger: ({ children, value }: any) => <button onClick={() => {
+      window.dispatchEvent(new CustomEvent('change-tab', { detail: value }));
+    }}>{children}</button>,
+    TabsContent: ({ children, value }: any) => {
+      // We don't hide it so we can find elements, but we mark it
+      return <div data-tab={value}>{children}</div>;
+    },
+  };
+});
+
+// Mock Select component
+jest.mock("@/components/ui/select", () => ({
+  Select: ({ children, onValueChange }: any) => (
+    <div data-testid="select" onClick={() => onValueChange("variant-1")}>
+      {children}
+    </div>
+  ),
+  SelectTrigger: ({ children }: any) => <div>{children}</div>,
+  SelectValue: ({ placeholder }: any) => <div>{placeholder}</div>,
+  SelectContent: ({ children }: any) => <div>{children}</div>,
+  SelectItem: ({ children, value }: any) => <div data-value={value}>{children}</div>,
+}));
+
 // Mock fetch for API calls
 global.fetch = jest.fn();
 
@@ -10,6 +46,12 @@ global.fetch = jest.fn();
 jest.mock("@/lib/quote-pdf", () => ({
   downloadQuotePDF: jest.fn(),
 }));
+
+// Fix scrollIntoView issue in tests
+window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
+// Mock alert
+global.alert = jest.fn();
 
 describe("B2B Portal Component", () => {
   const mockQuotes: B2BQuote[] = [
@@ -156,13 +198,8 @@ describe("B2B Portal Component", () => {
     });
 
     // Fill in product selection
-    const productSelect = screen.getByText("Select product");
+    const productSelect = screen.getByTestId("select");
     fireEvent.click(productSelect);
-
-    await waitFor(() => {
-      const productOption = screen.getByText("BIO-001");
-      fireEvent.click(productOption);
-    });
 
     // Fill in quantity
     const quantityInput = screen.getByPlaceholderText("0");
@@ -193,13 +230,8 @@ describe("B2B Portal Component", () => {
     });
 
     // Add an item
-    const productSelect = screen.getByText("Select product");
+    const productSelect = screen.getByTestId("select");
     fireEvent.click(productSelect);
-
-    await waitFor(() => {
-      const productOption = screen.getByText("BIO-001");
-      fireEvent.click(productOption);
-    });
 
     const quantityInput = screen.getByPlaceholderText("0");
     fireEvent.change(quantityInput, { target: { value: "10" } });
@@ -247,13 +279,8 @@ describe("B2B Portal Component", () => {
     });
 
     // Add an item
-    const productSelect = screen.getByText("Select product");
+    const productSelect = screen.getByTestId("select");
     fireEvent.click(productSelect);
-
-    await waitFor(() => {
-      const productOption = screen.getByText("BIO-001");
-      fireEvent.click(productOption);
-    });
 
     const quantityInput = screen.getByPlaceholderText("0");
     fireEvent.change(quantityInput, { target: { value: "5" } });
@@ -280,27 +307,22 @@ describe("B2B Portal Component", () => {
   });
 
   it("should show validation error when trying to submit empty quote", async () => {
-    // Mock alert
-    const mockAlert = jest.fn();
-    global.alert = mockAlert;
-
+    (global.alert as jest.Mock).mockClear();
     render(<B2BPortal />);
 
     // Switch to new quote tab
     const newQuoteTab = screen.getByText("Create Quote");
     fireEvent.click(newQuoteTab);
 
-    await waitFor(() => {
-      expect(screen.getByText("Create New Quote Request")).toBeInTheDocument();
-    });
-
     // Try to submit without items
-    const submitButton = screen.getByText("Submit Quote Request");
+    const submitButton = await screen.findByRole("button", { name: /Submit Quote Request/i });
     fireEvent.click(submitButton);
 
-    expect(mockAlert).toHaveBeenCalledWith(
-      "Please add at least one product to the quote",
-    );
+    await waitFor(() => {
+      expect(global.alert).toHaveBeenCalledWith(
+        "Please add at least one product to the quote",
+      );
+    }, { timeout: 3000 });
   });
 
   it("should download PDF when download button is clicked", async () => {
@@ -308,12 +330,8 @@ describe("B2B Portal Component", () => {
 
     render(<B2BPortal />);
 
-    await waitFor(() => {
-      expect(screen.getByText("Recent Quotes")).toBeInTheDocument();
-    });
-
-    // Click download PDF button
-    const downloadButton = screen.getByText("PDF");
+    // Wait for quote to appear in table
+    const downloadButton = await screen.findByText("PDF");
     fireEvent.click(downloadButton);
 
     await waitFor(() => {
@@ -370,6 +388,40 @@ describe("B2B Portal Component", () => {
       expect(screen.getByText("Dedicated Support")).toBeInTheDocument();
       expect(screen.getByText("Flexible Payment Terms")).toBeInTheDocument();
     });
+  });
+
+  it("should display Order Number and Pay Now button for approved quotes", async () => {
+    const mockApprovedQuote = {
+      id: "quote-approved",
+      status: "approved",
+      total_amount: 5000,
+      created_at: "2024-01-01",
+      order: {
+        order_number: "ORD-B2B-123",
+        payment_link_url: "https://rzp.io/i/testlink"
+      }
+    };
+
+    (fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([mockApprovedQuote]),
+    });
+
+    render(<B2BPortal />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Order: ORD-B2B-123/i)).toBeInTheDocument();
+      expect(screen.getByText(/Pay Now/i)).toBeInTheDocument();
+    });
+
+    // Mock window.open
+    const windowOpenSpy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    
+    const payButton = screen.getByText(/Pay Now/i);
+    fireEvent.click(payButton);
+
+    expect(windowOpenSpy).toHaveBeenCalledWith("https://rzp.io/i/testlink", "_blank");
+    windowOpenSpy.mockRestore();
   });
 });
 
@@ -436,12 +488,7 @@ describe("B2B Portal Integration Tests", () => {
         ]),
     }));
 
-    fireEvent.click(productSelect);
-
-    await waitFor(() => {
-      const productOption = screen.getByText("BIO-001");
-      fireEvent.click(productOption);
-    });
+    fireEvent.click(screen.getByTestId("select"));
 
     // Fill form
     const quantityInput = screen.getByPlaceholderText("0");

@@ -26,6 +26,11 @@ export async function GET(request: NextRequest) {
               name
             )
           )
+        ),
+        order:orders!linked_order_id (
+          id,
+          order_number,
+          payment_link_url
         )
       `,
       )

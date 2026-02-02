@@ -37,6 +37,7 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
+  CreditCard,
 } from "lucide-react";
 import { B2BQuote, B2BQuoteItem, ProductVariant } from "@/types";
 import { downloadQuotePDF } from "@/lib/quote-pdf";
@@ -267,10 +268,17 @@ export function B2BPortal() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    quotes.map((quote) => (
+                    quotes.map((quote: any) => (
                       <TableRow key={quote.id}>
                         <TableCell className="font-medium">
-                          {quote.id.substring(0, 8).toUpperCase()}
+                          <div className="flex flex-col">
+                            <span>{quote.id.substring(0, 8).toUpperCase()}</span>
+                            {quote.order && (
+                              <span className="text-xs text-organic-600 font-bold">
+                                Order: {quote.order.order_number}
+                              </span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>
                           {new Date(quote.created_at).toLocaleDateString()}
@@ -294,9 +302,16 @@ export function B2BPortal() {
                               <Download className="h-4 w-4 mr-1" />
                               PDF
                             </Button>
-                            <Button variant="outline" size="sm">
-                              View
-                            </Button>
+                            {quote.status === "approved" && quote.order?.payment_link_url && (
+                              <Button 
+                                className="bg-organic-600 hover:bg-organic-700 text-white" 
+                                size="sm"
+                                onClick={() => window.open(quote.order.payment_link_url, '_blank')}
+                              >
+                                <CreditCard className="h-4 w-4 mr-1" />
+                                Pay Now
+                              </Button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
@@ -460,7 +475,7 @@ export function B2BPortal() {
                 <Button
                   onClick={handleSubmitQuote}
                   className="bg-organic-500 hover:bg-organic-600"
-                  disabled={loading || !quoteItems?.length}
+                  disabled={loading}
                 >
                   {loading ? (
                     "Submitting..."
