@@ -24,7 +24,7 @@
     - [x] Verify the serviceability display and carrier selection logic in `src/components/shop/__tests__/checkout-flow.test.tsx`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Storefront UI Enhancements' (Protocol in workflow.md)
 
-## Phase 3: Admin & Order Management
+## Phase 3: Admin & Order Management [checkpoint: 707eaa7]
 - [x] Task: Update Admin Order Detail View [5dbf5a2]
     - [x] Modify `src/app/admin/orders/[id]/page.tsx` to show logistics type and selected carrier.
     - [x] Add fields for manual tracking updates for Godown deliveries.
