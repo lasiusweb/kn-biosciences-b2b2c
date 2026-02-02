@@ -21,11 +21,11 @@
 ## Phase 3: User Details & Management
 - [x] Task: Implement User Detail Modal/View [9994feb]
     - [x] Build the detailed profile view with stats and addresses.
-- [ ] Task: Implement Role/Status Update Logic
-    - [ ] Create confirmation modals for sensitive changes.
-    - [ ] Integrate with the PATCH API.
-- [ ] Task: Write Integration Tests
-    - [ ] Verify the full end-to-end flow of updating a user role.
+- [x] Task: Implement Role/Status Update Logic [59f7bb3]
+    - [x] Create confirmation modals for sensitive changes.
+    - [x] Integrate with the PATCH API.
+- [x] Task: Write Integration Tests [59f7bb3]
+    - [x] Verify the full end-to-end flow of updating a user role.
 
 ## Phase 4: Final Verification
 - [ ] Task: Conductor - User Manual Verification 'User Management'
