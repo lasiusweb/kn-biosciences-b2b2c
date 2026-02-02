@@ -31,7 +31,7 @@
     - [x] Verify full end-to-end flow: Review -> Edit -> Approve -> Order Created.
 - [ ] Task: Conductor - User Manual Verification 'Approval Logic & Order Conversion' (Protocol in workflow.md)
 
-## Phase 4: B2B Customer Portal Sync
+## Phase 4: B2B Customer Portal Sync [checkpoint: 92e716e]
 - [x] Task: Update B2B Portal Quote View [f36bbe0]
     - [x] Display the linked Order Number and a "Pay Now" button for approved quotes.
 - [x] Task: Write UI Integration Tests [382fe49]
