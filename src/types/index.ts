@@ -391,3 +391,26 @@ export interface Shipment {
   estimated_delivery: string;
   delivered_at?: string;
 }
+// Logistics and Shipping types
+export type LogisticsType = "COURIER" | "TRANSPORT";
+
+export interface ShippingRate {
+  type: LogisticsType;
+  carrier_name: string;
+  cost: number;
+  handling_fee: number;
+  estimated_delivery_days?: number;
+  is_serviceable: boolean;
+  description?: string;
+}
+
+export const TRANSPORT_CARRIERS = [
+  "Navata",
+  "Kranthi",
+  "VRL Logistics",
+  "TCI Freight",
+  "TSRTC",
+  "APSRTC",
+] as const;
+
+export type TransportCarrier = (typeof TRANSPORT_CARRIERS)[number];
