@@ -21,5 +21,18 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: User & Role Management**
 *Link: [./tracks/user_management_20260131/](./tracks/user_management_20260131/)*
-`n---`n`n- [x] **Track: Logistics Integration & Serviceability**`n*Link: [./tracks/logistics_integration_20260202/](./tracks/logistics_integration_20260202/)*
-`n---`n`n- [x] **Track: B2B Quote-to-Order & Approval Workflow**`n*Link: [./tracks/b2b_approval_20260202/](./tracks/b2b_approval_20260202/)*
+
+---
+
+- [x] **Track: Logistics Integration & Serviceability**
+*Link: [./tracks/logistics_integration_20260202/](./tracks/logistics_integration_20260202/)*
+
+---
+
+- [x] **Track: B2B Quote-to-Order & Approval Workflow**
+*Link: [./tracks/b2b_approval_20260202/](./tracks/b2b_approval_20260202/)*
+
+---
+
+- [~] **Track: B2C Checkout & Payment Lifecycle**
+*Link: [./tracks/b2c_checkout_20260202/](./tracks/b2c_checkout_20260202/)*

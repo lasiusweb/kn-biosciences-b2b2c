@@ -72,6 +72,7 @@ export function AuthForm() {
       // Create user profile in users table
       if (authData.user) {
         const { error: profileError } = await supabase.from("users").insert({
+          id: authData.user.id,
           email: formData.email,
           first_name: formData.firstName,
           last_name: formData.lastName,
