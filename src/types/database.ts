@@ -16,7 +16,7 @@ export interface Database {
           first_name: string;
           last_name: string;
           phone: string | null;
-          role: "customer" | "b2b_client" | "admin" | "staff";
+          role: "customer" | "b2b_client" | "admin" | "staff" | "sales_manager";
           company_name: string | null;
           gst_number: string | null;
           created_at: string;
@@ -28,7 +28,7 @@ export interface Database {
           first_name: string;
           last_name: string;
           phone?: string | null;
-          role?: "customer" | "b2b_client" | "admin" | "staff";
+          role?: "customer" | "b2b_client" | "admin" | "staff" | "sales_manager";
           company_name?: string | null;
           gst_number?: string | null;
           created_at?: string;
@@ -40,7 +40,7 @@ export interface Database {
           first_name?: string;
           last_name?: string;
           phone?: string | null;
-          role?: "customer" | "b2b_client" | "admin" | "staff";
+          role?: "customer" | "b2b_client" | "admin" | "staff" | "sales_manager";
           company_name?: string | null;
           gst_number?: string | null;
           created_at?: string;
@@ -314,6 +314,8 @@ export interface Database {
           total_amount: number;
           shipping_address: Json;
           billing_address: Json;
+          shipping_type: "COURIER" | "TRANSPORT" | null;
+          shipping_carrier: string | null;
           notes: string | null;
           created_at: string;
           updated_at: string;
@@ -340,6 +342,8 @@ export interface Database {
           total_amount: number;
           shipping_address: Json;
           billing_address: Json;
+          shipping_type?: "COURIER" | "TRANSPORT" | null;
+          shipping_carrier?: string | null;
           notes?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -366,6 +370,8 @@ export interface Database {
           total_amount?: number;
           shipping_address?: Json;
           billing_address?: Json;
+          shipping_type?: "COURIER" | "TRANSPORT" | null;
+          shipping_carrier?: string | null;
           notes?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -386,6 +392,7 @@ export interface Database {
           subtotal: number;
           tax_amount: number;
           total_amount: number;
+          linked_order_id: string | null;
           notes: string | null;
           created_at: string;
           updated_at: string;
@@ -404,6 +411,7 @@ export interface Database {
           subtotal: number;
           tax_amount?: number;
           total_amount: number;
+          linked_order_id?: string | null;
           notes?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -422,6 +430,7 @@ export interface Database {
           subtotal?: number;
           tax_amount?: number;
           total_amount?: number;
+          linked_order_id?: string | null;
           notes?: string | null;
           created_at?: string;
           updated_at?: string;

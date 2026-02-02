@@ -7,7 +7,7 @@ CREATE TABLE users (
   first_name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
   phone VARCHAR(20),
-  role VARCHAR(20) CHECK (role IN ('customer', 'b2b_client', 'admin', 'staff')) DEFAULT 'customer',
+  role VARCHAR(20) CHECK (role IN ('customer', 'b2b_client', 'admin', 'staff', 'sales_manager')) DEFAULT 'customer',
   company_name VARCHAR(255),
   gst_number VARCHAR(15),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -137,6 +137,8 @@ CREATE TABLE orders (
   total_amount DECIMAL(12,2) NOT NULL,
   shipping_address JSONB NOT NULL,
   billing_address JSONB NOT NULL,
+  shipping_type VARCHAR(20) CHECK (shipping_type IN ('COURIER', 'TRANSPORT')),
+  shipping_carrier VARCHAR(100),
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -164,6 +166,7 @@ CREATE TABLE b2b_quotes (
   subtotal DECIMAL(12,2) NOT NULL,
   tax_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
   total_amount DECIMAL(12,2) NOT NULL,
+  linked_order_id UUID REFERENCES orders(id),
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -304,6 +307,9 @@ ALTER TABLE wishlist ENABLE ROW LEVEL SECURITY;
 -- RLS Policies
 CREATE POLICY "Users can view own profile" ON users
     FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Users can insert own profile" ON users
+    FOR INSERT WITH CHECK (auth.uid() = id);
 
 CREATE POLICY "Users can update own profile" ON users
     FOR UPDATE USING (auth.uid() = id);

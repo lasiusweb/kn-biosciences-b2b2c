@@ -5,7 +5,7 @@ export interface User {
   first_name: string;
   last_name: string;
   phone?: string;
-  role: "customer" | "b2b_client" | "vendor" | "admin" | "staff";
+  role: "customer" | "b2b_client" | "vendor" | "admin" | "staff" | "sales_manager";
   company_name?: string;
   gst_number?: string;
   address?: Address;
@@ -300,6 +300,7 @@ export interface B2BQuote {
   tax_amount: number;
   total_amount: number;
   notes?: string;
+  linked_order_id?: string;
   created_at: string;
   updated_at: string;
 }
