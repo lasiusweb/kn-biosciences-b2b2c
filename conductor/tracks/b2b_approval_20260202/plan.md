@@ -1,13 +1,13 @@
 # Implementation Plan: B2B Quote-to-Order & Approval Workflow (Track: b2b_approval_20260202)
 
-## Phase 1: Schema & RBAC Extensions
+## Phase 1: Schema & RBAC Extensions [checkpoint: f6536c5]
 - [x] Task: Extend Roles and Database Schema [c47ed72]
-    - [ ] Update `public.users` role constraint to include `sales_manager` in `database/schema.sql`.
-    - [ ] Add `linked_order_id` (UUID) to `b2b_quotes` table.
-    - [ ] Update `src/types/index.ts` and `src/types/database.ts` with new role and field.
+    - [x] Update `public.users` role constraint to include `sales_manager` in `database/schema.sql`.
+    - [x] Add `linked_order_id` (UUID) to `b2b_quotes` table.
+    - [x] Update `src/types/index.ts` and `src/types/database.ts` with new role and field.
 - [x] Task: Write RBAC Integration Tests [4c4c4eb]
-    - [ ] Verify that only `admin` and `sales_manager` can access the new quote management APIs.
-- [ ] Task: Conductor - User Manual Verification 'Schema & RBAC Extensions' (Protocol in workflow.md)
+    - [x] Verify that only `admin` and `sales_manager` can access the new quote management APIs.
+- [x] Task: Conductor - User Manual Verification 'Schema & RBAC Extensions' (Protocol in workflow.md) [f6536c5]
 
 ## Phase 2: Sales Manager Quote Management
 - [ ] Task: Implement Admin Quote Directory
