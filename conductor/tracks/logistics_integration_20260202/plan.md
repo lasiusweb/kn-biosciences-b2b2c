@@ -13,7 +13,7 @@
     - [ ] Verify courier rates, godown fallback, and handling fee calculations in `src/lib/shipping/__tests__/delhivery.test.ts`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: API Integration & Data Layer' (Protocol in workflow.md)
 
-## Phase 2: Storefront UI Enhancements
+## Phase 2: Storefront UI Enhancements [checkpoint: afb1ec2]
 - [x] Task: Build Serviceability Checker Component [f5301c4]
     - [ ] Create a reusable `ServiceabilityChecker` component for product pages.
     - [ ] Implement caching for pincode checks in local storage/session.
