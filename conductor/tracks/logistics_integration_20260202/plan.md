@@ -14,7 +14,7 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: API Integration & Data Layer' (Protocol in workflow.md)
 
 ## Phase 2: Storefront UI Enhancements
-- [ ] Task: Build Serviceability Checker Component
+- [x] Task: Build Serviceability Checker Component [f5301c4]
     - [ ] Create a reusable `ServiceabilityChecker` component for product pages.
     - [ ] Implement caching for pincode checks in local storage/session.
 - [ ] Task: Implement Shipping Step in Checkout
