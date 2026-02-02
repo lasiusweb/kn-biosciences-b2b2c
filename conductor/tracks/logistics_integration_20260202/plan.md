@@ -7,7 +7,7 @@
 - [x] Task: Implement Delhivery API Client [545c39d]
     - [ ] Create `src/lib/shipping/delhivery.ts` for serviceability and rate calculation.
     - [ ] Add environment variables for Delhivery API keys.
-- [ ] Task: Create Shipping Calculation Logic
+- [x] Task: Create Shipping Calculation Logic [c46b234]
     - [ ] Implement a unified utility `calculateShippingOptions(pincode, weight)` that handles the Delhivery-to-Transport fallback logic.
 - [ ] Task: Write Tests for Shipping Logic
     - [ ] Verify courier rates, godown fallback, and handling fee calculations in `src/lib/shipping/__tests__/delhivery.test.ts`.
