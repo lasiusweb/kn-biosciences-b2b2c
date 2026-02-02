@@ -137,6 +137,7 @@ CREATE TABLE orders (
   total_amount DECIMAL(12,2) NOT NULL,
   shipping_address JSONB NOT NULL,
   billing_address JSONB NOT NULL,
+  payment_link_url TEXT,
   shipping_type VARCHAR(20) CHECK (shipping_type IN ('COURIER', 'TRANSPORT')),
   shipping_carrier VARCHAR(100),
   notes TEXT,

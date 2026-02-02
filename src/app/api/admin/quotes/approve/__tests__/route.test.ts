@@ -3,6 +3,7 @@
  */
 import { POST } from "../route";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
+import paymentService from "@/lib/payments/razorpay";
 
 // Mock Supabase
 jest.mock("@/lib/supabase", () => {
@@ -31,6 +32,11 @@ jest.mock("@/lib/supabase", () => {
     supabaseAdmin: chain,
   };
 });
+
+// Mock Razorpay
+jest.mock("@/lib/payments/razorpay", () => ({
+  generatePaymentLink: jest.fn(),
+}));
 
 // Mock next/server
 jest.mock("next/server", () => ({
@@ -110,13 +116,19 @@ describe("POST /api/admin/quotes/approve", () => {
 
     const mockOrder = { id: "order-789", order_number: "ORD-123" };
 
+    // Mock payment link
+    (paymentService.generatePaymentLink as jest.Mock).mockResolvedValue({
+      short_url: "https://rzp.io/i/link-123"
+    });
+
     // Setup sequence of terminal responses via .then
     (supabaseAdmin!.then as unknown as jest.Mock)
       .mockImplementationOnce((resolve: any) => resolve({ data: mockQuote, error: null })) // Get quote
-      .mockImplementationOnce((resolve: any) => resolve({ data: [], error: null }))        // Get addresses
+      .mockImplementationOnce((resolve: any) => resolve({ data: [{ first_name: "John", email: "john@example.com" }], error: null })) // Get addresses/user
       .mockImplementationOnce((resolve: any) => resolve({ data: mockOrder, error: null })) // Create order
       .mockImplementationOnce((resolve: any) => resolve({ data: [], error: null }))        // Create order items
-      .mockImplementationOnce((resolve: any) => resolve({ data: { status: "approved" }, error: null })); // Update quote
+      .mockImplementationOnce((resolve: any) => resolve({ data: { status: "approved" }, error: null })) // Update quote
+      .mockImplementationOnce((resolve: any) => resolve({ data: null, error: null })); // Update order with payment link
 
     const req = new Request("http://localhost/api/admin/quotes/approve", {
       method: "POST",
@@ -128,6 +140,7 @@ describe("POST /api/admin/quotes/approve", () => {
 
     expect(res.status).toBe(200);
     expect(data.orderId).toBe("order-789");
+    expect(paymentService.generatePaymentLink).toHaveBeenCalled();
   });
 
   it("should return 400 if quote is already approved", async () => {

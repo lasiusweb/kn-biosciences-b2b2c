@@ -314,6 +314,7 @@ export interface Database {
           total_amount: number;
           shipping_address: Json;
           billing_address: Json;
+          payment_link_url: string | null;
           shipping_type: "COURIER" | "TRANSPORT" | null;
           shipping_carrier: string | null;
           notes: string | null;
@@ -342,6 +343,7 @@ export interface Database {
           total_amount: number;
           shipping_address: Json;
           billing_address: Json;
+          payment_link_url?: string | null;
           shipping_type?: "COURIER" | "TRANSPORT" | null;
           shipping_carrier?: string | null;
           notes?: string | null;
@@ -370,6 +372,7 @@ export interface Database {
           total_amount?: number;
           shipping_address?: Json;
           billing_address?: Json;
+          payment_link_url?: string | null;
           shipping_type?: "COURIER" | "TRANSPORT" | null;
           shipping_carrier?: string | null;
           notes?: string | null;
