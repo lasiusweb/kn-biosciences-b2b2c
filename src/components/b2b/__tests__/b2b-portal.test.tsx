@@ -423,6 +423,30 @@ describe("B2B Portal Component", () => {
     expect(windowOpenSpy).toHaveBeenCalledWith("https://rzp.io/i/testlink", "_blank");
     windowOpenSpy.mockRestore();
   });
+
+  it("should display updated totals correctly for approved quotes", async () => {
+    const mockApprovedQuoteWithEdits = {
+      id: "quote-edited",
+      status: "approved",
+      total_amount: 4500, // Reduced from original by admin
+      created_at: "2024-01-01",
+      order: {
+        order_number: "ORD-B2B-EDIT",
+        payment_link_url: "https://rzp.io/i/editlink"
+      }
+    };
+
+    (fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([mockApprovedQuoteWithEdits]),
+    });
+
+    render(<B2BPortal />);
+
+    await waitFor(() => {
+      expect(screen.getByText("₹4,500")).toBeInTheDocument();
+    });
+  });
 });
 
 describe("B2B Portal Integration Tests", () => {
