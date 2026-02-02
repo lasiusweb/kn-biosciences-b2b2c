@@ -1,6 +1,6 @@
 # Implementation Plan: B2C Checkout & Payment Lifecycle (Track: b2c_checkout_20260202)
 
-## Phase 1: Easebuzz Core Integration [checkpoint: ]
+## Phase 1: Easebuzz Core Integration [checkpoint: ccdaf7f]
 - [x] Task: Implement Secure Hash Generator [61e44cd]
     - [x] Create `src/lib/payments/easebuzz.ts` with SHA-512 hash logic.
     - [x] Implement server-side verification for Easebuzz responses.
