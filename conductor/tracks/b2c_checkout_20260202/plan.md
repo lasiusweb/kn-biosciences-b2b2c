@@ -33,7 +33,7 @@
 - [x] Task: Implement Document & Notification Triggers [aae4c5f]
     - [x] Integrate PDF invoice generation trigger on Success page load or via webhook.
     - [x] Implement WhatsApp/Email notification queueing after payment confirmation.
-- [~] Task: Write UI Integration Tests
-    - [ ] Verify routing logic from payment callback to correct success/failure pages.
-    - [ ] Test the "Retry" button functionality on the failure page.
+- [x] Task: Write UI Integration Tests [aae4c5f]
+    - [x] Verify routing logic from payment callback to correct success/failure pages.
+    - [x] Test the "Retry" button functionality on the failure page.
 - [ ] Task: Conductor - User Manual Verification 'B2C Checkout Experience' (Protocol in workflow.md)
