@@ -30,6 +30,6 @@
     - [x] Add fields for manual tracking updates for Godown deliveries.
 - [x] Task: Integrate Shipping with Order Creation [7dd3b31]
     - [x] Ensure the handling fee or shipping cost is correctly saved to the database during checkout.
-- [ ] Task: Write Integration Tests
-    - [ ] Verify the full flow from pincode entry to order fulfillment data storage.
+- [x] Task: Write Integration Tests [e2eaf01]
+    - [x] Verify the full flow from pincode entry to order fulfillment data storage.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Admin & Order Management' (Protocol in workflow.md)
