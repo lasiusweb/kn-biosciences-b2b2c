@@ -7,7 +7,8 @@ async function checkAdminAuth(request: Request) {
   const {
     data: { user },
   } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
-  return user?.user_metadata?.role === "admin";
+  const role = user?.user_metadata?.role;
+  return role === "admin" || role === "sales_manager";
 }
 
 export async function GET(request: Request) {
