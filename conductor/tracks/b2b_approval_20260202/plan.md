@@ -9,16 +9,16 @@
     - [x] Verify that only `admin` and `sales_manager` can access the new quote management APIs.
 - [x] Task: Conductor - User Manual Verification 'Schema & RBAC Extensions' (Protocol in workflow.md) [f6536c5]
 
-## Phase 2: Sales Manager Quote Management
+## Phase 2: Sales Manager Quote Management [checkpoint: 852d9fc]
 - [x] Task: Implement Admin Quote Directory [e3253bf]
-    - [ ] Create `src/app/admin/quotes/page.tsx` for Sales Managers.
-    - [ ] Build a filterable list of quotes (Submitted, Under Review, etc.).
+    - [x] Create `src/app/admin/quotes/page.tsx` for Sales Managers.
+    - [x] Build a filterable list of quotes (Submitted, Under Review, etc.).
 - [x] Task: Implement Quote Review & Edit Interface [437cd9e]
-    - [ ] Create `src/components/admin/quote-review-modal.tsx`.
-    - [ ] Add functionality to modify unit prices and quantities with real-time total recalculation.
+    - [x] Create `src/components/admin/quote-review-modal.tsx`.
+    - [x] Add functionality to modify unit prices and quantities with real-time total recalculation.
 - [x] Task: Write Tests for Quote Management [e9a1ee7]
-    - [ ] Verify that Sales Managers can edit quote items and save notes.
-- [ ] Task: Conductor - User Manual Verification 'Sales Manager Quote Management' (Protocol in workflow.md)
+    - [x] Verify that Sales Managers can edit quote items and save notes.
+- [x] Task: Conductor - User Manual Verification 'Sales Manager Quote Management' (Protocol in workflow.md) [852d9fc]
 
 ## Phase 3: Approval Logic & Order Conversion
 - [ ] Task: Implement Quote Approval API
