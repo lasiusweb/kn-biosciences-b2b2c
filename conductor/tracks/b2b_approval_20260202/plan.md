@@ -20,7 +20,7 @@
     - [x] Verify that Sales Managers can edit quote items and save notes.
 - [x] Task: Conductor - User Manual Verification 'Sales Manager Quote Management' (Protocol in workflow.md) [852d9fc]
 
-## Phase 3: Approval Logic & Order Conversion
+## Phase 3: Approval Logic & Order Conversion [checkpoint: 0d654fb]
 - [x] Task: Implement Quote Approval API [d17e8fe]
     - [x] Create `/api/admin/quotes/approve` endpoint.
     - [x] Implement atomic transaction: Update Quote Status -> Create Order -> Link Order ID.
