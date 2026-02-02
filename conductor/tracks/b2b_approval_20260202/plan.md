@@ -24,9 +24,9 @@
 - [x] Task: Implement Quote Approval API [d17e8fe]
     - [x] Create `/api/admin/quotes/approve` endpoint.
     - [x] Implement atomic transaction: Update Quote Status -> Create Order -> Link Order ID.
-- [ ] Task: Integrate Automated Payment Link
-    - [ ] Trigger Razorpay/Easebuzz payment link creation for the resulting order.
-    - [ ] Store the payment link URL in the `orders` table.
+- [x] Task: Integrate Automated Payment Link [a15de11]
+    - [x] Trigger Razorpay/Easebuzz payment link creation for the resulting order.
+    - [x] Store the payment link URL in the `orders` table.
 - [ ] Task: Write Workflow Integration Tests
     - [ ] Verify full end-to-end flow: Review -> Edit -> Approve -> Order Created.
 - [ ] Task: Conductor - User Manual Verification 'Approval Logic & Order Conversion' (Protocol in workflow.md)
