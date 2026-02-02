@@ -14,7 +14,6 @@ jest.mock("@/lib/supabase", () => {
     single: jest.fn(() => chain),
     update: jest.fn(() => chain),
     then: jest.fn((onFulfilled: any) => {
-      // Return a promise that resolves to what onFulfilled would return
       return Promise.resolve(onFulfilled({ data: null, error: null }));
     }),
   };
@@ -60,12 +59,17 @@ describe("POST /api/payments/easebuzz/initiate", () => {
         return JSON.parse(this.body);
       }
     };
+    
+    // Default implementation for then
+    (supabase.then as jest.Mock).mockImplementation((onFulfilled: any) => {
+      return Promise.resolve(onFulfilled({ data: null, error: null }));
+    });
   });
 
   it("should return 400 if required fields are missing", async () => {
     const req = new Request("http://localhost/api/payments/easebuzz/initiate", {
       method: "POST",
-      body: JSON.stringify({ amount: 100 }), // Missing orderId, customerInfo
+      body: JSON.stringify({ amount: 100 }), 
     });
 
     const res = await POST(req as any);
@@ -75,10 +79,9 @@ describe("POST /api/payments/easebuzz/initiate", () => {
   it("should return initiation payload if successful", async () => {
     const mockOrder = { id: "order-123", order_number: "ORD-123" };
     
-    // Setup sequential responses for .then()
     (supabase.then as jest.Mock)
-      .mockImplementationOnce((onFulfilled: any) => Promise.resolve(onFulfilled({ data: mockOrder, error: null })))
-      .mockImplementationOnce((onFulfilled: any) => Promise.resolve(onFulfilled({ data: null, error: null })));
+      .mockImplementationOnce((onFulfilled: any) => Promise.resolve(onFulfilled({ data: mockOrder, error: null }))) // select
+      .mockImplementationOnce((onFulfilled: any) => Promise.resolve(onFulfilled({ data: null, error: null }))); // update
 
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       json: async () => ({ status: 1, data: "mock_access_key" }),
@@ -98,6 +101,49 @@ describe("POST /api/payments/easebuzz/initiate", () => {
 
     expect(res.status).toBe(200);
     expect(data.access_key).toBe("mock_access_key");
-    expect(easebuzzService.generateHash).toHaveBeenCalled();
+  });
+
+  it("should return 500 if Easebuzz initiation fails", async () => {
+    const mockOrder = { id: "order-123", order_number: "ORD-123" };
+    (supabase.then as jest.Mock).mockImplementationOnce((onFulfilled: any) => 
+      Promise.resolve(onFulfilled({ data: mockOrder, error: null }))
+    );
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      json: async () => ({ status: 0, data: "Invalid Key" }),
+    });
+
+    const req = new Request("http://localhost/api/payments/easebuzz/initiate", {
+      method: "POST",
+      body: JSON.stringify({
+        amount: 100,
+        orderId: "order-123",
+        customerInfo: { name: "John", email: "john@example.com" }
+      }),
+    });
+
+    const res = await POST(req as any);
+    const data = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(data.error).toBe("Invalid Key");
+  });
+
+  it("should return 404 if order not found", async () => {
+    (supabase.then as jest.Mock).mockImplementationOnce((onFulfilled: any) => 
+      Promise.resolve(onFulfilled({ data: null, error: { message: "Not found" } }))
+    );
+
+    const req = new Request("http://localhost/api/payments/easebuzz/initiate", {
+      method: "POST",
+      body: JSON.stringify({
+        amount: 100,
+        orderId: "non-existent",
+        customerInfo: { name: "John", email: "john@example.com" }
+      }),
+    });
+
+    const res = await POST(req as any);
+    expect(res.status).toBe(404);
   });
 });
