@@ -30,7 +30,8 @@
 
 ## Integrations & Strategy (Blueprints)
 - **Zoho Ecosystem:** CRM for customer data sync and Books for automated invoicing.
-- **Logistics:** Delhivery API integration for real-time rates and tracking.
+- **Logistics:** Dual-stream integration with Delhivery API (Courier) and Regional Transport (Godown Delivery via Navata, VRL, etc.).
+- **Shipping Calculation:** Automated fallback logic based on weight (>=5kg) and pincode serviceability.
 - **Communications:** Twilio WhatsApp Business API for automated transaction notifications.
 - **SEO:** Structured JSON-LD schemas for Organization, Product, and LocalBusiness.
 
