@@ -33,19 +33,25 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { QuoteReviewModal } from "@/components/admin/quote-review-modal";
 
 interface Quote {
   id: string;
   status: string;
   total_amount: number;
+  subtotal: number;
+  tax_amount: number;
   created_at: string;
   valid_until?: string;
+  admin_notes?: string;
+  customer_notes?: string;
   users: {
     first_name: string;
     last_name: string;
     email?: string;
     company_name?: string;
   };
+  b2b_quote_items: any[];
 }
 
 interface PaginationInfo {
@@ -66,6 +72,9 @@ export default function QuotesAdminPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  
+  const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchQuotes = useCallback(async () => {
     try {
@@ -103,11 +112,53 @@ export default function QuotesAdminPage() {
     } finally {
       setLoading(false);
     }
-  }, [pagination.page, pagination.limit, statusFilter, searchTerm]);
+  }, [pagination?.page, pagination?.limit, statusFilter, searchTerm]);
 
   useEffect(() => {
     fetchQuotes();
   }, [fetchQuotes]);
+
+  const handleSaveQuote = async (updatedData: any) => {
+    if (!selectedQuote) return;
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await fetch(`/api/admin/quotes`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({
+          quoteId: selectedQuote.id,
+          status: 'under_review',
+          items: updatedData.items,
+          notes: updatedData.adminNotes,
+          customerNotes: updatedData.customerNotes,
+          subtotal: updatedData.subtotal,
+          taxAmount: updatedData.tax,
+          totalAmount: updatedData.total,
+        }),
+      });
+
+      if (response.ok) {
+        setIsModalOpen(false);
+        fetchQuotes();
+      } else {
+        alert("Failed to save changes");
+      }
+    } catch (error) {
+      console.error("Save error:", error);
+    }
+  };
+
+  const handleApproveQuote = async (updatedData: any) => {
+    if (!selectedQuote) return;
+    
+    // Approval logic will be expanded in Phase 3
+    console.log("Approving quote...", updatedData);
+    alert("Approval logic will be implemented in the next phase.");
+  };
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
@@ -230,7 +281,14 @@ export default function QuotesAdminPage() {
                         {new Date(quote.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => {
+                            setSelectedQuote(quote);
+                            setIsModalOpen(true);
+                          }}
+                        >
                           <Eye className="h-4 w-4 mr-2" />
                           Review
                         </Button>
@@ -245,7 +303,7 @@ export default function QuotesAdminPage() {
           {/* Pagination */}
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-zinc-500">
+              <div className="text-sm text-earth-500">
                 Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
                 {Math.min(pagination.page * pagination.limit, pagination.total)}{" "}
                 of {pagination.total} quotes
@@ -278,6 +336,14 @@ export default function QuotesAdminPage() {
           )}
         </CardContent>
       </Card>
+
+      <QuoteReviewModal 
+        quote={selectedQuote}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveQuote}
+        onApprove={handleApproveQuote}
+      />
     </div>
   );
 }
