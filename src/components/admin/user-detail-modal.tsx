@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -19,14 +20,38 @@ import {
   FileText
 } from "lucide-react";
 import { AdminUser } from "@/types/admin";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface UserDetailModalProps {
   user: AdminUser | null;
   isOpen: boolean;
   onClose: () => void;
+  onRoleChange?: (role: string) => void;
+  onStatusChange?: (status: string) => void;
 }
 
-export function UserDetailModal({ user, isOpen, onClose }: UserDetailModalProps) {
+export function UserDetailModal({ 
+  user, 
+  isOpen, 
+  onClose,
+  onRoleChange,
+  onStatusChange 
+}: UserDetailModalProps) {
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Reset editing state when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setIsEditing(false);
+    }
+  }, [isOpen]);
+
   if (!user) return null;
 
   return (
@@ -42,20 +67,56 @@ export function UserDetailModal({ user, isOpen, onClose }: UserDetailModalProps)
                 <DialogTitle className="text-2xl font-bold">
                   {user.first_name} {user.last_name}
                 </DialogTitle>
-                <div className="flex gap-2 mt-1">
-                  <Badge variant="outline" className="bg-zinc-800 border-zinc-700 text-zinc-300">
-                    {user.role.replace('_', ' ')}
-                  </Badge>
-                  <Badge 
-                    variant="outline" 
-                    className={
-                      user.status === 'active' 
-                        ? 'bg-green-500/10 text-green-500 border-green-500/20' 
-                        : 'bg-red-500/10 text-red-500 border-red-500/20'
-                    }
-                  >
-                    {user.status}
-                  </Badge>
+                <div className="flex gap-2 mt-1 h-8 items-center">
+                  {isEditing ? (
+                    <>
+                      <Select 
+                        value={user.role} 
+                        onValueChange={onRoleChange}
+                      >
+                        <SelectTrigger className="w-[120px] h-7 text-xs bg-zinc-800 border-zinc-700">
+                          <SelectValue placeholder="Role" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
+                          <SelectItem value="customer">Customer</SelectItem>
+                          <SelectItem value="b2b_client">B2B Client</SelectItem>
+                          <SelectItem value="vendor">Vendor</SelectItem>
+                          <SelectItem value="staff">Staff</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      <Select 
+                        value={user.status} 
+                        onValueChange={onStatusChange}
+                      >
+                        <SelectTrigger className="w-[120px] h-7 text-xs bg-zinc-800 border-zinc-700">
+                          <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="suspended">Suspended</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </>
+                  ) : (
+                    <>
+                      <Badge variant="outline" className="bg-zinc-800 border-zinc-700 text-zinc-300">
+                        {user.role.replace('_', ' ')}
+                      </Badge>
+                      <Badge 
+                        variant="outline" 
+                        className={
+                          user.status === 'active' 
+                            ? 'bg-green-500/10 text-green-500 border-green-500/20' 
+                            : 'bg-red-500/10 text-red-500 border-red-500/20'
+                        }
+                      >
+                        {user.status}
+                      </Badge>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -143,8 +204,11 @@ export function UserDetailModal({ user, isOpen, onClose }: UserDetailModalProps)
           <Button variant="outline" onClick={onClose} className="border-zinc-800 hover:bg-zinc-800">
             Close
           </Button>
-          <Button className="bg-white text-black hover:bg-zinc-200 font-semibold">
-            Edit User Profile
+          <Button 
+            className="bg-white text-black hover:bg-zinc-200 font-semibold"
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            {isEditing ? 'Done' : 'Edit User Profile'}
           </Button>
         </div>
       </DialogContent>

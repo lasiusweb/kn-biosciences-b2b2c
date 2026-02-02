@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import {
@@ -22,17 +20,22 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Search, 
-  Filter, 
   ChevronLeft, 
   ChevronRight,
-  MoreVertical,
+  Eye,
   UserCheck,
-  UserX,
-  Shield,
-  Eye
+  UserX
 } from 'lucide-react';
 import { AdminUser } from '@/types/admin';
 import { UserDetailModal } from '@/components/admin/user-detail-modal';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export default function UserDirectoryPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -44,11 +47,18 @@ export default function UserDirectoryPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [actionType, setActionType] = useState<'role' | 'status' | null>(null);
+  const [pendingUpdate, setPendingUpdate] = useState<Partial<AdminUser> | null>(null);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } = {} } = await supabase.auth.getSession();
+      if (!session) {
+        // Handle unauthenticated state if necessary, e.g., redirect to login
+        return;
+      }
       const params = new URLSearchParams({
         page: page.toString(),
         limit: '10',
@@ -59,7 +69,7 @@ export default function UserDirectoryPage() {
 
       const response = await fetch(`/api/admin/users?${params}`, {
         headers: {
-          Authorization: `Bearer ${session?.access_token}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
       });
 
@@ -67,6 +77,8 @@ export default function UserDirectoryPage() {
         const data = await response.json();
         setUsers(data.users);
         setTotalPages(data.pagination.totalPages);
+      } else {
+        console.error('Failed to fetch users:', response.statusText);
       }
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -78,6 +90,49 @@ export default function UserDirectoryPage() {
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
+
+  const handleUpdateUser = async () => {
+    if (!selectedUser || !pendingUpdate) return;
+
+    try {
+      const { data: { session } = {} } = await supabase.auth.getSession();
+      if (!session) {
+        // Handle unauthenticated state
+        return;
+      }
+      const response = await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ userId: selectedUser.id, ...pendingUpdate }),
+      });
+
+      if (response.ok) {
+        console.log("User updated successfully");
+        fetchUsers();
+        setIsConfirmModalOpen(false);
+        setPendingUpdate(null);
+        setSelectedUser(null);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update user');
+      }
+    } catch (error: any) {
+      console.error("Update failed:", error.message);
+      setIsConfirmModalOpen(false);
+      setPendingUpdate(null);
+      setSelectedUser(null);
+    }
+  };
+
+  const openConfirmModal = (user: AdminUser, type: 'role' | 'status', update: Partial<AdminUser>) => {
+    setSelectedUser(user);
+    setActionType(type);
+    setPendingUpdate(update);
+    setIsConfirmModalOpen(true);
+  };
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
@@ -92,7 +147,7 @@ export default function UserDirectoryPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">User Directory</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-white">User Directory</h1>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4">
@@ -171,43 +226,53 @@ export default function UserDirectoryPage() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={getRoleBadgeColor(user.role)}>
-                      {user.role.replace('_', ' ')}
-                    </Badge>
+                    <Select
+                      value={user.role}
+                      onValueChange={(newRole) => openConfirmModal(user, 'role', { role: newRole as any })}
+                    >
+                      <SelectTrigger className="w-[120px] h-8 text-xs bg-zinc-800 border-zinc-700">
+                        <SelectValue placeholder="Role" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
+                        <SelectItem value="customer">Customer</SelectItem>
+                        <SelectItem value="b2b_client">B2B Client</SelectItem>
+                        <SelectItem value="vendor">Vendor</SelectItem>
+                        <SelectItem value="staff">Staff</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </TableCell>
                   <TableCell>
-                    <Badge 
-                      variant="outline" 
-                      className={
-                        user.status === 'active' 
-                          ? 'bg-green-500/10 text-green-500 border-green-500/20' 
-                          : 'bg-red-500/10 text-red-500 border-red-500/20'
-                      }
+                    <Select
+                      value={user.status}
+                      onValueChange={(newStatus) => openConfirmModal(user, 'status', { status: newStatus as any })}
                     >
-                      {user.status}
-                    </Badge>
+                      <SelectTrigger className="w-[120px] h-8 text-xs bg-zinc-800 border-zinc-700">
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-zinc-950 border-zinc-800 text-white">
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="suspended">Suspended</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </TableCell>
                   <TableCell className="text-right text-zinc-300">{user.totalOrders || 0}</TableCell>
                   <TableCell className="text-right text-white font-medium">
                     ₹{(user.totalSpent || 0).toLocaleString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="text-zinc-400 hover:text-white"
-                        onClick={() => {
-                          setSelectedUser(user);
-                          setIsDetailModalOpen(true);
-                        }}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="text-zinc-400 hover:text-white"
+                      onClick={() => {
+                        setSelectedUser(user);
+                        setIsDetailModalOpen(true);
+                      }}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -248,7 +313,32 @@ export default function UserDirectoryPage() {
         user={selectedUser}
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
+        onRoleChange={(role) => selectedUser && openConfirmModal(selectedUser, 'role', { role: role as any })}
+        onStatusChange={(status) => selectedUser && openConfirmModal(selectedUser, 'status', { status: status as any })}
       />
+
+      <Dialog open={isConfirmModalOpen} onOpenChange={setIsConfirmModalOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-zinc-950 border-zinc-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Confirm {actionType === 'role' ? 'Role Change' : 'Status Change'}</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to change {selectedUser?.first_name} {selectedUser?.last_name}'s {actionType === 'role' ? 'role to' : 'status to'}{' '}
+              <span className="font-semibold text-white">
+                {actionType === 'role' ? (pendingUpdate?.role) : (pendingUpdate?.status)}
+              </span>
+              ?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsConfirmModalOpen(false)} className="border-zinc-800 hover:bg-zinc-800">
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateUser} className="bg-red-600 hover:bg-red-700">
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
