@@ -1,6 +1,6 @@
 # Implementation Plan: Logistics Integration & Serviceability (Track: logistics_integration_20260202)
 
-## Phase 1: API Integration & Data Layer
+## Phase 1: API Integration & Data Layer [checkpoint: 0c86bd5]
 - [x] Task: Define Logistics Types and Interfaces [7f4c932]
     - [ ] Update `src/types/index.ts` with `LogisticsType` (COURIER, TRANSPORT) and `ShippingRate` interfaces.
     - [ ] Add constants for Transport Carriers (Navata, VRL, etc.).
