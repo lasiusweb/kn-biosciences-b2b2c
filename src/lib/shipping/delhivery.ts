@@ -64,8 +64,6 @@ export class DelhiveryClient {
 
   /**
    * Calculate shipping rates based on weight and destination
-   * Note: This is a simplified version. Real implementation would use Delhivery's 'Fetch Waybill' or 'Calculate Rate' API.
-   * For Phase 1, we might use a logic based on their rate chart if dynamic API is complex.
    */
   async calculateRate(pincode: string, weightGrams: number): Promise<ShippingRate | null> {
     const isServiceable = await this.checkServiceability(pincode);
@@ -73,7 +71,6 @@ export class DelhiveryClient {
     if (!isServiceable) return null;
 
     // TODO: Implement actual Delhivery rate calculation API call
-    // For now, using a placeholder calculation: Base ₹100 + ₹50 per kg
     const baseRate = 100;
     const weightKg = weightGrams / 1000;
     const calculatedCost = baseRate + Math.ceil(weightKg) * 50;
@@ -83,11 +80,42 @@ export class DelhiveryClient {
       carrier_name: "Delhivery",
       cost: calculatedCost,
       handling_fee: 0,
-      estimated_delivery_days: 5, // Placeholder
+      estimated_delivery_days: 5,
       is_serviceable: true,
       description: "Standard Home Delivery",
     };
   }
 }
 
-export const delhiveryClient = new DelhiveryClient();`n/**`n * Unified utility to calculate all available shipping options for a given destination and weight.`n */`nexport async function calculateShippingOptions(`n  pincode: string,`n  weightGrams: number`n): Promise<ShippingRate[]> {`n  const options: ShippingRate[] = [];`n`n  // 1. Check Delhivery (Courier)`n  const courierRate = await delhiveryClient.calculateRate(pincode, weightGrams);`n  if (courierRate) {`n    options.push(courierRate);`n  }`n`n  // 2. Always offer Transport Godown if Weight > 5kg or if Courier is unserviceable`n  // This provides users with more economical options for bulk, even if courier is available.`n  if (!courierRate || weightGrams >= 5000) {`n    options.push({`n      type: \"TRANSPORT\",`n      carrier_name: \"Regional Transport (Godown Delivery)\",`n      cost: 0, // Freight is To-Pay at godown`n      handling_fee: 150, // Flat handling/loading fee for platform`n      is_serviceable: true,`n      description: \"Pay freight at Godown. Carriers: Navata, VRL, Kranthi, etc.\",`n    });`n  }`n`n  return options;`n}
+export const delhiveryClient = new DelhiveryClient();
+
+/**
+ * Unified utility to calculate all available shipping options for a given destination and weight.
+ */
+export async function calculateShippingOptions(
+  pincode: string,
+  weightGrams: number,
+  client: DelhiveryClient = delhiveryClient
+): Promise<ShippingRate[]> {
+  const options: ShippingRate[] = [];
+
+  // 1. Check Delhivery (Courier)
+  const courierRate = await client.calculateRate(pincode, weightGrams);
+  if (courierRate) {
+    options.push(courierRate);
+  }
+
+  // 2. Always offer Transport Godown if Weight > 5kg or if Courier is unserviceable
+  if (!courierRate || weightGrams >= 5000) {
+    options.push({
+      type: "TRANSPORT",
+      carrier_name: "Regional Transport (Godown Delivery)",
+      cost: 0, // Freight is To-Pay at godown
+      handling_fee: 150, // Flat handling/loading fee for platform
+      is_serviceable: true,
+      description: "Pay freight at Godown. Carriers: Navata, VRL, Kranthi, etc.",
+    });
+  }
+
+  return options;
+}
