@@ -28,8 +28,8 @@
 - [x] Task: Update Admin Order Detail View [5dbf5a2]
     - [x] Modify `src/app/admin/orders/[id]/page.tsx` to show logistics type and selected carrier.
     - [x] Add fields for manual tracking updates for Godown deliveries.
-- [ ] Task: Integrate Shipping with Order Creation
-    - [ ] Ensure the handling fee or shipping cost is correctly saved to the database during checkout.
+- [x] Task: Integrate Shipping with Order Creation [7dd3b31]
+    - [x] Ensure the handling fee or shipping cost is correctly saved to the database during checkout.
 - [ ] Task: Write Integration Tests
     - [ ] Verify the full flow from pincode entry to order fulfillment data storage.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Admin & Order Management' (Protocol in workflow.md)
