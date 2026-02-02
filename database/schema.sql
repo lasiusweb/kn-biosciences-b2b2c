@@ -294,6 +294,83 @@ CREATE TRIGGER update_b2b_quotes_updated_at BEFORE UPDATE ON b2b_quotes
 CREATE TRIGGER update_blog_posts_updated_at BEFORE UPDATE ON blog_posts
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+-- Atomic Fulfillment RPC
+CREATE OR REPLACE FUNCTION confirm_order_and_deduct_inventory(
+    p_order_id UUID,
+    p_payment_id TEXT,
+    p_payment_method TEXT
+) RETURNS VOID AS $$
+DECLARE
+    item RECORD;
+    v_remaining_qty INTEGER;
+    v_batch_id UUID;
+    v_deduct_qty INTEGER;
+    v_user_id UUID;
+BEGIN
+    -- 1. Update Order Status
+    UPDATE orders 
+    SET 
+        status = 'confirmed',
+        payment_status = 'paid',
+        payment_id = p_payment_id,
+        payment_method = p_payment_method,
+        updated_at = NOW()
+    WHERE id = p_order_id
+    RETURNING user_id INTO v_user_id;
+
+    -- 2. Deduct Inventory (FEFO) for each item in the order
+    FOR item IN 
+        SELECT variant_id, quantity 
+        FROM order_items 
+        WHERE order_id = p_order_id
+    LOOP
+        v_remaining_qty := item.quantity;
+        
+        WHILE v_remaining_qty > 0 LOOP
+            -- Find the earliest expiring batch with stock
+            SELECT id INTO v_batch_id
+            FROM product_batches
+            WHERE variant_id = item.variant_id 
+              AND status = 'active'
+              AND remaining_quantity > 0
+              AND expiry_date > CURRENT_DATE
+            ORDER BY expiry_date ASC
+            LIMIT 1;
+
+            IF v_batch_id IS NULL THEN
+                RAISE EXCEPTION 'Insufficient stock for variant %', item.variant_id;
+            END IF;
+
+            -- Determine how much to deduct from this batch
+            SELECT LEAST(v_remaining_qty, remaining_quantity) INTO v_deduct_qty
+            FROM product_batches
+            WHERE id = v_batch_id;
+
+            -- Deduct from batch
+            UPDATE product_batches
+            SET remaining_quantity = remaining_quantity - v_deduct_qty
+            WHERE id = v_batch_id;
+
+            -- Link batch to order item (optional update if you want to track which batch fulfilled which item)
+            UPDATE order_items
+            SET batch_id = v_batch_id
+            WHERE order_id = p_order_id AND variant_id = item.variant_id AND batch_id IS NULL;
+
+            v_remaining_qty := v_remaining_qty - v_deduct_qty;
+        END LOOP;
+    END LOOP;
+
+    -- 3. Clear User Cart
+    DELETE FROM cart_items 
+    WHERE cart_id IN (SELECT id FROM carts WHERE user_id = v_user_id);
+
+    UPDATE carts 
+    SET status = 'converted' 
+    WHERE user_id = v_user_id AND status = 'active';
+
+END;
+$$ LANGUAGE plpgsql;
+
 -- Row Level Security (RLS)
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE addresses ENABLE ROW LEVEL SECURITY;
