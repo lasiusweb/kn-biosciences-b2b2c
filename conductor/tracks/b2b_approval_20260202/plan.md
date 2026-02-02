@@ -21,9 +21,9 @@
 - [x] Task: Conductor - User Manual Verification 'Sales Manager Quote Management' (Protocol in workflow.md) [852d9fc]
 
 ## Phase 3: Approval Logic & Order Conversion
-- [ ] Task: Implement Quote Approval API
-    - [ ] Create `/api/admin/quotes/approve` endpoint.
-    - [ ] Implement atomic transaction: Update Quote Status -> Create Order -> Link Order ID.
+- [x] Task: Implement Quote Approval API [d17e8fe]
+    - [x] Create `/api/admin/quotes/approve` endpoint.
+    - [x] Implement atomic transaction: Update Quote Status -> Create Order -> Link Order ID.
 - [ ] Task: Integrate Automated Payment Link
     - [ ] Trigger Razorpay/Easebuzz payment link creation for the resulting order.
     - [ ] Store the payment link URL in the `orders` table.
