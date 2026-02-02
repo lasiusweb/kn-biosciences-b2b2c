@@ -18,7 +18,7 @@
     - [x] Verify rendering and search behavior in `src/app/admin/users/page.test.tsx`.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: User Directory UI' [fa78013]
 
-## Phase 3: User Details & Management
+## Phase 3: User Details & Management [checkpoint: a95c9dd]
 - [x] Task: Implement User Detail Modal/View [9994feb]
     - [x] Build the detailed profile view with stats and addresses.
 - [x] Task: Implement Role/Status Update Logic [59f7bb3]
@@ -28,4 +28,4 @@
     - [x] Verify the full end-to-end flow of updating a user role.
 
 ## Phase 4: Final Verification
-- [ ] Task: Conductor - User Manual Verification 'User Management'
+- [x] Task: Conductor - User Manual Verification 'User Management' [a95c9dd]
