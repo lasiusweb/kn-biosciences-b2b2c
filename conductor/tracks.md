@@ -36,3 +36,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [x] **Track: B2C Checkout & Payment Lifecycle**
 *Link: [./tracks/b2c_checkout_20260202/](./tracks/b2c_checkout_20260202/)*
+
+---
+
+- [~] **Track: Pending Pages Design and Implementation**
+*Link: [./tracks/pending_pages_20260203/](./tracks/pending_pages_20260203/)*

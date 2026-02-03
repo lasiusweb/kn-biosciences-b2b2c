@@ -517,6 +517,169 @@ export interface Database {
           created_at?: string;
         };
       };
+      wishlist: {
+        Row: {
+          id: string;
+          user_id: string;
+          variant_id: string;
+          added_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          variant_id: string;
+          added_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          variant_id?: string;
+          added_at?: string;
+        };
+      };
+      legal_content: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          content: string;
+          version: string;
+          last_updated: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          content: string;
+          version?: string;
+          last_updated?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          slug?: string;
+          title?: string;
+          content?: string;
+          version?: string;
+          last_updated?: string;
+          created_at?: string;
+        };
+      };
+      faqs: {
+        Row: {
+          id: string;
+          category: string;
+          question: string;
+          answer: string;
+          display_order: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          category: string;
+          question: string;
+          answer: string;
+          display_order?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          category?: string;
+          question?: string;
+          answer?: string;
+          display_order?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      contact_submissions: {
+        Row: {
+          id: string;
+          name: string;
+          email: string;
+          phone: string | null;
+          subject: string;
+          message: string;
+          status: "new" | "processed" | "spam";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          email: string;
+          phone?: string | null;
+          subject: string;
+          message: string;
+          status?: "new" | "processed" | "spam";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          email?: string;
+          phone?: string | null;
+          subject?: string;
+          message?: string;
+          status?: "new" | "processed" | "spam";
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      blog_posts: {
+        Row: {
+          id: string;
+          title: string;
+          slug: string;
+          excerpt: string | null;
+          content: string;
+          featured_image: string | null;
+          author_id: string | null;
+          category: string | null;
+          tags: string[] | null;
+          status: "draft" | "published";
+          published_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          slug: string;
+          excerpt?: string | null;
+          content: string;
+          featured_image?: string | null;
+          author_id?: string | null;
+          category?: string | null;
+          tags?: string[] | null;
+          status?: "draft" | "published";
+          published_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          slug?: string;
+          excerpt?: string | null;
+          content?: string;
+          featured_image?: string | null;
+          author_id?: string | null;
+          category?: string | null;
+          tags?: string[] | null;
+          status?: "draft" | "published";
+          published_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       coupons: {
         Row: {
           id: string;
