@@ -1,14 +1,14 @@
 # Implementation Plan: Pending Pages Design and Implementation (Track: pending_pages_20260203)
 
-## Phase 1: Data Schema & API Setup [checkpoint: pending]
-- [~] Task: Create Supabase Tables for CMS Content
-    - [ ] Define and apply migration for `legal_content` table (id, slug, title, content, version, last_updated).
-    - [ ] Define and apply migration for `faqs` table (id, category, question, answer, order).
-    - [ ] Define and apply migration for `contact_submissions` table (id, name, email, phone, subject, message, status).
-- [ ] Task: Implement Content Fetching Services
-    - [ ] Create `src/lib/cms-service.ts` for fetching legal and FAQ data.
-    - [ ] Write unit tests for content retrieval and error handling.
-- [ ] Task: Conductor - User Manual Verification 'Data Schema & API Setup' (Protocol in workflow.md)
+## Phase 1: Data Schema & API Setup [checkpoint: 013d9a2]
+- [x] Task: Create Supabase Tables for CMS Content [013d9a2]
+    - [x] Define and apply migration for `legal_content` table (id, slug, title, content, version, last_updated).
+    - [x] Define and apply migration for `faqs` table (id, category, question, answer, order).
+    - [x] Define and apply migration for `contact_submissions` table (id, name, email, phone, subject, message, status).
+- [x] Task: Implement Content Fetching Services [013d9a2]
+    - [x] Create `src/lib/cms-service.ts` for fetching legal and FAQ data.
+    - [x] Write unit tests for content retrieval and error handling.
+- [x] Task: Conductor - User Manual Verification 'Data Schema & API Setup' (Protocol in workflow.md) [013d9a2]
 
 ## Phase 2: Contact Us & About Us Implementation [checkpoint: pending]
 - [ ] Task: Build About Us Page
