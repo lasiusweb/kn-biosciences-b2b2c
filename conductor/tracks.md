@@ -34,5 +34,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: B2C Checkout & Payment Lifecycle**
+- [x] **Track: B2C Checkout & Payment Lifecycle**
 *Link: [./tracks/b2c_checkout_20260202/](./tracks/b2c_checkout_20260202/)*
