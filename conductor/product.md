@@ -17,6 +17,7 @@ KN Biosciences is a comprehensive B2C/B2B e-commerce platform for agricultural a
 - **Unified E-commerce Storefront:** A dynamic, searchable product catalog optimized for both B2C and B2B segments.
 - **Advanced Quote Management:** A dedicated B2B portal for requesting and approving wholesale quotes.
 - **Traceable Inventory System:** Real-time stock tracking with batch-level granularity and automated low-stock alerts.
+- **Production-Ready B2C Checkout:** Secure retail payment lifecycle featuring Easebuzz integration, automated FEFO inventory reconciliation, and real-time fulfillment triggers.
 - **Integrated Admin Super-App:** A unified control center for managing the catalog, orders, inventory, CMS content, and marketing campaigns with real-time business intelligence.
 - **Advanced User & Role Management:** Comprehensive administrative tools for managing user profiles, role-based access control (RBAC), and account status.
 - **Dual-Stream Logistics:** Integrated courier services (Delhivery) and regional transport (Godown Delivery) with real-time serviceability and estimated delivery tracking.
