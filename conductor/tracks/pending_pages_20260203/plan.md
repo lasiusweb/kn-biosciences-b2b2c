@@ -10,18 +10,18 @@
     - [x] Write unit tests for content retrieval and error handling.
 - [x] Task: Conductor - User Manual Verification 'Data Schema & API Setup' (Protocol in workflow.md) [013d9a2]
 
-## Phase 2: Contact Us & About Us Implementation [checkpoint: pending]
-- [x] Task: Build About Us Page [c8a9d12]
+## Phase 2: Contact Us & About Us Implementation [checkpoint: dcde006]
+- [x] Task: Build About Us Page [dcde006]
     - [x] Create `src/app/about/page.tsx` with Mission, Story, Team, and Sustainability sections.
     - [x] Implement responsive layout and animations using GSAP/Framer Motion.
-- [x] Task: Build Contact Us Page & Integration [e9a8b13]
+- [x] Task: Build Contact Us Page & Integration [dcde006]
     - [x] Create `src/app/contact/page.tsx` with interactive form and location details.
     - [x] Implement `/api/contact/submit` to handle Supabase storage and email trigger.
     - [x] Integrate Zoho CRM lead sync logic.
-- [x] Task: Write Tests for Contact Flow [f7d6e5a]
+- [x] Task: Write Tests for Contact Flow [dcde006]
     - [x] Write unit tests for form validation and API submission.
     - [x] Mock Zoho/Email services to verify integration logic.
-- [ ] Task: Conductor - User Manual Verification 'Contact & About Us' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Contact & About Us' (Protocol in workflow.md) [dcde006]
 
 ## Phase 3: FAQ & Legal Pages [checkpoint: pending]
 - [ ] Task: Build FAQ Page
