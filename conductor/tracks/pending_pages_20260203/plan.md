@@ -24,9 +24,9 @@
 - [x] Task: Conductor - User Manual Verification 'Contact & About Us' (Protocol in workflow.md) [dcde006]
 
 ## Phase 3: FAQ & Legal Pages [checkpoint: pending]
-- [ ] Task: Build FAQ Page
-    - [ ] Create `src/app/faq/page.tsx` with accordion-style layout and categories.
-    - [ ] Implement client-side search functionality for FAQs.
+- [x] Task: Build FAQ Page [786583e]
+    - [x] Create `src/app/faq/page.tsx` with accordion-style layout and categories.
+    - [x] Implement client-side search functionality for FAQs.
 - [ ] Task: Build Dynamic Legal Pages
     - [ ] Create dynamic routes for `/privacy-policy`, `/terms-and-conditions`, and `/refund-policy`.
     - [ ] Implement shared `LegalLayout` component for consistent typography.
