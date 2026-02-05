@@ -23,7 +23,7 @@
     - [x] Mock Zoho/Email services to verify integration logic.
 - [x] Task: Conductor - User Manual Verification 'Contact & About Us' (Protocol in workflow.md) [dcde006]
 
-## Phase 3: FAQ & Legal Pages [checkpoint: pending]
+## Phase 3: FAQ & Legal Pages [checkpoint: 1327908]
 - [x] Task: Build FAQ Page [786583e]
     - [x] Create `src/app/faq/page.tsx` with accordion-style layout and categories.
     - [x] Implement client-side search functionality for FAQs.
