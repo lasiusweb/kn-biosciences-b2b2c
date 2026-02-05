@@ -41,8 +41,28 @@ export default async function LegalPage({ params }: PageProps) {
     notFound();
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: content.title,
+    description: `KN Biosciences ${content.title} - Version ${content.version}`,
+    dateModified: content.last_updated,
+    publisher: {
+      '@type': 'Organization',
+      name: 'KN Biosciences',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://knbiosciences.in/logo.png',
+      },
+    },
+  };
+
   return (
     <article className="prose prose-stone lg:prose-lg dark:prose-invert max-w-none">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <h1 className="text-3xl md:text-4xl font-bold text-[#795548] mb-4">
         {content.title}
       </h1>
