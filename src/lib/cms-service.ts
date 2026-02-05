@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { Database } from "@/types/database";
 
 export type LegalContent = Database["public"]["Tables"]["legal_content"]["Row"];
@@ -9,7 +9,8 @@ export const cmsService = {
    * Fetch legal content by its slug (e.g., 'privacy-policy')
    */
   async getLegalContent(slug: string): Promise<LegalContent | null> {
-    const { data, error } = await supabase
+    const client = supabaseAdmin || supabase;
+    const { data, error } = await client
       .from("legal_content")
       .select("*")
       .eq("slug", slug)
@@ -17,7 +18,10 @@ export const cmsService = {
 
     if (error) {
       // In production, you might want to log this to a monitoring service
-      console.error(`Error fetching legal content for slug: ${slug}`, error);
+      console.error(
+        `Error fetching legal content for slug: ${slug}`, 
+        JSON.stringify(error, null, 2)
+      );
       return null;
     }
 
@@ -28,14 +32,15 @@ export const cmsService = {
    * Fetch all active FAQs, ordered by display_order
    */
   async getFAQs(): Promise<FAQ[]> {
-    const { data, error } = await supabase
+    const client = supabaseAdmin || supabase;
+    const { data, error } = await client
       .from("faqs")
       .select("*")
       .eq("is_active", true)
       .order("display_order", { ascending: true });
 
     if (error) {
-      console.error("Error fetching FAQs", error);
+      console.error("Error fetching FAQs", JSON.stringify(error, null, 2));
       return [];
     }
 
