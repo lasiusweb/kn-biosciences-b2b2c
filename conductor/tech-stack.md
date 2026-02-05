@@ -14,6 +14,10 @@
 - **Roles:** Admin, Staff, Sales Manager, Vendor, B2B Client, Customer (default)
 - **RBAC:** Server-side JWT validation and role-based route protection.
 
+## Informational & CMS
+- **Routes:** `/about`, `/contact`, `/faq`, `/privacy-policy`, `/terms-and-conditions`, `/refund-policy`.
+- **CMS:** Dynamic content management for Legal and FAQ sections via Supabase tables (`legal_content`, `faqs`).
+
 ## Phase 3: Storefront Core
 - **Routing:** `/shop`, `/shop/segment/[slug]`, `/shop/crop/[slug]`, `/product/[slug]`, `/cart`.
 - **Components:** ProductCard, ProductFilters, ProductDetail, CartDrawer.
@@ -32,8 +36,8 @@
 - **Zoho Ecosystem:** CRM for customer data sync and Books for automated invoicing.
 - **Logistics:** Dual-stream integration with Delhivery API (Courier) and Regional Transport (Godown Delivery via Navata, VRL, etc.).
 - **Shipping Calculation:** Automated fallback logic based on weight (>=5kg) and pincode serviceability.
+- **SEO:** Structured JSON-LD schemas for Organization, Product, LocalBusiness, FAQPage, Article, AboutPage, and ContactPage.
 - **Communications:** Twilio WhatsApp Business API for automated transaction notifications.
-- **SEO:** Structured JSON-LD schemas for Organization, Product, and LocalBusiness.
 
 ## Infrastructure & Quality
 - **Deployment:** Vercel
