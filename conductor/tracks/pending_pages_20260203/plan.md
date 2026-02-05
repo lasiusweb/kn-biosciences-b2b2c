@@ -33,13 +33,13 @@
 - [x] Task: Write UI & Integration Tests [786583e, 7a399cd]
     - [x] Verify FAQ search and accordion interactions.
     - [x] Test dynamic loading of legal content from Supabase.
-- [ ] Task: Conductor - User Manual Verification 'FAQ & Legal Pages' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'FAQ & Legal Pages' (Protocol in workflow.md) [1327908]
 
-## Phase 4: SEO & Final Polish [checkpoint: pending]
-- [ ] Task: Implement Metadata & JSON-LD
-    - [ ] Add optimized meta tags and structured data to all new pages.
-    - [ ] Verify social sharing previews (Open Graph).
-- [ ] Task: Final Quality Audit
-    - [ ] Run accessibility audit (Lighthouse/Axe) on all new routes.
-    - [ ] Verify mobile responsiveness and performance metrics.
-- [ ] Task: Conductor - User Manual Verification 'SEO & Final Polish' (Protocol in workflow.md)
+## Phase 4: SEO & Final Polish [checkpoint: 29703d8]
+- [x] Task: Implement Metadata & JSON-LD [249dced]
+    - [x] Add optimized meta tags and structured data to all new pages.
+    - [x] Verify social sharing previews (Open Graph).
+- [x] Task: Final Quality Audit [29703d8]
+    - [x] Run accessibility audit (Lighthouse/Axe) on all new routes.
+    - [x] Verify mobile responsiveness and performance metrics.
+- [x] Task: Conductor - User Manual Verification 'SEO & Final Polish' (Protocol in workflow.md) [29703d8]
