@@ -27,12 +27,12 @@
 - [x] Task: Build FAQ Page [786583e]
     - [x] Create `src/app/faq/page.tsx` with accordion-style layout and categories.
     - [x] Implement client-side search functionality for FAQs.
-- [ ] Task: Build Dynamic Legal Pages
-    - [ ] Create dynamic routes for `/privacy-policy`, `/terms-and-conditions`, and `/refund-policy`.
-    - [ ] Implement shared `LegalLayout` component for consistent typography.
-- [ ] Task: Write UI & Integration Tests
-    - [ ] Verify FAQ search and accordion interactions.
-    - [ ] Test dynamic loading of legal content from Supabase.
+- [x] Task: Build Dynamic Legal Pages [7a399cd]
+    - [x] Create dynamic routes for `/privacy-policy`, `/terms-and-conditions`, and `/refund-policy`.
+    - [x] Implement shared `LegalLayout` component for consistent typography.
+- [x] Task: Write UI & Integration Tests [786583e, 7a399cd]
+    - [x] Verify FAQ search and accordion interactions.
+    - [x] Test dynamic loading of legal content from Supabase.
 - [ ] Task: Conductor - User Manual Verification 'FAQ & Legal Pages' (Protocol in workflow.md)
 
 ## Phase 4: SEO & Final Polish [checkpoint: pending]
