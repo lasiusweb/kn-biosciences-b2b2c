@@ -216,6 +216,15 @@ export async function POST(
     }
 
     // Check if user has purchased this product
+    // First get product variants
+    const { data: variants } = await supabase
+      .from("product_variants")
+      .select("id")
+      .eq("product_id", product.id);
+
+    const variantIds = variants?.map(v => v.id) || [];
+
+    // Then check if user has purchased any variant
     const { data: orderItem } = await supabase
       .from("order_items")
       .select(`
@@ -225,9 +234,7 @@ export async function POST(
           status
         )
       `)
-      .eq("variant_id", in `
-        SELECT id FROM product_variants WHERE product_id = '${product.id}'
-      `)
+      .in("variant_id", variantIds)
       .eq("orders.user_id", user.id)
       .eq("orders.status", "delivered")
       .single();

@@ -598,41 +598,6 @@ export interface Database {
           updated_at?: string;
         };
       };
-      contact_submissions: {
-        Row: {
-          id: string;
-          name: string;
-          email: string;
-          phone: string | null;
-          subject: string;
-          message: string;
-          status: "new" | "processed" | "spam";
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          email: string;
-          phone?: string | null;
-          subject: string;
-          message: string;
-          status?: "new" | "processed" | "spam";
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          name?: string;
-          email?: string;
-          phone?: string | null;
-          subject?: string;
-          message?: string;
-          status?: "new" | "processed" | "spam";
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
       blog_posts: {
         Row: {
           id: string;
@@ -688,7 +653,7 @@ export interface Database {
           value: number;
           minimum_amount: number | null;
           usage_limit: number | null;
-          usage_count: number;
+          used_count: number;
           status: "active" | "inactive" | "expired";
           starts_at: string | null;
           expires_at: string | null;
@@ -702,7 +667,7 @@ export interface Database {
           value: number;
           minimum_amount?: number | null;
           usage_limit?: number | null;
-          usage_count?: number;
+          used_count?: number;
           status?: "active" | "inactive" | "expired";
           starts_at?: string | null;
           expires_at?: string | null;
@@ -716,12 +681,397 @@ export interface Database {
           value?: number;
           minimum_amount?: number | null;
           usage_limit?: number | null;
-          usage_count?: number;
+          used_count?: number;
           status?: "active" | "inactive" | "expired";
           starts_at?: string | null;
           expires_at?: string | null;
           created_at?: string;
           updated_at?: string;
+        };
+      };
+      product_reviews: {
+        Row: {
+          id: string;
+          product_id: string;
+          user_id: string;
+          order_item_id: string | null;
+          rating: number;
+          title: string | null;
+          content: string;
+          helpful_count: number;
+          verified_purchase: boolean;
+          status: "pending" | "approved" | "rejected";
+          admin_response: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          user_id: string;
+          order_item_id?: string | null;
+          rating: number;
+          title?: string | null;
+          content: string;
+          helpful_count?: number;
+          verified_purchase?: boolean;
+          status?: "pending" | "approved" | "rejected";
+          admin_response?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          user_id?: string;
+          order_item_id?: string | null;
+          rating?: number;
+          title?: string | null;
+          content?: string;
+          helpful_count?: number;
+          verified_purchase?: boolean;
+          status?: "pending" | "approved" | "rejected";
+          admin_response?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      contact_submissions: {
+        Row: {
+          id: string;
+          name: string;
+          email: string;
+          phone: string | null;
+          subject: string;
+          message: string;
+          status: "new" | "processed" | "spam";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          email: string;
+          phone?: string | null;
+          subject: string;
+          message: string;
+          status?: "new" | "processed" | "spam";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          email?: string;
+          phone?: string | null;
+          subject?: string;
+          message?: string;
+          status?: "new" | "processed" | "spam";
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      shipping_pickups: {
+        Row: {
+          id: string;
+          pickup_id: string;
+          pickup_date: string;
+          pickup_time: string;
+          pickup_location: Json;
+          expected_package_count: number;
+          status: "scheduled" | "confirmed" | "picked_up" | "cancelled";
+          remark: string | null;
+          order_ids: string[] | null;
+          response_data: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          pickup_id: string;
+          pickup_date: string;
+          pickup_time: string;
+          pickup_location?: Json;
+          expected_package_count: number;
+          status?: "scheduled" | "confirmed" | "picked_up" | "cancelled";
+          remark?: string | null;
+          order_ids?: string[] | null;
+          response_data?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          pickup_id?: string;
+          pickup_date?: string;
+          pickup_time?: string;
+          pickup_location?: Json;
+          expected_package_count?: number;
+          status?: "scheduled" | "confirmed" | "picked_up" | "cancelled";
+          remark?: string | null;
+          order_ids?: string[] | null;
+          response_data?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      user_interactions: {
+        Row: {
+          id: string;
+          user_id: string;
+          interaction_type: string;
+          product_id: string;
+          rating: number | null;
+          session_id: string;
+          created_at: string;
+          metadata: Json;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          interaction_type: string;
+          product_id: string;
+          rating?: number | null;
+          session_id?: string;
+          created_at?: string;
+          metadata?: Json;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          interaction_type?: string;
+          product_id?: string;
+          rating?: number | null;
+          session_id?: string;
+          created_at?: string;
+          metadata?: Json;
+        };
+      };
+      recommendation_logs: {
+        Row: {
+          id: string;
+          user_id: string;
+          context: Json;
+          recommendations: Json;
+          algorithm_used: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          context: Json;
+          recommendations: Json;
+          algorithm_used?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          context?: Json;
+          recommendations?: Json;
+          algorithm_used?: string | null;
+          created_at?: string;
+        };
+      };
+      recommendation_analytics: {
+        Row: {
+          id: string;
+          request_context: Json;
+          recommendation_count: number;
+          algorithm_used: string | null;
+          processing_time_ms: number | null;
+          user_id: string | null;
+          session_id: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          request_context: Json;
+          recommendation_count: number;
+          algorithm_used?: string | null;
+          processing_time_ms?: number | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          request_context?: Json;
+          recommendation_count?: number;
+          algorithm_used?: string | null;
+          processing_time_ms?: number | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          created_at?: string;
+        };
+      };
+      search_analytics: {
+        Row: {
+          id: string;
+          query: string;
+          filters: Json;
+          result_count: number;
+          user_agent: string | null;
+          ip_address: string | null;
+          user_id: string | null;
+          session_id: string | null;
+          click_position: number | null;
+          selected_result: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          query: string;
+          filters?: Json;
+          result_count: number;
+          user_agent?: string | null;
+          ip_address?: string | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          click_position?: number | null;
+          selected_result?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          query?: string;
+          filters?: Json;
+          result_count?: number;
+          user_agent?: string | null;
+          ip_address?: string | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          click_position?: number | null;
+          selected_result?: Json;
+          created_at?: string;
+        };
+      };
+      product_analytics: {
+        Row: {
+          id: string;
+          product_slug: string;
+          event_type: string;
+          data: Json;
+          user_id: string | null;
+          session_id: string | null;
+          timestamp: string;
+          metadata: Json;
+        };
+        Insert: {
+          id?: string;
+          product_slug: string;
+          event_type: string;
+          data?: Json;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
+          metadata?: Json;
+        };
+        Update: {
+          id?: string;
+          product_slug?: string;
+          event_type?: string;
+          data?: Json;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
+          metadata?: Json;
+        };
+      };
+      page_views: {
+        Row: {
+          id: string;
+          page: string;
+          title: string | null;
+          referrer: string | null;
+          user_agent: string | null;
+          user_id: string | null;
+          session_id: string | null;
+          timestamp: string;
+          load_time: number | null;
+          metadata: Json;
+        };
+        Insert: {
+          id?: string;
+          page: string;
+          title?: string | null;
+          referrer?: string | null;
+          user_agent?: string | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
+          load_time?: number | null;
+          metadata?: Json;
+        };
+        Update: {
+          id?: string;
+          page?: string;
+          title?: string | null;
+          referrer?: string | null;
+          user_agent?: string | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
+          load_time?: number | null;
+          metadata?: Json;
+        };
+      };
+      product_interactions: {
+        Row: {
+          id: string;
+          product_id: string;
+          interaction_type: string;
+          value: number | null;
+          user_id: string | null;
+          session_id: string | null;
+          timestamp: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          interaction_type: string;
+          value?: number | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          interaction_type?: string;
+          value?: number | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
+        };
+      };
+      conversions: {
+        Row: {
+          id: string;
+          event_type: string;
+          value: number | null;
+          currency: string;
+          user_id: string | null;
+          session_id: string | null;
+          timestamp: string;
+        };
+        Insert: {
+          id?: string;
+          event_type: string;
+          value?: number | null;
+          currency?: string;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
+        };
+        Update: {
+          id?: string;
+          event_type?: string;
+          value?: number | null;
+          currency?: string;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
         };
       };
     };
