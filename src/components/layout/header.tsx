@@ -4,9 +4,12 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Menu, X, ShoppingCart, User, Search } from 'lucide-react'
+import { useEnterpriseCart } from '@/hooks/use-enterprise-cart'
+import { MiniCart } from '@/components/shop/mini-cart'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { cart, toggleMiniCart } = useEnterpriseCart()
 
   const mainNav = [
     { name: 'Home', href: '/' },
@@ -82,11 +85,18 @@ export function Header() {
             <Button variant="ghost" size="icon">
               <User className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="relative">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative" 
+              onClick={toggleMiniCart}
+            >
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-2 -right-2 bg-organic-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
-              </span>
+              {!cart.loading && cart.totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-organic-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                  {cart.totalItems > 99 ? '99+' : cart.totalItems}
+                </span>
+              )}
             </Button>
             
             {/* Mobile menu button */}
@@ -154,6 +164,9 @@ export function Header() {
           </div>
         </div>
       )}
+      
+      {/* Mini Cart */}
+      <MiniCart />
     </header>
   )
 }

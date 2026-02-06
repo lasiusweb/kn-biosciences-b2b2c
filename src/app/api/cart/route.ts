@@ -12,26 +12,34 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch user's cart
+    // Fetch user's cart with full product details
     const { data: cartItems, error } = await supabase
       .from("cart_items")
       .select(
         `
         id,
         quantity,
+        added_at,
         product_variants (
           id,
           sku,
           price,
+          compare_price,
+          weight,
+          weight_unit,
           products (
+            id,
             name,
+            slug,
             description,
-            images
+            images,
+            category_id
           )
         )
       `,
       )
-      .eq("user_id", user.id);
+      .eq("user_id", user.id)
+      .order("added_at", { ascending: false });
 
     if (error) {
       return NextResponse.json(
@@ -40,8 +48,20 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Calculate cart totals
+    const totalItems = cartItems?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+    const subtotal = cartItems?.reduce(
+      (sum, item) => sum + (item.product_variants?.price || 0) * item.quantity,
+      0
+    ) || 0;
+
     return NextResponse.json({
       cartItems: cartItems || [],
+      summary: {
+        totalItems,
+        subtotal,
+        itemCount: cartItems?.length || 0,
+      },
       user: {
         id: user.id,
         email: user.email,
@@ -84,23 +104,49 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    if (variant.stock_quantity < quantity) {
+    if ((variant as any).stock_quantity < quantity) {
       return NextResponse.json(
         { error: "Insufficient stock" },
         { status: 400 },
       );
     }
 
-    // Add to cart
-    const { data: cartItem, error: cartError } = await supabase
+    // Check if item already exists in cart and update quantity
+    const { data: existingItem } = await supabase
       .from("cart_items")
-      .insert({
-        user_id: user.id,
-        variant_id: variantId,
-        quantity,
-      })
-      .select()
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("variant_id", variantId)
       .single();
+
+    let cartItem;
+    let cartError;
+
+    if (existingItem) {
+      // Update existing item
+      const newQuantity = (existingItem as any).quantity + quantity;
+      const result = await supabase
+        .from("cart_items")
+        .update({ quantity: newQuantity })
+        .eq("id", (existingItem as any).id)
+        .select()
+        .single();
+      cartItem = result.data;
+      cartError = result.error;
+    } else {
+      // Add new item to cart
+      const result = await supabase
+        .from("cart_items")
+        .insert({
+          user_id: user.id,
+          variant_id: variantId,
+          quantity,
+        })
+        .select()
+        .single();
+      cartItem = result.data;
+      cartError = result.error;
+    }
 
     if (cartError) {
       return NextResponse.json(
@@ -118,6 +164,95 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Cart POST error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { itemId, quantity } = body;
+
+    if (!itemId || !quantity || quantity < 1) {
+      return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+    }
+
+    // Update cart item quantity
+    const { data: cartItem, error } = await supabase
+      .from("cart_items")
+      .update({ quantity })
+      .eq("id", itemId)
+      .eq("user_id", user.id)
+      .select()
+      .single();
+
+    if (error) {
+      return NextResponse.json(
+        { error: "Failed to update cart item" },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json({
+      cartItem,
+      message: "Cart item updated successfully",
+    });
+  } catch (error) {
+    console.error("Cart PUT error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const itemId = searchParams.get("itemId");
+
+    if (!itemId) {
+      return NextResponse.json({ error: "Item ID is required" }, { status: 400 });
+    }
+
+    // Delete cart item
+    const { error } = await supabase
+      .from("cart_items")
+      .delete()
+      .eq("id", itemId)
+      .eq("user_id", user.id);
+
+    if (error) {
+      return NextResponse.json(
+        { error: "Failed to remove cart item" },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json({
+      message: "Cart item removed successfully",
+    });
+  } catch (error) {
+    console.error("Cart DELETE error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

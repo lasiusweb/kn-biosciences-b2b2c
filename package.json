@@ -9,7 +9,22 @@
     "lint": "echo 'Linting temporarily disabled'",
     "type-check": "tsc --noEmit",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:e2e": "playwright test",
+    "test:db": "./scripts/test-db.sh",
+    "test:smoke": "./scripts/smoke-test.sh",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "migrate": "supabase db push",
+    "migrate:reset": "supabase db reset",
+    "seed": "node scripts/seed-data.js",
+    "analyze": "ANALYZE=true next build",
+    "security:audit": "npm audit --audit-level high",
+    "performance:lighthouse": "lhci autorun",
+    "deploy:staging": "echo 'Deploying to staging...'",
+    "deploy:production": "echo 'Deploying to production...'",
+    "health": "curl -f http://localhost:3000/api/health"
   },
   "dependencies": {
     "@apollo/client": "^4.1.2",
