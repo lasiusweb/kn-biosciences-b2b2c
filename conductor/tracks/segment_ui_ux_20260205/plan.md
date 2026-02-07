@@ -22,9 +22,9 @@
 - [x] Task: Implement Dynamic Crop View (`/shop/segment/[slug]/[crop]`) ca86c02
     - [x] Create the single-page interface feel for crop-specific exploration.
     - [x] Implement "In-Grid Educational Cards" mixed with products.
-- [ ] Task: Build Contextual Sidebar for Guidance
-    - [ ] Create the sidebar component for "Recommended Reading" and crop tips.
-- [ ] Task: Conductor - User Manual Verification 'Discovery Funnel & Dynamic View' (Protocol in workflow.md)
+- [x] Task: Build Contextual Sidebar for Guidance 330686f
+    - [x] Create the sidebar component for "Recommended Reading" and crop tips.
+- [~] Task: Conductor - User Manual Verification 'Discovery Funnel & Dynamic View' (Protocol in workflow.md)
 
 ## Phase 4: Data Integration & Final Polish [checkpoint: pending]
 - [ ] Task: Integrate Real-time Stock & Catalogue Downloads
