@@ -230,7 +230,27 @@ export interface ProductCategory {
   is_active: boolean;
 }
 
-// Batch tracking
+export interface ProductWithRelations extends Product {
+  product_variants?: ProductVariant; // Assuming a product has one main variant for display
+  problem_solutions?: ProblemSolution[];
+  product_crops?: ProductCrop[];
+}
+export interface ProblemSolution {
+  id: string;
+  title: string;
+  slug: string;
+  segment: string;
+  content: string;
+  featured: boolean;
+  published_at: string;
+}
+
+export interface ProductCrop {
+  id: string;
+  crop_id: string;
+  crop_name: string;
+}
+
 export interface ProductBatch {
   id: string;
   variant_id: string;

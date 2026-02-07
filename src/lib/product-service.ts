@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 import { Product } from '@/types';
 
 /**
- * Fetches all active products from the database.
+ * Fetches all active products from database.
  */
 export async function getProducts(): Promise<Product[]> {
   const { data, error } = await supabase
@@ -20,61 +20,134 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 /**
- * Fetches products filtered by segment.
+ * Fetches products filtered by segment with Knowledge Center integration.
  */
-export async function getProductsBySegment(segment: string): Promise<Product[]> {
+export async function getProductsBySegment(segment: string): Promise<ProductWithRelations[]> {
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select(`
+      *,
+      product_variants!inner(
+        id,
+        sku,
+        price,
+        stock_quantity,
+        weight,
+        weight_unit,
+        image_urls,
+        zoho_books_id,
+        zoho_crm_id
+      ),
+      problem_solutions!inner(
+        id,
+        title,
+        slug,
+        segment,
+        content,
+        featured,
+        published_at
+      )
+    `)
     .eq('status', 'active')
     .eq('segment', segment)
     .order('created_at', { ascending: false });
 
   if (error) {
     console.error(`Error fetching products for segment ${segment}:`, error);
-    throw new Error('Failed to fetch products by segment');
+    throw new Error(`Failed to fetch products by segment: ${segment}`);
   }
 
   return data || [];
 }
 
 /**
- * Fetches products filtered by crop.
+ * Fetches products filtered by crop with Knowledge Center integration.
  */
-export async function getProductsByCrop(cropId: string): Promise<Product[]> {
+export async function getProductsByCrop(cropId: string): Promise<ProductWithRelations[]> {
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select(`
+      *,
+      product_variants!inner(
+        id,
+        sku,
+        price,
+        stock_quantity,
+        weight,
+        weight_unit,
+        image_urls,
+        zoho_books_id,
+        zoho_crm_id
+      ),
+      product_crops!inner(
+        id,
+        crop_id,
+        crop_name
+      ),
+      problem_solutions!inner(
+        id,
+        title,
+        slug,
+        segment,
+        content,
+        featured,
+        published_at
+      )
+    `)
     .eq('status', 'active')
-    .eq('crop_id', cropId)
-    .order('created_at', { ascending: false });
+
+    .eq('product_crops.crop_id', cropId)
+    .order('products.created_at', { ascending: false });
 
   if (error) {
     console.error(`Error fetching products for crop ${cropId}:`, error);
-    throw new Error('Failed to fetch products by crop');
+    throw new Error(`Failed to fetch products by crop: ${cropId}`);
   }
 
   return data || [];
 }
 
 /**
- * Fetches products filtered by problem.
+ * Fetches products filtered by problem with Knowledge Center integration.
  */
-export async function getProductsByProblem(problemId: string): Promise<Product[]> {
+export async function getProductsByProblem(problemId: string): Promise<ProductWithRelations[]> {
   const { data, error } = await supabase
     .from('products')
-    .select('*')
+    .select(`
+      *,
+      product_variants!inner(
+        id,
+        sku,
+        price,
+        stock_quantity,
+        weight,
+        weight_unit,
+        image_urls,
+        zoho_books_id,
+        zoho_crm_id
+      ),
+      problem_solutions!inner(
+        id,
+        title,
+        slug,
+        segment,
+        content,
+        featured,
+        published_at
+      )
+    `)
     .eq('status', 'active')
     .contains('problem_ids', [problemId])
-    .order('created_at', { ascending: false });
+    .order('products.created_at', { ascending: false });
 
   if (error) {
     console.error(`Error fetching products for problem ${problemId}:`, error);
-    throw new Error('Failed to fetch products by problem');
+    throw new Error(`Failed to fetch products by problem: ${problemId}`);
   }
 
   return data || [];
 }
+
 
 /**
  * Fetches a single product by its slug.
