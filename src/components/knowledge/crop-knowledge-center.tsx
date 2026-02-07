@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar, Clock, BookOpen, Video, ChevronRight, Play } from 'lucide-react'
+import { getKnowledgeCenterArticles } from '@/lib/enhanced-product-service'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -16,7 +17,7 @@ interface KnowledgeArticle {
   title: string
   slug: string
   excerpt: string
-  content: string
+  content?: string
   featured_image?: string
   published_at: string
   updated_at?: string
@@ -54,78 +55,14 @@ export function CropKnowledgeCenter({ crop, segment, className }: CropKnowledgeC
       try {
         setLoading(true)
         
-        // Mock data for development
-        const mockArticles: KnowledgeArticle[] = [
-          {
-            id: '1',
-            title: `Complete ${crop.charAt(0).toUpperCase() + crop.slice(1)} Cultivation Guide`,
-            slug: `${crop}-cultivation-guide`,
-            excerpt: `Comprehensive guide for ${crop} cultivation from seed selection to harvest. Learn best practices, timing, and techniques for maximum yield.`,
-            content: `Detailed content about ${crop} cultivation...`,
-            featured_image: '/images/knowledge/crop-guide.jpg',
-            published_at: '2024-01-15',
-            category: 'cultivation',
-            tags: [crop, 'cultivation', 'best-practices'],
-            read_time: '15 min',
-            author: {
-              name: 'Dr. Agricultural Expert',
-              avatar: '/images/authors/ag-expert.jpg'
-            },
-            related_products: [
-              { id: '1', name: 'Organic Fertilizer', price: 450, image_url: '/images/products/fertilizer.jpg' },
-              { id: '2', name: 'Crop Protection Spray', price: 320, image_url: '/images/products/spray.jpg' }
-            ]
-          },
-          {
-            id: '2',
-            title: `Pest Management for ${crop.charAt(0).toUpperCase() + crop.slice(1)}`,
-            slug: `${crop}-pest-management`,
-            excerpt: `Identify and manage common pests affecting ${crop} crops. Integrated pest management strategies for sustainable farming.`,
-            content: `Pest management content...`,
-            featured_image: '/images/knowledge/pest-management.jpg',
-            published_at: '2024-01-10',
-            category: 'pest-management',
-            tags: [crop, 'pests', 'organic'],
-            read_time: '12 min',
-            video_url: 'https://example.com/pest-video'
-          },
-          {
-            id: '3',
-            title: `${crop.charAt(0).toUpperCase() + crop.slice(1)} Disease Prevention`,
-            slug: `${crop}-disease-prevention`,
-            excerpt: `Prevent and treat common diseases in ${crop} crops. Early detection methods and organic treatment options.`,
-            content: `Disease prevention content...`,
-            published_at: '2024-01-05',
-            category: 'disease-control',
-            tags: [crop, 'diseases', 'prevention'],
-            read_time: '10 min'
-          },
-          {
-            id: '4',
-            title: 'Soil Preparation for Optimal Crop Growth',
-            slug: 'soil-preparation',
-            excerpt: 'Learn how to prepare soil for maximum crop yield. Soil testing, amendment recommendations, and preparation techniques.',
-            content: 'Soil preparation content...',
-            published_at: '2024-01-20',
-            category: 'soil',
-            tags: ['soil', 'preparation', 'fertilizer'],
-            read_time: '8 min'
-          },
-          {
-            id: '5',
-            title: `Irrigation Best Practices for ${crop.charAt(0).toUpperCase() + crop.slice(1)}`,
-            slug: `${crop}-irrigation`,
-            excerpt: 'Optimal irrigation schedules and techniques for healthy crop growth. Water conservation and efficiency tips.',
-            content: 'Irrigation content...',
-            published_at: '2024-01-18',
-            category: 'irrigation',
-            tags: [crop, 'irrigation', 'water-management'],
-            read_time: '6 min'
-          }
-        ]
+        // Fetch articles filtered by segment
+        const data = await getKnowledgeCenterArticles(segment, 10)
+        
+        // If no articles for segment, fetch general ones
+        const finalArticles = (data && data.length > 0) ? (data as KnowledgeArticle[]) : await getKnowledgeCenterArticles(undefined, 10) as KnowledgeArticle[]
 
-        setArticles(mockArticles)
-        setFeaturedArticle(mockArticles[0])
+        setArticles(finalArticles || [])
+        setFeaturedArticle(finalArticles && finalArticles.length > 0 ? finalArticles[0] : null)
       } catch (error) {
         console.error('Error loading knowledge content:', error)
       } finally {
@@ -133,10 +70,8 @@ export function CropKnowledgeCenter({ crop, segment, className }: CropKnowledgeC
       }
     }
 
-    if (crop) {
-      loadKnowledgeContent()
-    }
-  }, [crop])
+    loadKnowledgeContent()
+  }, [segment, crop])
 
   useEffect(() => {
     if (!containerRef.current || loading) return
@@ -200,7 +135,7 @@ export function CropKnowledgeCenter({ crop, segment, className }: CropKnowledgeC
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" data-testid="loading-spinner">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-organic-500"></div>
       </div>
     )

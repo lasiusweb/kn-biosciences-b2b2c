@@ -207,7 +207,7 @@ export function SegmentHubLayout({ segment, className }: SegmentHubProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" data-testid="loading-spinner">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-organic-500"></div>
       </div>
     )
@@ -260,9 +260,28 @@ export function SegmentHubLayout({ segment, className }: SegmentHubProps) {
       {/* Featured Crops Section */}
       <section id="crops-section" ref={cardsRef} className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-earth-900 mb-12">
-            Featured Crop Solutions
-          </h2>
+          <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+            <h2 className="text-3xl font-bold text-earth-900">
+              Featured Crop Solutions
+            </h2>
+            
+            {/* Downloadable Catalogues */}
+            <div className="flex items-center gap-4 bg-organic-50 p-4 rounded-xl border border-organic-100">
+              <div className="bg-organic-500 p-2 rounded-lg text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-text"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-earth-900">Segment Catalogue</p>
+                <Link 
+                  href={`/catalogues/${segment}-catalogue.pdf`}
+                  className="text-xs text-organic-600 hover:underline font-medium flex items-center gap-1"
+                >
+                  Download PDF (12MB)
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                </Link>
+              </div>
+            </div>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {cropCards.map((card, index) => (

@@ -48,6 +48,8 @@ interface KnowledgeSidebarProps {
   className?: string
 }
 
+import { getKnowledgeCenterArticles } from '@/lib/enhanced-product-service'
+
 export function KnowledgeSidebar({ crop, segment, className }: KnowledgeSidebarProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [recommendedReading, setRecommendedReading] = useState<RecommendedReading[]>([])
@@ -60,42 +62,21 @@ export function KnowledgeSidebar({ crop, segment, className }: KnowledgeSidebarP
       try {
         setLoading(true)
 
-        // Mock data for development
-        const mockReading: RecommendedReading[] = [
-          {
-            id: '1',
-            title: `${crop.charAt(0).toUpperCase() + crop.slice(1)} Cultivation Best Practices`,
-            description: 'Learn proven techniques for maximizing yield and quality in your crops.',
-            url: `/knowledge/${crop}-best-practices`,
-            category: 'Cultivation',
-            type: 'guide',
-            read_time: '15 min',
-            published_at: '2024-01-15',
-            thumbnail: '/images/knowledge/cultivation-guide.jpg'
-          },
-          {
-            id: '2',
-            title: `Organic Pest Management for ${crop.charAt(0).toUpperCase() + crop.slice(1)}`,
-            description: 'Sustainable pest control methods that protect your crops and the environment.',
-            url: `/knowledge/${crop}-organic-pest-control`,
-            category: 'Pest Management',
-            type: 'video',
-            video_url: 'https://example.com/pest-video',
-            read_time: '12 min',
-            thumbnail: '/images/knowledge/pest-management.jpg'
-          },
-          {
-            id: '3',
-            title: 'Soil Health Management',
-            description: 'Understanding and improving soil fertility for optimal crop growth.',
-            url: '/knowledge/soil-health',
-            category: 'Soil Science',
-            type: 'tutorial',
-            read_time: '20 min',
-            thumbnail: '/images/knowledge/soil-health.jpg'
-          }
-        ]
+        // Fetch real articles for recommended reading
+        const articles = await getKnowledgeCenterArticles(segment, 3)
+        
+        const transformedReading: RecommendedReading[] = articles.map((a: any) => ({
+          id: a.id,
+          title: a.title,
+          description: a.excerpt,
+          url: `/knowledge/${a.slug}`,
+          category: a.category,
+          type: 'guide',
+          read_time: a.read_time,
+          thumbnail: a.featured_image
+        }))
 
+        // Keep mock data for upcoming crops and tips as they might not be in DB yet
         const mockUpcomingCrops: UpcomingCrop[] = [
           {
             id: '1',
@@ -106,16 +87,6 @@ export function KnowledgeSidebar({ crop, segment, className }: KnowledgeSidebarP
             region: 'North India',
             crop_stage: 'Flowering',
             image_url: '/images/crops/wheat.jpg'
-          },
-          {
-            id: '2',
-            name: 'Kharif Rice',
-            harvest_time: 'October-November',
-            application_method: 'Seed Treatment',
-            disease_solutions: 'Blast Control',
-            region: 'East India',
-            crop_stage: 'Nursery',
-            image_url: '/images/crops/rice.jpg'
           }
         ]
 
@@ -127,18 +98,10 @@ export function KnowledgeSidebar({ crop, segment, className }: KnowledgeSidebarP
             crop_stage: 'Tillering',
             application_rate: '120-150 kg/ha',
             priority: 'high'
-          },
-          {
-            title: 'Irrigation Schedule',
-            description: 'Maintain consistent soil moisture during critical growth stages.',
-            url: `/tips/irrigation-${crop}`,
-            crop_stage: 'Flowering',
-            application_rate: '25-30 mm/week',
-            priority: 'medium'
           }
         ]
 
-        setRecommendedReading(mockReading)
+        setRecommendedReading(transformedReading.length > 0 ? transformedReading : [])
         setUpcomingCrops(mockUpcomingCrops)
         setCropTips(mockCropTips)
       } catch (error) {
@@ -151,7 +114,7 @@ export function KnowledgeSidebar({ crop, segment, className }: KnowledgeSidebarP
     if (crop) {
       loadKnowledgeData()
     }
-  }, [crop])
+  }, [crop, segment])
 
   useEffect(() => {
     if (!containerRef.current || loading) return
