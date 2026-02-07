@@ -27,10 +27,10 @@
 - [x] Task: Conductor - User Manual Verification 'Discovery Funnel & Dynamic View' (Protocol in workflow.md)
 
 ## Phase 4: Data Integration & Final Polish [checkpoint: pending]
-- [x] Task: Integrate Real-time Stock & Catalogue Downloads 330686f
+- [x] Task: Integrate Real-time Stock & Catalogue Downloads 8200492
     - [x] Add live stock status badges to product and crop views.
     - [x] Implement the UI and logic for segment-specific PDF catalogue downloads.
-- [x] Task: Final UI Audit & Accessibility Check a3674b5
+- [x] Task: Final UI Audit & Accessibility Check 8200492
     - [x] Run performance and accessibility audits on the new routes.
     - [x] Ensure full mobile responsiveness for all premium elements.
-- [ ] Task: Conductor - User Manual Verification 'Data Integration & Final Polish' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Data Integration & Final Polish' (Protocol in workflow.md)
