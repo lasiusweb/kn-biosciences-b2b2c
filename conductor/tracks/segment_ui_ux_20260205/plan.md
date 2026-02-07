@@ -2,11 +2,11 @@
 
 ## Phase 1: Architecture & Data Fetching [checkpoint: pending]
 - [x] Task: Extend API Services for Segment & Crop Discovery ca2e02f
-    - [ ] Write unit tests for segment-specific product fetching with Knowledge Center linkage.
-    - [ ] Implement optimized data fetching logic in `src/lib/product-service.ts`.
+    - [x] Write unit tests for segment-specific product fetching with Knowledge Center linkage.
+    - [x] Implement optimized data fetching logic in `src/lib/product-service.ts`.
 - [x] Task: Implement Dynamic SEO & Metadata Logic 2bb4481
-    - [ ] Write tests for dynamic metadata generation for segments and crops.
-    - [ ] Implement `generateMetadata` in the segment and crop route handlers.
+    - [x] Write tests for dynamic metadata generation for segments and crops.
+    - [x] Implement `generateMetadata` in the segment and crop route handlers.
 - [~] Task: Conductor - User Manual Verification 'Architecture & Data Fetching' (Protocol in workflow.md)
 
 ## Phase 2: UI Foundation & GSAP Animations [checkpoint: pending]

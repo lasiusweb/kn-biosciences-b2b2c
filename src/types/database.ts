@@ -19,6 +19,8 @@ export interface Database {
           role: "customer" | "b2b_client" | "admin" | "staff" | "sales_manager";
           company_name: string | null;
           gst_number: string | null;
+          zoho_crm_id: string | null;
+          zoho_books_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -146,6 +148,8 @@ export interface Database {
           featured: boolean;
           meta_title: string | null;
           meta_description: string | null;
+          zoho_crm_id: string | null;
+          zoho_books_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -318,6 +322,8 @@ export interface Database {
           shipping_type: "COURIER" | "TRANSPORT" | null;
           shipping_carrier: string | null;
           notes: string | null;
+          zoho_crm_id: string | null;
+          zoho_books_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -397,6 +403,8 @@ export interface Database {
           total_amount: number;
           linked_order_id: string | null;
           notes: string | null;
+          zoho_crm_id: string | null;
+          zoho_books_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -1072,6 +1080,133 @@ export interface Database {
           user_id?: string | null;
           session_id?: string | null;
           timestamp?: string;
+        };
+      };
+      zoho_tokens: {
+        Row: {
+          id: string;
+          access_token: string;
+          refresh_token: string;
+          expires_at: string;
+          scope: string;
+          token_type: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          access_token: string;
+          refresh_token: string;
+          expires_at: string;
+          scope: string;
+          token_type?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          access_token?: string;
+          refresh_token?: string;
+          expires_at?: string;
+          scope?: string;
+          token_type?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      zoho_sync_logs: {
+        Row: {
+          id: string;
+          entity_type: string;
+          entity_id: string;
+          operation: string;
+          zoho_service: string;
+          zoho_entity_type: string;
+          zoho_entity_id: string | null;
+          status: string;
+          attempt_count: number;
+          max_attempts: number;
+          next_retry_at: string | null;
+          error_message: string | null;
+          error_details: Json | null;
+          request_payload: Json | null;
+          response_payload: Json | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          entity_type: string;
+          entity_id: string;
+          operation: string;
+          zoho_service: string;
+          zoho_entity_type: string;
+          zoho_entity_id?: string | null;
+          status: string;
+          attempt_count?: number;
+          max_attempts?: number;
+          next_retry_at?: string | null;
+          error_message?: string | null;
+          error_details?: Json | null;
+          request_payload?: Json | null;
+          response_payload?: Json | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          entity_type?: string;
+          entity_id?: string;
+          operation?: string;
+          zoho_service?: string;
+          zoho_entity_type?: string;
+          zoho_entity_id?: string | null;
+          status?: string;
+          attempt_count?: number;
+          max_attempts?: number;
+          next_retry_at?: string | null;
+          error_message?: string | null;
+          error_details?: Json | null;
+          request_payload?: Json | null;
+          response_payload?: Json | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      zoho_inventory_sync_logs: {
+        Row: {
+          id: string;
+          variant_id: string;
+          operation: string;
+          supabase_quantity: number;
+          zoho_quantity: number;
+          difference: number;
+          status: string;
+          error_message: string | null;
+          sync_timestamp: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          variant_id: string;
+          operation: string;
+          supabase_quantity: number;
+          zoho_quantity: number;
+          status: string;
+          error_message?: string | null;
+          sync_timestamp?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          variant_id?: string;
+          operation?: string;
+          supabase_quantity?: number;
+          zoho_quantity?: number;
+          status?: string;
+          error_message?: string | null;
+          sync_timestamp?: string;
+          created_at?: string;
         };
       };
     };
