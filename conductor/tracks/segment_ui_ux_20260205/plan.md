@@ -4,7 +4,7 @@
 - [x] Task: Extend API Services for Segment & Crop Discovery ca2e02f
     - [ ] Write unit tests for segment-specific product fetching with Knowledge Center linkage.
     - [ ] Implement optimized data fetching logic in `src/lib/product-service.ts`.
-- [ ] Task: Implement Dynamic SEO & Metadata Logic
+- [~] Task: Implement Dynamic SEO & Metadata Logic
     - [ ] Write tests for dynamic metadata generation for segments and crops.
     - [ ] Implement `generateMetadata` in the segment and crop route handlers.
 - [ ] Task: Conductor - User Manual Verification 'Architecture & Data Fetching' (Protocol in workflow.md)
