@@ -119,24 +119,37 @@ export function KnowledgeSidebar({ crop, segment, className }: KnowledgeSidebarP
   useEffect(() => {
     if (!containerRef.current || loading) return
 
-    // Animate sidebar items
-    const items = containerRef.current.querySelectorAll('.sidebar-item')
-    
-    gsap.fromTo(items,
-      { 
-        opacity: 0, 
-        x: -20,
-        scale: 0.95
-      },
-      { 
-        opacity: 1, 
-        x: 0,
-        scale: 1,
-        duration: 0.4,
-        stagger: 0.1,
-        ease: 'power2.out'
+    const context = gsap.context(() => {
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      if (isReducedMotion) {
+        gsap.set('.sidebar-item', { opacity: 1, x: 0, scale: 1 })
+        return
       }
-    )
+
+      // Animate sidebar items
+      const items = containerRef.current!.querySelectorAll('.sidebar-item')
+      
+      gsap.fromTo(items,
+        { 
+          opacity: 0, 
+          x: -20,
+          scale: 0.95
+        },
+        { 
+          opacity: 1, 
+          x: 0,
+          scale: 1,
+          duration: 0.4,
+          stagger: 0.1,
+          ease: 'power2.out'
+        }
+      )
+    }, containerRef)
+
+    return () => {
+      context.revert()
+    }
   }, [loading])
 
   const getTypeIcon = (type: string) => {

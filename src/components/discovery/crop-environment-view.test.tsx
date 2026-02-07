@@ -15,7 +15,12 @@ jest.mock('gsap', () => {
   const gsapMock = {
     registerPlugin: jest.fn(),
     fromTo: jest.fn().mockReturnThis(),
+    set: jest.fn().mockReturnThis(),
     timeline: jest.fn(() => ({ fromTo: jest.fn().mockReturnThis() })),
+    context: jest.fn((cb: any) => {
+      if (typeof cb === 'function') cb();
+      return { revert: jest.fn(), add: jest.fn() };
+    }),
   };
   return { __esModule: true, default: gsapMock, ...gsapMock };
 });
@@ -28,7 +33,7 @@ jest.mock('gsap/ScrollTrigger', () => ({
 jest.mock('@/lib/enhanced-product-service', () => ({
   getProducts: jest.fn(() => Promise.resolve({
     products: [
-      { id: '1', name: 'Wheat Protection Pro', slug: 'wheat-pro', category: 'protection', product_variants: [{ price: 450 }] },
+      { id: '1', name: 'Wheat Protection Pro', slug: 'wheat-pro', category: 'protection', product_variants: [{ price: 450, stock_quantity: 50 }] },
     ],
     totalCount: 1
   })),
@@ -42,13 +47,13 @@ jest.mock('@/components/knowledge/knowledge-sidebar', () => {
   };
 });
 
-describe('CropEnvironmentView with Sidebar', () => {
-  it('renders the sidebar for guidance', async () => {
+describe('CropEnvironmentView', () => {
+  it('renders the view and sidebar', async () => {
     render(<CropEnvironmentView crop="wheat" segment="cereals" />);
     
     await waitFor(() => {
+      expect(screen.getByText(/Current Weather/i)).toBeInTheDocument();
       expect(screen.getByTestId('mock-sidebar')).toBeInTheDocument();
-      expect(screen.getByText('Knowledge Sidebar')).toBeInTheDocument();
     });
   });
 });

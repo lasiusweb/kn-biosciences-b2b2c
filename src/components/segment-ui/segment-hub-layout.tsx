@@ -103,97 +103,106 @@ export function SegmentHubLayout({ segment, className }: SegmentHubProps) {
     }
   }, [segment])
 
-  useEffect(() => {
-    if (!heroRef.current || loading) return
-
-    // Hero section animations
-    const heroTimeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: heroRef.current,
-        start: 'top 80%',
-        toggleActions: 'play none none reverse',
-      }
-    })
-
-    heroTimeline
-      .fromTo('.hero-title', 
-        { opacity: 0, y: 50 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
-      )
-      .fromTo('.hero-description', 
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
-        '-=0.4'
-      )
-      .fromTo('.hero-stats', 
-        { opacity: 0, scale: 0.9 },
-        { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.7)' },
-        '-=0.2'
-      )
-
-    // Crop cards animations with IntersectionObserver
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const card = entry.target as HTMLElement
-            const index = parseInt(card.dataset.index || '0')
-            
-            gsap.fromTo(card,
-              { 
-                opacity: 0, 
-                y: 60,
-                scale: 0.9
-              },
-              { 
-                opacity: 1, 
-                y: 0,
-                scale: 1,
-                duration: 0.6,
-                ease: 'power2.out',
-                delay: index * 0.1,
-                onComplete: () => {
-                  card.classList.add('interactive')
-                }
-              }
-            )
-            
-            observer.unobserve(card)
-          }
-        })
-      },
-      { threshold: 0.1 }
-    )
-
-    const cards = document.querySelectorAll('.crop-card')
-    cards.forEach(card => observer.observe(card))
-
-    // Sidebar animations
-    if (sidebarRef.current) {
-      gsap.fromTo('.sidebar-item',
-        { opacity: 0, x: -30 },
-        { 
-          opacity: 1, 
-          x: 0, 
-          duration: 0.5,
-          stagger: 0.1,
-          ease: 'power2.out',
+    useEffect(() => {
+      if (!heroRef.current || loading) return
+  
+      // Accessibility: Check for reduced motion
+      const context = gsap.context(() => {
+        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  
+        if (isReducedMotion) {
+          gsap.set('.hero-title, .hero-description, .hero-stats, .crop-card, .sidebar-item', { opacity: 1, y: 0, scale: 1, x: 0 })
+          return
+        }
+  
+        // Hero section animations
+        const heroTimeline = gsap.timeline({
           scrollTrigger: {
-            trigger: sidebarRef.current,
-            start: 'top 90%',
+            trigger: heroRef.current,
+            start: 'top 80%',
             toggleActions: 'play none none reverse',
           }
+        })
+  
+        heroTimeline
+          .fromTo('.hero-title', 
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
+          )
+          .fromTo('.hero-description', 
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+            '-=0.4'
+          )
+          .fromTo('.hero-stats', 
+            { opacity: 0, scale: 0.9 },
+            { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.7)' },
+            '-=0.2'
+          )
+  
+        // Crop cards animations with IntersectionObserver
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const card = entry.target as HTMLElement
+                const index = parseInt(card.dataset.index || '0')
+                
+                gsap.fromTo(card,
+                  { 
+                    opacity: 0, 
+                    y: 60,
+                    scale: 0.9
+                  },
+                  { 
+                    opacity: 1, 
+                    y: 0, 
+                    scale: 1,
+                    duration: 0.6,
+                    ease: 'power2.out',
+                    delay: index * 0.1,
+                    onComplete: () => {
+                      card.classList.add('interactive')
+                    }
+                  }
+                )
+                
+                observer.unobserve(card)
+              }
+            })
+          },
+          { threshold: 0.1 }
+        )
+  
+        const cards = document.querySelectorAll('.crop-card')
+        cards.forEach(card => observer.observe(card))
+  
+        // Sidebar animations
+        if (sidebarRef.current) {
+          gsap.fromTo('.sidebar-item',
+            { opacity: 0, x: -30 },
+            { 
+              opacity: 1, 
+              x: 0, 
+              duration: 0.5,
+              stagger: 0.1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: sidebarRef.current,
+                start: 'top 90%',
+                toggleActions: 'play none none reverse',
+              }
+            }
+          )
         }
-      )
-    }
-
-    return () => {
-      observer.disconnect()
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
-    }
-  }, [loading, cropCards])
-
-  const handleCropClick = (card: CropDiscoveryCard) => {
+      }, heroRef)
+  
+      return () => {
+        context.revert()
+        ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+      }
+    }, [loading, cropCards])
+    const handleCropClick = (card: CropDiscoveryCard) => {
     console.log(`[Segment Hub] Crop clicked: ${card.title} (${card.crop_type})`)
     // Navigation will be handled in Phase 3
   }

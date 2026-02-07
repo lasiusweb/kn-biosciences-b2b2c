@@ -144,41 +144,51 @@ export function CropEnvironmentView({
   useEffect(() => {
     if (!containerRef.current || loading) return
 
-    // Environmental conditions animations
-    gsap.fromTo('.condition-card',
-      { opacity: 0, y: 20 },
-      { 
-        opacity: 1, 
-        y: 0, 
-        duration: 0.6,
-        stagger: 0.1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.condition-card',
-          start: 'top 85%',
-          toggleActions: 'play none none reverse'
-        }
-      }
-    )
+    const context = gsap.context(() => {
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    // Solutions grid animations
-    gsap.fromTo('.solution-card, .educational-card',
-      { opacity: 0, scale: 0.9 },
-      { 
-        opacity: 1, 
-        scale: 1, 
-        duration: 0.5,
-        stagger: 0.08,
-        ease: 'back.out(1.7)',
-        scrollTrigger: {
-          trigger: '.solution-card',
-          start: 'top 80%',
-          toggleActions: 'play none none reverse'
-        }
+      if (isReducedMotion) {
+        gsap.set('.condition-card, .solution-card, .educational-card', { opacity: 1, y: 0, scale: 1 })
+        return
       }
-    )
+
+      // Environmental conditions animations
+      gsap.fromTo('.condition-card',
+        { opacity: 0, y: 20 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.condition-card',
+            start: 'top 85%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      )
+
+      // Solutions grid animations
+      gsap.fromTo('.solution-card, .educational-card',
+        { opacity: 0, scale: 0.9 },
+        { 
+          opacity: 1, 
+          scale: 1, 
+          duration: 0.5,
+          stagger: 0.08,
+          ease: 'back.out(1.7)',
+          scrollTrigger: {
+            trigger: '.solution-card',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      )
+    }, containerRef)
 
     return () => {
+      context.revert()
       ScrollTrigger.getAll().forEach(trigger => trigger.kill())
     }
   }, [loading, solutions, articles])
@@ -335,7 +345,7 @@ export function CropEnvironmentView({
             </div>
 
             {/* Sort Controls */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-500">Sort by:</span>
                 {['popularity', 'rating', 'price'].map((sort) => (
@@ -353,6 +363,23 @@ export function CropEnvironmentView({
                     {sort.charAt(0).toUpperCase() + sort.slice(1)}
                   </button>
                 ))}
+              </div>
+
+              {/* Downloadable Catalogue */}
+              <div className="flex items-center gap-4 bg-white px-4 py-3 rounded-xl border border-gray-200 shadow-sm group hover:border-organic-300 transition-colors">
+                <div className="bg-organic-100 text-organic-600 p-2 rounded-lg group-hover:bg-organic-500 group-hover:text-white transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+                </div>
+                <div className="text-left">
+                  <p className="text-xs font-bold text-earth-900 uppercase tracking-wider">Crop Solutions PDF</p>
+                  <Link 
+                    href={`/catalogues/${params.segment}-catalogue.pdf`}
+                    className="text-xs text-organic-600 hover:underline font-medium flex items-center gap-1"
+                  >
+                    Download Full Catalogue
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -372,11 +399,29 @@ export function CropEnvironmentView({
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {mixedGridItems.map((item, idx) => (
                       item.gridType === 'product' ? (
-                        <div
-                          key={`product-${item.id}-${idx}`}
-                          className="solution-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
-                        >
-                          {/* Product Image */}
+                                            <div
+                                              key={`product-${item.id}-${idx}`}
+                                              className="solution-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group relative"
+                                            >
+                                              {/* Stock Status */}
+                                              {item.product_variants?.[0]?.stock_quantity <= 0 && (
+                                                <div className="absolute top-4 left-4 z-10">
+                                                  <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wider">
+                                                    Out of Stock
+                                                  </div>
+                                                </div>
+                                              )}
+                                              
+                                              {item.product_variants?.[0]?.stock_quantity > 0 && item.product_variants?.[0]?.stock_quantity <= 10 && (
+                                                <div className="absolute top-4 right-4 z-10">
+                                                  <div className="bg-yellow-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider animate-pulse">
+                                                    Low Stock: {item.product_variants[0].stock_quantity}
+                                                  </div>
+                                                </div>
+                                              )}
+                        
+                                              {/* Product Image */}
+                        
                           <div className="aspect-video relative overflow-hidden">
                             <Image
                               src={item.image_urls?.[0] || '/images/products/placeholder.jpg'}

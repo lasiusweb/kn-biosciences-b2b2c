@@ -1,6 +1,31 @@
-import { jest } from '@jest/globals';
+import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import CropKnowledgeCenter from './crop-knowledge-center';
 
-// Mock the enhanced product service
+// Mock Next.js components
+jest.mock('next/link', () => ({ children, href }: any) => <a href={href}>{children}</a>);
+jest.mock('next/image', () => (props: any) => <img {...props} />);
+
+// Mock GSAP
+jest.mock('gsap', () => {
+  const gsapMock = {
+    registerPlugin: jest.fn(),
+    fromTo: jest.fn().mockReturnThis(),
+    set: jest.fn().mockReturnThis(),
+    timeline: jest.fn(() => ({ fromTo: jest.fn().mockReturnThis() })),
+    context: jest.fn((cb: any) => {
+      if (typeof cb === 'function') cb();
+      return { revert: jest.fn(), add: jest.fn() };
+    }),
+  };
+  return { __esModule: true, default: gsapMock, ...gsapMock };
+});
+
+jest.mock('gsap/ScrollTrigger', () => ({
+  ScrollTrigger: { getAll: jest.fn(() => []), create: jest.fn(() => ({ kill: jest.fn() })) }
+}));
+
+// Mock EnhancedProductService
 jest.mock('@/lib/enhanced-product-service', () => ({
   getKnowledgeCenterArticles: jest.fn(() => Promise.resolve([
     {
@@ -17,30 +42,13 @@ jest.mock('@/lib/enhanced-product-service', () => ({
   ])),
 }));
 
-import { describe, it, expect } from '@jest/globals';
-import { render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import CropKnowledgeCenter from './crop-knowledge-center';
-
-// Mock Next.js components
-jest.mock('next/link', () => ({ children, href }: any) => <a href={href}>{children}</a>);
-jest.mock('next/image', () => (props: any) => <img {...props} />);
-
-// Mock GSAP
-jest.mock('gsap', () => ({
-  gsap: { fromTo: jest.fn(), registerPlugin: jest.fn() },
-  ScrollTrigger: { getAll: jest.fn(() => []), create: jest.fn(() => ({ kill: jest.fn() })) },
-}));
-
 describe('CropKnowledgeCenter', () => {
   it('renders knowledge content', async () => {
     render(<CropKnowledgeCenter crop="wheat" segment="cereals" />);
     
     await waitFor(() => {
       expect(screen.getByText(/Knowledge Center:/i)).toBeInTheDocument();
-      // Use findByText or similar if needed, but here we just need to ensure it's there
-      const title = screen.getAllByText(/Wheat/i)[0];
-      expect(title).toBeInTheDocument();
+      // Expect specific article title
       expect(screen.getByText('Complete Wheat Cultivation Guide')).toBeInTheDocument();
     });
   });

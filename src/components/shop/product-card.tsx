@@ -37,6 +37,8 @@ export function ProductCard({
   }
 
   const hasDiscount = variant.compare_price && variant.compare_price > displayPrice;
+  const isOutOfStock = variant.stock_quantity <= 0;
+  const isLowStock = variant.stock_quantity > 0 && variant.stock_quantity <= 10;
 
   return (
     <Card className={cn("group overflow-hidden border-earth-100 hover:shadow-lg transition-all duration-300", className)}>
@@ -49,8 +51,20 @@ export function ProductCard({
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
           {hasDiscount && (
-            <div className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded">
+            <div className="absolute top-2 left-2 bg-destructive text-destructive-foreground text-xs font-bold px-2 py-1 rounded z-10">
               SAVE {Math.round(((variant.compare_price! - displayPrice) / variant.compare_price!) * 100)}%
+            </div>
+          )}
+          {isOutOfStock && (
+            <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-20">
+              <span className="bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                Out of Stock
+              </span>
+            </div>
+          )}
+          {isLowStock && !isOutOfStock && (
+            <div className="absolute top-2 right-2 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider z-10 animate-pulse">
+              Low Stock: {variant.stock_quantity} left
             </div>
           )}
         </div>

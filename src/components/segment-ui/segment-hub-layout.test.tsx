@@ -1,45 +1,44 @@
-import { jest } from '@jest/globals';
+import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import SegmentHubLayout from './segment-hub-layout';
 
 // Mock GSAP
-jest.mock('gsap', () => ({
-  gsap: {
-    timeline: jest.fn(() => ({
-      fromTo: jest.fn().mockReturnThis(),
-      kill: jest.fn(),
-    })),
-    fromTo: jest.fn().mockReturnThis(),
+jest.mock('gsap', () => {
+  const gsapMock = {
     registerPlugin: jest.fn(),
-  },
-  ScrollTrigger: {
-    getAll: jest.fn(() => []),
-    create: jest.fn(() => ({ kill: jest.fn() })),
-  },
+    fromTo: jest.fn().mockReturnThis(),
+    set: jest.fn().mockReturnThis(),
+    timeline: jest.fn(() => ({ fromTo: jest.fn().mockReturnThis() })),
+    context: jest.fn((cb: any) => {
+      if (typeof cb === 'function') cb();
+      return { revert: jest.fn(), add: jest.fn() };
+    }),
+  };
+  return { __esModule: true, default: gsapMock, ...gsapMock };
+});
+
+jest.mock('gsap/ScrollTrigger', () => ({
+  ScrollTrigger: { getAll: jest.fn(() => []), create: jest.fn(() => ({ kill: jest.fn() })) }
 }));
 
-// Mock the enhanced product service
+// Mock EnhancedProductService
 jest.mock('@/lib/enhanced-product-service', () => ({
-  __esModule: true,
   getKnowledgeCenterArticles: jest.fn(() => Promise.resolve([])),
-  getProductsBySegment: jest.fn(() => Promise.resolve({
-    title: 'Cereal Crop Solutions',
-    stats: { total_products: 156, total_crops: 12, featured_crops: 8 },
+  getProductsBySegment: jest.fn((segment: string) => Promise.resolve({
+    title: `${segment.charAt(0).toUpperCase() + segment.slice(1)} Solutions`,
+    stats: { total_products: 50, total_crops: 5, featured_crops: 3 },
     featured_crops: [],
     contextual_sidebar: { recommended_reading: [], upcoming_crops: [], crop_tips: [] }
   })),
   EnhancedProductService: jest.fn().mockImplementation(() => ({
-    getProductsBySegment: jest.fn(() => Promise.resolve({
-      title: 'Cereal Crop Solutions',
-      stats: { total_products: 156, total_crops: 12, featured_crops: 8 },
+    getProductsBySegment: jest.fn((segment: string) => Promise.resolve({
+      title: `${segment.charAt(0).toUpperCase() + segment.slice(1)} Solutions`,
+      stats: { total_products: 50, total_crops: 5, featured_crops: 3 },
       featured_crops: [],
       contextual_sidebar: { recommended_reading: [], upcoming_crops: [], crop_tips: [] }
     }))
   }))
 }));
-
-import { describe, it, expect } from '@jest/globals';
-import { render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import SegmentHubLayout from './segment-hub-layout';
 
 // Mock subcomponents
 jest.mock('@/components/knowledge/crop-knowledge-center', () => () => <div>KC</div>);
@@ -54,11 +53,11 @@ global.IntersectionObserver = jest.fn().mockImplementation((callback) => ({
 }));
 
 describe('SegmentHubLayout', () => {
-  it('renders segment data', async () => {
+  it('renders correctly', async () => {
     render(<SegmentHubLayout segment="cereals" />);
     
     await waitFor(() => {
-      expect(screen.getByText(/Cereal Crop Solutions/i)).toBeInTheDocument();
+      expect(screen.getByText(/Cereals Solutions/i)).toBeInTheDocument();
     });
   });
 });

@@ -76,46 +76,56 @@ export function CropKnowledgeCenter({ crop, segment, className }: CropKnowledgeC
   useEffect(() => {
     if (!containerRef.current || loading) return
 
-    // Animate knowledge cards on scroll
-    const cards = containerRef.current.querySelectorAll('.knowledge-card')
-    
-    cards.forEach((card, index) => {
-      gsap.fromTo(card,
-        { 
-          opacity: 0, 
-          y: 50,
-          scale: 0.95
-        },
-        { 
-          opacity: 1, 
-          y: 0,
-          scale: 1,
-          duration: 0.6,
-          delay: index * 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      )
-    })
+    const context = gsap.context(() => {
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    // Animate featured article
-    if (featuredArticle) {
-      gsap.fromTo('.featured-article',
-        { opacity: 0, scale: 0.9 },
-        { 
-          opacity: 1, 
-          scale: 1,
-          duration: 0.8,
-          ease: 'power3.out'
-        }
-      )
-    }
+      if (isReducedMotion) {
+        gsap.set('.knowledge-card, .featured-article', { opacity: 1, y: 0, scale: 1 })
+        return
+      }
+
+      // Animate knowledge cards on scroll
+      const cards = containerRef.current!.querySelectorAll('.knowledge-card')
+      
+      cards.forEach((card, index) => {
+        gsap.fromTo(card,
+          { 
+            opacity: 0, 
+            y: 50,
+            scale: 0.95
+          },
+          { 
+            opacity: 1, 
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            delay: index * 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse'
+            }
+          }
+        )
+      })
+
+      // Animate featured article
+      if (featuredArticle) {
+        gsap.fromTo('.featured-article',
+          { opacity: 0, scale: 0.9 },
+          { 
+            opacity: 1, 
+            scale: 1,
+            duration: 0.8,
+            ease: 'power3.out'
+          }
+        )
+      }
+    }, containerRef)
 
     return () => {
+      context.revert()
       ScrollTrigger.getAll().forEach(trigger => trigger.kill())
     }
   }, [loading, featuredArticle])

@@ -134,24 +134,37 @@ export function QuickCropTips({ crop, className }: QuickCropTipsProps) {
   useEffect(() => {
     if (!containerRef.current || loading) return
 
-    // Animate tips appearance
-    const tipCards = containerRef.current.querySelectorAll('.tip-card')
-    
-    gsap.fromTo(tipCards,
-      { 
-        opacity: 0, 
-        x: -30,
-        scale: 0.95
-      },
-      { 
-        opacity: 1, 
-        x: 0,
-        scale: 1,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: 'power2.out'
+    const context = gsap.context(() => {
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      if (isReducedMotion) {
+        gsap.set('.tip-card', { opacity: 1, x: 0, scale: 1 })
+        return
       }
-    )
+
+      // Animate tips appearance
+      const tipCards = containerRef.current!.querySelectorAll('.tip-card')
+      
+      gsap.fromTo(tipCards,
+        { 
+          opacity: 0, 
+          x: -30,
+          scale: 0.95
+        },
+        { 
+          opacity: 1, 
+          x: 0,
+          scale: 1,
+          duration: 0.5,
+          stagger: 0.1,
+          ease: 'power2.out'
+        }
+      )
+    }, containerRef)
+
+    return () => {
+      context.revert()
+    }
   }, [loading, tips])
 
   const getPriorityColor = (priority: string) => {
