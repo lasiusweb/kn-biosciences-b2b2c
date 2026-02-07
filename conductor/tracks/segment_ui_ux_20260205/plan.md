@@ -19,9 +19,9 @@
 - [x] Task: Conductor - User Manual Verification 'UI Foundation & GSAP Core' (Protocol in workflow.md)
 
 ## Phase 3: Discovery Funnel & Dynamic View [checkpoint: pending]
-- [ ] Task: Implement Dynamic Crop View (`/shop/segment/[slug]/[crop]`)
-    - [ ] Create the single-page interface feel for crop-specific exploration.
-    - [ ] Implement "In-Grid Educational Cards" mixed with products.
+- [x] Task: Implement Dynamic Crop View (`/shop/segment/[slug]/[crop]`) ca86c02
+    - [x] Create the single-page interface feel for crop-specific exploration.
+    - [x] Implement "In-Grid Educational Cards" mixed with products.
 - [ ] Task: Build Contextual Sidebar for Guidance
     - [ ] Create the sidebar component for "Recommended Reading" and crop tips.
 - [ ] Task: Conductor - User Manual Verification 'Discovery Funnel & Dynamic View' (Protocol in workflow.md)
