@@ -9,14 +9,14 @@
     - [x] Implement `generateMetadata` in the segment and crop route handlers.
 - [x] Task: Conductor - User Manual Verification 'Architecture & Data Fetching' (Protocol in workflow.md)
 
-## Phase 2: UI Foundation & GSAP Animations [checkpoint: pending]
+## Phase 2: UI Foundation & GSAP Animations [checkpoint: 4d63881]
 - [x] Task: Build Premium Segment Hub Layout (`/shop/segment/[slug]`) a23d4ea
     - [x] Create the layout structure with a high-impact hero section.
     - [x] Implement the "Crop Discovery Grid" with animated cards using GSAP.
 - [x] Task: Implement Knowledge Center Integration Components a23d4ea
     - [x] Create the "Latest Articles" feed component.
     - [x] Implement logic to filter articles by segment tags.
-- [~] Task: Conductor - User Manual Verification 'UI Foundation & GSAP Core' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'UI Foundation & GSAP Core' (Protocol in workflow.md)
 
 ## Phase 3: Discovery Funnel & Dynamic View [checkpoint: pending]
 - [ ] Task: Implement Dynamic Crop View (`/shop/segment/[slug]/[crop]`)
