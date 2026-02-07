@@ -50,5 +50,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [~] **Track: Shop by Segment UI/UX**
+- [x] **Track: Shop by Segment UI/UX**
+
 *Link: [./tracks/segment_ui_ux_20260205/](./tracks/segment_ui_ux_20260205/)*
