@@ -12,7 +12,6 @@ import {
   ShoppingCart, 
   BookOpen, 
   Calendar, 
-  MapPin, 
   Star,
   TrendingUp,
   Filter,
@@ -21,27 +20,12 @@ import {
   Droplet,
   Sun,
   Wind,
-  Thermometer
+  Thermometer,
+  Clock
 } from 'lucide-react'
+import { getProducts, getKnowledgeCenterArticles } from '@/lib/enhanced-product-service'
 
 gsap.registerPlugin(ScrollTrigger)
-
-interface CropSolution {
-  id: string
-  name: string
-  description: string
-  category: 'protection' | 'nutrition' | 'growth' | 'harvest'
-  price: number
-  image_url: string
-  rating: number
-  reviews: number
-  features: string[]
-  application_method: string
-  coverage: string
-  organic: boolean
-  in_stock: boolean
-  best_selling: boolean
-}
 
 interface CropCondition {
   id: string
@@ -75,7 +59,8 @@ export function CropEnvironmentView({
   const params = useParams()
   const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
-  const [solutions, setSolutions] = useState<CropSolution[]>([])
+  const [solutions, setSolutions] = useState<any[]>([])
+  const [articles, setArticles] = useState<any[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'price' | 'rating' | 'popularity'>('popularity')
   const [loading, setLoading] = useState(true)
@@ -125,116 +110,15 @@ export function CropEnvironmentView({
       try {
         setLoading(true)
         
-        // Mock data for crop solutions
-        const mockSolutions: CropSolution[] = [
-          {
-            id: '1',
-            name: `${crop.charAt(0).toUpperCase() + crop.slice(1)} Protection Pro`,
-            description: `Advanced formulation for comprehensive ${crop} disease and pest management`,
-            category: 'protection',
-            price: 450,
-            image_url: '/images/products/crop-protection.jpg',
-            rating: 4.5,
-            reviews: 234,
-            features: [
-              'Broad-spectrum protection',
-              'Weather resistant',
-              'Eco-friendly formulation',
-              'Long-lasting effect'
-            ],
-            application_method: 'Foliar spray',
-            coverage: '1 acre per litre',
-            organic: true,
-            in_stock: true,
-            best_selling: true
-          },
-          {
-            id: '2',
-            name: `${crop.charAt(0).toUpperCase() + crop.slice(1)} Growth Enhancer`,
-            description: `Bio-stimulant for improved ${crop} growth and yield`,
-            category: 'growth',
-            price: 320,
-            image_url: '/images/products/growth-enhancer.jpg',
-            rating: 4.2,
-            reviews: 156,
-            features: [
-              'Natural growth hormones',
-              'Improved root development',
-              'Enhanced photosynthesis',
-              'Stress resistance'
-            ],
-            application_method: 'Soil drench',
-            coverage: '2 acres per litre',
-            organic: true,
-            in_stock: true,
-            best_selling: false
-          },
-          {
-            id: '3',
-            name: 'Balanced NPK Fertilizer',
-            description: `Optimized nutrient blend for ${crop} cultivation`,
-            category: 'nutrition',
-            price: 280,
-            image_url: '/images/products/npk-fertilizer.jpg',
-            rating: 4.7,
-            reviews: 89,
-            features: [
-              'Balanced NPK ratio',
-              'Slow-release formula',
-              'Micronutrient enriched',
-              'pH balanced'
-            ],
-            application_method: 'Broadcast',
-            coverage: '1 acre per 50kg',
-            organic: false,
-            in_stock: true,
-            best_selling: false
-          },
-          {
-            id: '4',
-            name: `${crop.charAt(0).toUpperCase() + crop.slice(1)} Harvest Aid`,
-            description: `Pre-harvest treatment for improved ${crop} quality and shelf life`,
-            category: 'harvest',
-            price: 380,
-            image_url: '/images/products/harvest-aid.jpg',
-            rating: 4.3,
-            reviews: 67,
-            features: [
-              'Improved fruit set',
-              'Enhanced quality',
-              'Extended shelf life',
-              'Reduced post-harvest loss'
-            ],
-            application_method: 'Foliar spray',
-            coverage: '1 acre per litre',
-            organic: true,
-            in_stock: false,
-            best_selling: false
-          },
-          {
-            id: '5',
-            name: 'Soil Conditioner',
-            description: `Organic soil conditioner for optimal ${crop} growth`,
-            category: 'nutrition',
-            price: 220,
-            image_url: '/images/products/soil-conditioner.jpg',
-            rating: 4.1,
-            reviews: 45,
-            features: [
-              'Improves soil structure',
-              'Enhances water retention',
-              'Promotes beneficial microbes',
-              'pH balancing'
-            ],
-            application_method: 'Soil application',
-            coverage: '1 acre per 25kg',
-            organic: true,
-            in_stock: true,
-            best_selling: false
-          }
-        ]
+        // Fetch real products for this crop
+        const segment = params.segment as string;
+        const result = await getProducts({ cropId: crop, segment });
+        
+        // Fetch real knowledge center articles for context
+        const knowledgeArticles = await getKnowledgeCenterArticles(segment, 5);
 
-        setSolutions(mockSolutions)
+        setSolutions(result.products || [])
+        setArticles(knowledgeArticles || [])
         
         // Mock weather data
         setWeather({
@@ -254,7 +138,7 @@ export function CropEnvironmentView({
     if (crop) {
       loadCropData()
     }
-  }, [crop])
+  }, [crop, params.segment])
 
   useEffect(() => {
     if (!containerRef.current || loading) return
@@ -277,7 +161,7 @@ export function CropEnvironmentView({
     )
 
     // Solutions grid animations
-    gsap.fromTo('.solution-card',
+    gsap.fromTo('.solution-card, .educational-card',
       { opacity: 0, scale: 0.9 },
       { 
         opacity: 1, 
@@ -296,22 +180,35 @@ export function CropEnvironmentView({
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill())
     }
-  }, [loading, solutions])
+  }, [loading, solutions, articles])
 
-  const filteredSolutions = solutions.filter(solution => 
-    selectedCategory === 'all' ? true : solution.category === selectedCategory
-  ).sort((a, b) => {
-    switch (sortBy) {
-      case 'price':
-        return a.price - b.price
-      case 'rating':
-        return b.rating - a.rating
-      case 'popularity':
-        return (b.reviews + (b.best_selling ? 1000 : 0)) - (a.reviews + (a.best_selling ? 1000 : 0))
-      default:
-        return 0
-    }
-  })
+  // Interleave solutions and articles for the grid
+  const mixedGridItems = React.useMemo(() => {
+    const items = [...solutions].filter(s => 
+      selectedCategory === 'all' ? true : s.category === selectedCategory
+    ).sort((a, b) => {
+      switch (sortBy) {
+        case 'price':
+          return (a.product_variants?.[0]?.price || 0) - (b.product_variants?.[0]?.price || 0)
+        case 'rating':
+          return (b.rating || 0) - (a.rating || 0)
+        default:
+          return 0
+      }
+    });
+
+    if (articles.length === 0) return items.map(item => ({ ...item, gridType: 'product' }));
+
+    // Insert an article every 3 products
+    const result: any[] = [];
+    items.forEach((item, index) => {
+      result.push({ ...item, gridType: 'product' });
+      if ((index + 1) % 3 === 0 && articles[Math.floor(index / 3)]) {
+        result.push({ ...articles[Math.floor(index / 3)], gridType: 'article' });
+      }
+    });
+    return result;
+  }, [solutions, articles, selectedCategory, sortBy]);
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -368,7 +265,7 @@ export function CropEnvironmentView({
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-              {conditions.map((condition, index) => (
+              {conditions.map((condition) => (
                 <div
                   key={condition.id}
                   className="condition-card bg-white rounded-xl shadow-md p-6 border border-gray-100"
@@ -458,7 +355,7 @@ export function CropEnvironmentView({
               </div>
             </div>
 
-            {/* Solutions Grid */}
+            {/* Grid */}
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -469,115 +366,90 @@ export function CropEnvironmentView({
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredSolutions.map((solution) => (
-                  <div
-                    key={solution.id}
-                    className="solution-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
-                  >
-                    {/* Best Seller Badge */}
-                    {solution.best_selling && (
-                      <div className="absolute top-4 right-4 z-10">
-                        <div className="bg-organic-500 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center">
-                          <Star className="w-3 h-3 mr-1" />
-                          Best Seller
-                        </div>
+                {mixedGridItems.map((item, idx) => (
+                  item.gridType === 'product' ? (
+                    <div
+                      key={`product-${item.id}-${idx}`}
+                      className="solution-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
+                    >
+                      {/* Product Image */}
+                      <div className="aspect-video relative overflow-hidden">
+                        <Image
+                          src={item.image_urls?.[0] || '/images/products/placeholder.jpg'}
+                          alt={item.name}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
                       </div>
-                    )}
 
-                    {/* Stock Status */}
-                    {!solution.in_stock && (
-                      <div className="absolute top-4 left-4 z-10">
-                        <div className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-                          Out of Stock
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Product Image */}
-                    <div className="aspect-video relative overflow-hidden">
-                      <Image
-                        src={solution.image_url}
-                        alt={solution.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      {solution.organic && (
-                        <div className="absolute bottom-4 left-4">
-                          <div className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
-                            Organic
+                      {/* Product Details */}
+                      <div className="p-6">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className={cn(
+                            'text-xs px-2 py-1 rounded-full font-medium',
+                            getCategoryColor(item.category || 'nutrition')
+                          )}>
+                            {item.category || 'Nutrition'}
+                          </span>
+                          <div className="flex items-center text-sm text-gray-500">
+                            <Star className="w-4 h-4 text-yellow-500 mr-1" />
+                            {item.rating || 4.5}
                           </div>
                         </div>
-                      )}
-                    </div>
 
-                    {/* Product Details */}
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className={cn(
-                          'text-xs px-2 py-1 rounded-full font-medium',
-                          getCategoryColor(solution.category)
-                        )}>
-                          {solution.category}
-                        </span>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Star className="w-4 h-4 text-yellow-500 mr-1" />
-                          {solution.rating}
-                          <span className="ml-2">({solution.reviews})</span>
+                        <h3 className="text-lg font-semibold text-earth-900 mb-2 group-hover:text-organic-600 transition-colors">
+                          {item.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                          {item.short_description || item.description}
+                        </p>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center justify-between mt-auto">
+                          <div className="text-2xl font-bold text-organic-600">
+                            ₹{item.product_variants?.[0]?.price || 0}
+                          </div>
+                          <Link href={`/product/${item.slug}`}>
+                            <Button variant="outline" size="sm">
+                              View Details
+                            </Button>
+                          </Link>
                         </div>
                       </div>
-
-                      <h3 className="text-lg font-semibold text-earth-900 mb-2 group-hover:text-organic-600 transition-colors">
-                        {solution.name}
+                    </div>
+                  ) : (
+                    /* Educational Card */
+                    <div
+                      key={`article-${item.id}-${idx}`}
+                      className="educational-card bg-organic-500 rounded-xl shadow-lg overflow-hidden p-8 flex flex-col text-white group cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2 mb-4 text-organic-100">
+                        <BookOpen className="w-5 h-5" />
+                        <span className="text-xs font-semibold uppercase tracking-wider">Expert Guide</span>
+                      </div>
+                      
+                      <h3 className="text-2xl font-bold mb-4 group-hover:text-organic-50 transition-colors">
+                        {item.title}
                       </h3>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                        {solution.description}
+                      
+                      <p className="text-organic-100 text-sm mb-6 line-clamp-4 leading-relaxed">
+                        {item.excerpt}
                       </p>
-
-                      {/* Features */}
-                      <div className="space-y-1 mb-4">
-                        {solution.features.slice(0, 2).map((feature, index) => (
-                          <div key={index} className="flex items-center text-sm text-gray-600">
-                            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                            {feature}
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Application Info */}
-                      <div className="text-xs text-gray-500 space-y-1 mb-4">
-                        <div>
-                          <strong>Application:</strong> {solution.application_method}
+                      
+                      <div className="mt-auto flex items-center justify-between pt-6 border-t border-organic-400">
+                        <div className="flex items-center text-xs text-organic-100">
+                          <Clock className="w-4 h-4 mr-1" />
+                          {item.read_time} read
                         </div>
-                        <div>
-                          <strong>Coverage:</strong> {solution.coverage}
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex items-center justify-between">
-                        <div className="text-2xl font-bold text-organic-600">
-                          ₹{solution.price}
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
-                            View Details
-                          </Button>
-                          <Button 
-                            size="sm"
-                            disabled={!solution.in_stock}
-                            className={cn(
-                              'bg-organic-500 hover:bg-organic-600',
-                              !solution.in_stock && 'opacity-50 cursor-not-allowed'
-                            )}
-                          >
-                            <ShoppingCart className="w-4 h-4 mr-2" />
-                            {solution.in_stock ? 'Add to Cart' : 'Notify Me'}
-                          </Button>
-                        </div>
+                        <Link href={`/knowledge/${item.slug}`} className="flex items-center text-sm font-bold group-hover:translate-x-1 transition-transform">
+                          Read Guide
+                          <ChevronRight className="w-4 h-4 ml-1" />
+                        </Link>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  )
+                ))}
+              </div>
             )}
           </div>
         </div>

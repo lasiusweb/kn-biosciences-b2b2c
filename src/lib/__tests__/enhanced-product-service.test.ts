@@ -219,15 +219,15 @@ describe('Enhanced Product Service', () => {
       };
       (supabase as any) = mockSupabase;
 
-      const mockCrops = {
+      const mockCropsQuery = {
         innerJoin: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
       };
-      (mockCrops as any) = mockCrops;
+      (mockCropsQuery as any) = mockCropsQuery;
 
       (supabase as any) = mockSupabase;
 
-      vi.mocked(mockCrops.innerJoin).mockReturnValue(mockProducts);
+      vi.mocked(mockCropsQuery.innerJoin).mockReturnValue(mockProducts);
 
       const result = await getProductsByCrop('WHEAT001');
 
