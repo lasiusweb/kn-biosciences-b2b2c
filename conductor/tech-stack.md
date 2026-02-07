@@ -19,8 +19,8 @@
 - **CMS:** Dynamic content management for Legal and FAQ sections via Supabase tables (`legal_content`, `faqs`).
 
 ## Phase 3: Storefront Core
-- **Routing:** `/shop`, `/shop/segment/[slug]`, `/shop/crop/[slug]`, `/product/[slug]`, `/cart`.
-- **Components:** ProductCard, ProductFilters, ProductDetail, CartDrawer.
+- **Routing:** `/shop`, `/shop/segment/[slug]`, `/shop/segment/[slug]/[crop]`, `/product/[slug]`, `/cart`.
+- **Components:** ProductCard, ProductFilters, ProductDetail, CartDrawer, SegmentHubLayout, CropEnvironmentView, KnowledgeSidebar.
 - **Features:** Responsive design, optimized grid rendering, WCAG compliance.
 
 ## Phase 4: B2B Portal
