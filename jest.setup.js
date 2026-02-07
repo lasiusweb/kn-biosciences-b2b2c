@@ -26,6 +26,17 @@ if (typeof window !== "undefined") {
   });
 }
 
+// Global fetch mock for both node and jsdom environments
+global.fetch = jest.fn(() => 
+  Promise.resolve({
+    json: () => Promise.resolve({}),
+    text: () => Promise.resolve(''),
+    ok: true,
+    status: 200,
+    headers: new Headers(),
+  })
+);
+
 // Set required environment variables for tests
 process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "dummy-key";
