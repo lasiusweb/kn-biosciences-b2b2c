@@ -24,6 +24,7 @@ import {
   Clock
 } from 'lucide-react'
 import { getProducts, getKnowledgeCenterArticles } from '@/lib/enhanced-product-service'
+import KnowledgeSidebar from '@/components/knowledge/knowledge-sidebar'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -365,90 +366,100 @@ export function CropEnvironmentView({
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mixedGridItems.map((item, idx) => (
-                  item.gridType === 'product' ? (
-                    <div
-                      key={`product-${item.id}-${idx}`}
-                      className="solution-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
-                    >
-                      {/* Product Image */}
-                      <div className="aspect-video relative overflow-hidden">
-                        <Image
-                          src={item.image_urls?.[0] || '/images/products/placeholder.jpg'}
-                          alt={item.name}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-
-                      {/* Product Details */}
-                      <div className="p-6">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className={cn(
-                            'text-xs px-2 py-1 rounded-full font-medium',
-                            getCategoryColor(item.category || 'nutrition')
-                          )}>
-                            {item.category || 'Nutrition'}
-                          </span>
-                          <div className="flex items-center text-sm text-gray-500">
-                            <Star className="w-4 h-4 text-yellow-500 mr-1" />
-                            {item.rating || 4.5}
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Main Content Area */}
+                <div className="lg:col-span-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {mixedGridItems.map((item, idx) => (
+                      item.gridType === 'product' ? (
+                        <div
+                          key={`product-${item.id}-${idx}`}
+                          className="solution-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group"
+                        >
+                          {/* Product Image */}
+                          <div className="aspect-video relative overflow-hidden">
+                            <Image
+                              src={item.image_urls?.[0] || '/images/products/placeholder.jpg'}
+                              alt={item.name}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
                           </div>
-                        </div>
 
-                        <h3 className="text-lg font-semibold text-earth-900 mb-2 group-hover:text-organic-600 transition-colors">
-                          {item.name}
-                        </h3>
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                          {item.short_description || item.description}
-                        </p>
+                          {/* Product Details */}
+                          <div className="p-6">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className={cn(
+                                'text-xs px-2 py-1 rounded-full font-medium',
+                                getCategoryColor(item.category || 'nutrition')
+                              )}>
+                                {item.category || 'Nutrition'}
+                              </span>
+                              <div className="flex items-center text-sm text-gray-500">
+                                <Star className="w-4 h-4 text-yellow-500 mr-1" />
+                                {item.rating || 4.5}
+                              </div>
+                            </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex items-center justify-between mt-auto">
-                          <div className="text-2xl font-bold text-organic-600">
-                            ₹{item.product_variants?.[0]?.price || 0}
-                          </div>
+                            <h3 className="text-lg font-semibold text-earth-900 mb-2 group-hover:text-organic-600 transition-colors">
+                              {item.name}
+                            </h3>
+                            <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                              {item.short_description || item.description}
+                            </p>
+
+                            {/* Action Buttons */}
+                            <div className="flex items-center justify-between mt-auto">
+                              <div className="text-2xl font-bold text-organic-600">
+                                ₹{item.product_variants?.[0]?.price || 0}
+                              </div>
                           <Link href={`/product/${item.slug}`}>
                             <Button variant="outline" size="sm">
                               View Details
                             </Button>
                           </Link>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Educational Card */
-                    <div
-                      key={`article-${item.id}-${idx}`}
-                      className="educational-card bg-organic-500 rounded-xl shadow-lg overflow-hidden p-8 flex flex-col text-white group cursor-pointer"
-                    >
-                      <div className="flex items-center gap-2 mb-4 text-organic-100">
-                        <BookOpen className="w-5 h-5" />
-                        <span className="text-xs font-semibold uppercase tracking-wider">Expert Guide</span>
-                      </div>
-                      
-                      <h3 className="text-2xl font-bold mb-4 group-hover:text-organic-50 transition-colors">
-                        {item.title}
-                      </h3>
-                      
-                      <p className="text-organic-100 text-sm mb-6 line-clamp-4 leading-relaxed">
-                        {item.excerpt}
-                      </p>
-                      
-                      <div className="mt-auto flex items-center justify-between pt-6 border-t border-organic-400">
-                        <div className="flex items-center text-xs text-organic-100">
-                          <Clock className="w-4 h-4 mr-1" />
-                          {item.read_time} read
+                      ) : (
+                        /* Educational Card */
+                        <div
+                          key={`article-${item.id}-${idx}`}
+                          className="educational-card bg-organic-500 rounded-xl shadow-lg overflow-hidden p-8 flex flex-col text-white group cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2 mb-4 text-organic-100">
+                            <BookOpen className="w-5 h-5" />
+                            <span className="text-xs font-semibold uppercase tracking-wider">Expert Guide</span>
+                          </div>
+                          
+                          <h3 className="text-2xl font-bold mb-4 group-hover:text-organic-50 transition-colors">
+                            {item.title}
+                          </h3>
+                          
+                          <p className="text-organic-100 text-sm mb-6 line-clamp-4 leading-relaxed">
+                            {item.excerpt}
+                          </p>
+                          
+                          <div className="mt-auto flex items-center justify-between pt-6 border-t border-organic-400">
+                            <div className="flex items-center text-xs text-organic-100">
+                              <Clock className="w-4 h-4 mr-1" />
+                              {item.read_time} read
+                            </div>
+                            <Link href={`/knowledge/${item.slug}`} className="flex items-center text-sm font-bold group-hover:translate-x-1 transition-transform">
+                              Read Guide
+                              <ChevronRight className="w-4 h-4 ml-1" />
+                            </Link>
+                          </div>
                         </div>
-                        <Link href={`/knowledge/${item.slug}`} className="flex items-center text-sm font-bold group-hover:translate-x-1 transition-transform">
-                          Read Guide
-                          <ChevronRight className="w-4 h-4 ml-1" />
-                        </Link>
-                      </div>
-                    </div>
-                  )
-                ))}
+                      )
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sidebar Area */}
+                <div className="lg:col-span-1">
+                  <KnowledgeSidebar crop={crop} segment={params.segment as string} />
+                </div>
               </div>
             )}
           </div>
