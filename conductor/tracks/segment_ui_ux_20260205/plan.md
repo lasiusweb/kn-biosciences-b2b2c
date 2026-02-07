@@ -1,7 +1,7 @@
 # Implementation Plan: Shop by Segment UI/UX (Track: segment_ui_ux_20260205)
 
 ## Phase 1: Architecture & Data Fetching [checkpoint: pending]
-- [ ] Task: Extend API Services for Segment & Crop Discovery
+- [x] Task: Extend API Services for Segment & Crop Discovery ca2e02f
     - [ ] Write unit tests for segment-specific product fetching with Knowledge Center linkage.
     - [ ] Implement optimized data fetching logic in `src/lib/product-service.ts`.
 - [ ] Task: Implement Dynamic SEO & Metadata Logic
