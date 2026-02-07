@@ -7,7 +7,7 @@
 - [x] Task: Implement Dynamic SEO & Metadata Logic 2bb4481
     - [ ] Write tests for dynamic metadata generation for segments and crops.
     - [ ] Implement `generateMetadata` in the segment and crop route handlers.
-- [ ] Task: Conductor - User Manual Verification 'Architecture & Data Fetching' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Architecture & Data Fetching' (Protocol in workflow.md)
 
 ## Phase 2: UI Foundation & GSAP Animations [checkpoint: pending]
 - [ ] Task: Build Premium Segment Hub Layout (`/shop/segment/[slug]`)
