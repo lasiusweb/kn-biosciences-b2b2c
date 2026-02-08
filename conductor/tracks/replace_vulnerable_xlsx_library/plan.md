@@ -1,11 +1,11 @@
 # Implementation Plan: Replace Vulnerable XLSX Library
 
 ## Phase 1: Research & Selection
-- [ ] Task: Research Alternative Libraries
-    - [ ] Evaluate `exceljs`, `read-excel-file`, and other suitable candidates.
-    - [ ] Compare features, performance, documentation, and security posture.
-    - [ ] Select the most appropriate library.
-- [ ] Task: Conductor - User Manual Verification 'Alternative Library Selection' (Protocol in workflow.md)
+- [x] Task: Research Alternative Libraries
+    - [x] Evaluate `exceljs`, `read-excel-file`, and other suitable candidates.
+    - [x] Compare features, performance, documentation, and security posture.
+    - [x] Select the most appropriate library: `exceljs`.
+- [x] Task: Conductor - User Manual Verification 'Alternative Library Selection' (Protocol in workflow.md)
 
 ## Phase 2: Integration & Testing
 - [ ] Task: Implement New Parser in `import-parser.ts`
