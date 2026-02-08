@@ -34,7 +34,7 @@
     - [ ] Write unit tests to ensure Supabase inventory is updated correctly from Zoho data.
 - [ ] Task: Conductor - User Manual Verification 'Inventory Sync' (Protocol in workflow.md)
 
-## Phase 5: Reliability & Admin Dashboard [checkpoint: pending]
+## Phase 5: Reliability & Admin Dashboard [checkpoint: 3f9a568]
 - [x] Task: Implement Background Sync Queue
     - [x] Set up a queue-based processing system with automatic retries and exponential backoff.
     - [x] Integrate existing sync tasks into this queue.
