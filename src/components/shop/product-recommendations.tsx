@@ -36,6 +36,7 @@ interface Product {
   brand: string;
   in_stock: boolean;
   is_organic: boolean;
+  tags?: string[];
 }
 
 interface Recommendation {

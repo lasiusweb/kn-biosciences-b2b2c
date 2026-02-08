@@ -36,7 +36,7 @@ export default function ContactPage() {
       toast({
         title: "Submission Failed",
         description: "Something went wrong. Please try again later.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsSubmitting(false);

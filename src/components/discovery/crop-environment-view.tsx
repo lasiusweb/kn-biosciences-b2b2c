@@ -46,6 +46,7 @@ interface WeatherData {
 
 interface CropEnvironmentProps {
   crop: string
+  segment?: string
   region?: string
   season?: string
   className?: string
@@ -53,12 +54,14 @@ interface CropEnvironmentProps {
 
 export function CropEnvironmentView({ 
   crop, 
+  segment: propSegment,
   region = 'north-india', 
   season = 'current',
   className 
 }: CropEnvironmentProps) {
   const params = useParams()
   const router = useRouter()
+  const segment = propSegment || params.segment as string
   const containerRef = useRef<HTMLDivElement>(null)
   const [solutions, setSolutions] = useState<any[]>([])
   const [articles, setArticles] = useState<any[]>([])
@@ -112,7 +115,6 @@ export function CropEnvironmentView({
         setLoading(true)
         
         // Fetch real products for this crop
-        const segment = params.segment as string;
         const result = await getProducts({ cropId: crop, segment });
         
         // Fetch real knowledge center articles for context
@@ -139,7 +141,7 @@ export function CropEnvironmentView({
     if (crop) {
       loadCropData()
     }
-  }, [crop, params.segment])
+  }, [crop, segment])
 
   useEffect(() => {
     if (!containerRef.current || loading) return
@@ -245,8 +247,8 @@ export function CropEnvironmentView({
                   ← Back to Segments
                 </Link>
                 <span className="text-gray-300">/</span>
-                <Link href={`/segments/${params.segment}`} className="text-gray-500 hover:text-earth-900 transition-colors">
-                  {params.segment}
+                <Link href={`/segments/${segment}`} className="text-gray-500 hover:text-earth-900 transition-colors">
+                  {segment}
                 </Link>
                 <span className="text-gray-300">/</span>
                 <span className="text-organic-600 font-medium">
@@ -373,7 +375,7 @@ export function CropEnvironmentView({
                 <div className="text-left">
                   <p className="text-xs font-bold text-earth-900 uppercase tracking-wider">Crop Solutions PDF</p>
                   <Link 
-                    href={`/catalogues/${params.segment}-catalogue.pdf`}
+                    href={`/catalogues/${segment.replace(/[^a-zA-Z0-9-]/g, '')}-catalogue.pdf`}
                     className="text-xs text-organic-600 hover:underline font-medium flex items-center gap-1"
                   >
                     Download Full Catalogue
@@ -503,7 +505,7 @@ export function CropEnvironmentView({
 
                 {/* Sidebar Area */}
                 <div className="lg:col-span-1">
-                  <KnowledgeSidebar crop={crop} segment={params.segment as string} />
+                  <KnowledgeSidebar crop={crop} segment={segment} />
                 </div>
               </div>
             )}

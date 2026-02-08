@@ -51,6 +51,15 @@ export async function POST(request: NextRequest) {
         console.error("Webhook notification error:", err)
       );
 
+      // 5. Queue for Zoho Books sync
+      await zohoQueueService.addToQueue({
+        entity_type: 'order',
+        entity_id: orderId,
+        operation: 'create',
+        zoho_service: 'books',
+        zoho_entity_type: 'Invoice'
+      });
+
       return NextResponse.json({ message: "Order confirmed successfully" }, { status: 200 });
     } else {
       // Payment failed

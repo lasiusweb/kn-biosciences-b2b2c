@@ -7,18 +7,40 @@ const corsHeaders = {
   'Content-Type': 'application/json',
 };
 
-// Webhook verification - in production, verify with Zoho's webhook signature
-function verifyWebhookSignature(body: string, signature: string, secret: string): boolean {
-  // This is a simplified verification - implement proper Zoho webhook verification
-  // For now, we'll accept all webhooks but log them for verification
-  console.log('Webhook received:', { body, signature });
-  return true;
+// Webhook verification using HMAC-SHA256
+async function verifyWebhookSignature(body: string, signature: string, secret: string): Promise<boolean> {
+  if (!signature || !secret) return false;
+
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+
+  const signatureBuffer = hexToBuffer(signature);
+  const bodyBuffer = encoder.encode(body);
+
+  return await crypto.subtle.verify(
+    'HMAC',
+    key,
+    signatureBuffer,
+    bodyBuffer
+  );
+}
+
+function hexToBuffer(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+  }
+  return bytes;
 }
 
 async function handleInventoryWebhook(payload: any): Promise<Response> {
   try {
-    console.log('[Zoho Webhook] Processing inventory webhook:', payload);
-
     const { eventType, data } = payload;
 
     // Process different webhook events
@@ -118,8 +140,6 @@ async function handleItemUpdate(itemData: any): Promise<void> {
 
 async function handleInventoryAdjustment(adjustmentData: any): Promise<void> {
   try {
-    console.log('[Zoho Webhook] Processing inventory adjustment:', adjustmentData);
-    
     // Similar logic to handle inventory adjustments
     // This could include stock takes, transfers, etc.
     
@@ -178,13 +198,16 @@ serve(async (req) => {
     const signature = req.headers.get('x-zoho-webhook-signature');
     const secret = Deno.env.get('ZOHO_WEBHOOK_SECRET') || '';
 
-    // Verify webhook signature (simplified)
-    if (!verifyWebhookSignature(body, signature || '', secret)) {
-      console.log('[Zoho Webhook] Invalid webhook signature');
+    // Verify webhook signature
+    const isValid = await verifyWebhookSignature(body, signature || '', secret);
+    
+    if (!isValid) {
+      console.warn('[Zoho Webhook] Invalid or missing webhook signature');
       return new Response('Invalid signature', { status: 401 });
     }
 
     const payload = JSON.parse(body);
+    console.log('[Zoho Webhook] Received valid webhook event:', payload.eventType);
     return await handleInventoryWebhook(payload);
 
   } catch (error) {

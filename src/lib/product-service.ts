@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Product } from '@/types';
+import { Product, ProductWithRelations, ProductVariant } from '@/types';
 
 /**
  * Fetches all active products from database.

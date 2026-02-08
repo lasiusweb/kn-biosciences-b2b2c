@@ -35,12 +35,12 @@
 - [ ] Task: Conductor - User Manual Verification 'Inventory Sync' (Protocol in workflow.md)
 
 ## Phase 5: Reliability & Admin Dashboard [checkpoint: pending]
-- [ ] Task: Implement Background Sync Queue
-    - [ ] Set up a queue-based processing system with automatic retries and exponential backoff.
-    - [ ] Integrate existing sync tasks into this queue.
-- [ ] Task: Build Admin Sync Dashboard
-    - [ ] Create UI in the Admin App to view `zoho_sync_logs`.
-    - [ ] Add "Retry Sync" functionality for manual overrides.
-- [ ] Task: Final Integration Audit & Performance Check
-    - [ ] Verify API rate limit handling and log reliability under load.
+- [x] Task: Implement Background Sync Queue
+    - [x] Set up a queue-based processing system with automatic retries and exponential backoff.
+    - [x] Integrate existing sync tasks into this queue.
+- [x] Task: Build Admin Sync Dashboard
+    - [x] Create UI in the Admin App to view `zoho_sync_logs`.
+    - [x] Add "Retry Sync" functionality for manual overrides.
+- [x] Task: Final Integration Audit & Performance Check
+    - [x] Verify API rate limit handling and log reliability under load.
 - [ ] Task: Conductor - User Manual Verification 'Reliability & Dashboard' (Protocol in workflow.md)

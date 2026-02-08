@@ -179,9 +179,9 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
-  short_description: string;
-  category_id: string;
-  segment:
+  short_description?: string;
+  category_id?: string;
+  segment?:
     | "agriculture"
     | "aquaculture"
     | "poultry_healthcare"
@@ -191,13 +191,15 @@ export interface Product {
     | "organic_farming"
     | "farm_equipment"
     | "testing_lab"
-    | "oilpalm";
+    | "oilpalm"
+    | string;
   status: "active" | "inactive" | "draft";
   featured: boolean;
   meta_title?: string;
   meta_description?: string;
   created_at: string;
   updated_at: string;
+  featured_image?: string;
 }
 
 export interface ProductVariant {
@@ -205,9 +207,9 @@ export interface ProductVariant {
   product_id: string;
   sku: string;
   weight: number;
-  weight_unit: "g" | "kg" | "ml" | "l";
-  packing_type: "box" | "drum" | "bag" | "bottle" | "pouch";
-  form: "powder" | "liquid" | "granules" | "tablet" | "capsule";
+  weight_unit: "g" | "kg" | "ml" | "l" | string;
+  packing_type?: "box" | "drum" | "bag" | "bottle" | "pouch" | string;
+  form?: "powder" | "liquid" | "granules" | "tablet" | "capsule" | string;
   price: number;
   compare_price?: number;
   cost_price: number;
@@ -231,7 +233,7 @@ export interface ProductCategory {
 }
 
 export interface ProductWithRelations extends Product {
-  product_variants?: ProductVariant; // Assuming a product has one main variant for display
+  product_variants?: ProductVariant[];
   problem_solutions?: ProblemSolution[];
   product_crops?: ProductCrop[];
 }

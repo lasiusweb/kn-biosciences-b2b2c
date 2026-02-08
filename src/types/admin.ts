@@ -1,5 +1,5 @@
-import { Database } from './database.ts';
-import { Order, ProductBatch, ProductVariant, Product, BlogPost } from './index.ts';
+import { Database } from './database';
+import { Order, ProductBatch, ProductVariant, Product, BlogPost } from './index';
 
 export type TableName = keyof Database['public']['Tables'];
 

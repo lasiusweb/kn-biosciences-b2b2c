@@ -219,7 +219,13 @@ export function CheckoutFlow({
       }
 
       // Initialize Razorpay
-      const { Razorpay } = await (window as any).Razorpay ? { Razorpay: (window as any).Razorpay } : import("razorpay");
+      let Razorpay: any;
+      if ((window as any).Razorpay) {
+        Razorpay = (window as any).Razorpay;
+      } else {
+        const razorpayModule = await import("razorpay");
+        Razorpay = (razorpayModule as any).default || razorpayModule;
+      }
 
       const options = {
         key: paymentData.key,

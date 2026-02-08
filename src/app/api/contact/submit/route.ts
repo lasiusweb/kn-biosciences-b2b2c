@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
-import { zohoCRMService } from '@/lib/microservices/zoho-service';
+import { zohoQueueService } from '@/lib/integrations/zoho/queue-service';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, phone, subject, message } = body;
+    const { name, email, phone, subject, message, company } = body;
 
     if (!name || !email || !subject || !message) {
       return NextResponse.json(
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     }
 
     // 1. Store in Supabase
-    const { error: dbError } = await supabaseAdmin
+    const { data: submission, error: dbError } = await supabaseAdmin
       .from('contact_submissions')
       .insert([
         {
@@ -32,26 +32,25 @@ export async function POST(req: Request) {
           phone,
           subject,
           message,
+          company,
           status: 'new',
         },
-      ]);
+      ])
+      .select('id')
+      .single();
 
     if (dbError) {
       console.error('Error saving contact submission:', dbError);
       throw dbError;
     }
 
-    // 2. Sync to Zoho CRM as a lead
-    const [firstName, ...lastNameParts] = name.split(' ');
-    const lastName = lastNameParts.join(' ') || '.'; // Zoho requires Last Name
-
-    await zohoCRMService.createLead({
-      First_Name: firstName,
-      Last_Name: lastName,
-      Email: email,
-      Phone: phone,
-      Description: `Subject: ${subject}\n\nMessage: ${message}`,
-      Lead_Source: 'Website Contact Form',
+    // 2. Queue for Zoho CRM sync
+    await zohoQueueService.addToQueue({
+      entity_type: 'contact_submission',
+      entity_id: submission.id,
+      operation: 'create',
+      zoho_service: 'crm',
+      zoho_entity_type: 'Lead'
     });
 
     // 3. TODO: Trigger Email Notification

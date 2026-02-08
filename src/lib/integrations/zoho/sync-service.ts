@@ -70,12 +70,12 @@ export class ZohoSyncService {
         role: user.role,
       };
 
-      console.log(`[Zoho Sync] Syncing user registration: ${user.email}`);
+      console.log(`[Zoho Sync] Syncing user registration: ${user.email.replace(/(.{2}).+(@.+)/, "$1***$2")}`);
 
       const result = await zohoCRMClient.syncUserToContact(userId, userSyncData);
 
       if (result.success) {
-        console.log(`[Zoho Sync] Successfully synced user: ${user.email} -> Zoho Contact ID: ${result.zohoContactId}`);
+        console.log(`[Zoho Sync] Successfully synced user: ${user.email.replace(/(.{2}).+(@.+)/, "$1***$2")} -> Zoho Contact ID: ${result.zohoContactId}`);
       } else {
         console.error(`[Zoho Sync] Failed to sync user: ${user.email}`, result.error);
       }
@@ -109,7 +109,7 @@ export class ZohoSyncService {
       const firstName = nameParts[0];
       const lastName = nameParts[1] || '';
 
-      console.log(`[Zoho Sync] Syncing contact submission: ${submission.email}`);
+      console.log(`[Zoho Sync] Syncing contact submission: ${submission.email.replace(/(.{2}).+(@.+)/, "$1***$2")}`);
 
       const leadData = {
         First_Name: firstName,
@@ -124,7 +124,7 @@ export class ZohoSyncService {
       const result = await zohoCRMClient.createLead(leadData);
 
       if (result.success) {
-        console.log(`[Zoho Sync] Successfully synced contact submission: ${submission.email} -> Zoho Lead ID: ${result.zohoLeadId}`);
+        console.log(`[Zoho Sync] Successfully synced contact submission: ${submission.email.replace(/(.{2}).+(@.+)/, "$1***$2")} -> Zoho Lead ID: ${result.zohoLeadId}`);
         
         // Update submission status
         await supabase
@@ -175,7 +175,7 @@ export class ZohoSyncService {
         throw new Error('User associated with quote not found');
       }
 
-      console.log(`[Zoho Sync] Syncing B2B quote: ${quote.user.email} (Amount: ₹${quote.total_amount})`);
+      console.log(`[Zoho Sync] Syncing B2B quote: ${quote.user.email.replace(/(.{2}).+(@.+)/, "$1***$2")} (Amount: ₹${quote.total_amount})`);
 
       const quoteSyncData: B2BQuoteSyncData = {
         user_id: quote.user_id,
@@ -192,7 +192,7 @@ export class ZohoSyncService {
       const result = await zohoCRMClient.createLeadFromQuote(quoteSyncData);
 
       if (result.success) {
-        console.log(`[Zoho Sync] Successfully synced B2B quote: ${quote.user.email} -> Zoho Lead ID: ${result.zohoLeadId}`);
+        console.log(`[Zoho Sync] Successfully synced B2B quote: ${quote.user.email.replace(/(.{2}).+(@.+)/, "$1***$2")} -> Zoho Lead ID: ${result.zohoLeadId}`);
         
         // Update quote with Zoho CRM ID
         await supabase

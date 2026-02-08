@@ -44,9 +44,14 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Zoho Ecosystem Integration (All Phases Complete)**
+- [~] **Track: Zoho Ecosystem Integration (All Phases Complete)**
   *Link: [./tracks/zoho_integration_20260205/](./tracks/zoho_integration_20260205/)*
   *Status: ✅ Phase 1 (Foundation & Auth) Complete, ✅ Phase 2 (CRM Integration) Complete, ✅ Phase 3 (Books Integration) Complete, ✅ Phase 4 (Bi-directional Inventory Sync) Complete*
+
+---
+
+- [ ] **Track: Replace Vulnerable XLSX Library**
+  *Link: [./tracks/replace_vulnerable_xlsx_library/](./tracks/replace_vulnerable_xlsx_library/)*
 
 ---
 

@@ -93,6 +93,27 @@ async function handlePaymentCaptured(payment: any) {
 
     // Send order confirmation email
     await sendOrderConfirmation(payment.order_id);
+
+    // Get the order ID from the database
+    const { data: orderData, error: orderError } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("payment_order_id", payment.order_id)
+      .single();
+
+    if (orderError || !orderData) {
+      console.error("Razorpay webhook: Order not found for payment_order_id", payment.order_id);
+      return;
+    }
+
+    // Queue for Zoho Books sync
+    await zohoQueueService.addToQueue({
+      entity_type: 'order',
+      entity_id: orderData.id,
+      operation: 'create',
+      zoho_service: 'books',
+      zoho_entity_type: 'Invoice'
+    });
   } catch (error) {
     console.error("Error handling payment capture:", error);
   }

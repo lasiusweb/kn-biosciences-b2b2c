@@ -5,6 +5,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { zohoBooksClient } from './books';
+import { maskPII } from '@/lib/utils';
 
 export interface OrderItemData {
   product_name: string;
@@ -579,8 +580,8 @@ export class ZohoBooksSyncService {
         attempt_count: 1,
         max_attempts: 5,
         error_message: errorMessage,
-        request_payload: requestPayload,
-        response_payload: responsePayload,
+        request_payload: maskPII(requestPayload),
+        response_payload: maskPII(responsePayload),
       });
     } catch (error) {
       console.error('[Zoho Books Sync] Failed to log sync operation:', error);

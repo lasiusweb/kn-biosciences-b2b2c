@@ -1,0 +1,8 @@
+{
+  "track_id": "replace_vulnerable_xlsx_library",
+  "type": "security_fix",
+  "status": "new",
+  "created_at": "2026-02-08T00:00:00Z",
+  "updated_at": "2026-02-08T00:00:00Z",
+  "description": "Replace vulnerable XLSX library with a secure alternative."
+}

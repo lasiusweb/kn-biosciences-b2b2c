@@ -3,38 +3,11 @@
  */
 
 import { supabase } from './supabase';
-import { Product } from '@/types';
+import { Product, ProductVariant, ProblemSolution } from '@/types';
 
 export interface SegmentProduct extends Product {
   product_variants: ProductVariant[];
   problem_solutions: ProblemSolution[];
-  featured: boolean;
-  meta_title?: string;
-  meta_description?: string;
-  segment?: string;
-}
-
-export interface ProductVariant {
-  id: string;
-  product_id: string;
-  sku: string;
-  price: number;
-  stock_quantity: number;
-  weight?: number;
-  weight_unit?: string;
-  image_urls?: string[];
-  zoho_books_id?: string;
-  zoho_crm_id?: string;
-}
-
-export interface ProblemSolution {
-  id: string;
-  title: string;
-  slug: string;
-  segment: string;
-  content: string;
-  featured: boolean;
-  published_at: string;
 }
 
 export interface ProductCrop {

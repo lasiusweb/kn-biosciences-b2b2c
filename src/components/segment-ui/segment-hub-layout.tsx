@@ -282,7 +282,7 @@ export function SegmentHubLayout({ segment, className }: SegmentHubProps) {
               <div>
                 <p className="text-sm font-semibold text-earth-900">Segment Catalogue</p>
                 <Link 
-                  href={`/catalogues/${segment}-catalogue.pdf`}
+                  href={`/catalogues/${segment.replace(/[^a-zA-Z0-9-]/g, '')}-catalogue.pdf`}
                   className="text-xs text-organic-600 hover:underline font-medium flex items-center gap-1"
                 >
                   Download PDF (12MB)

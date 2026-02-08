@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
 import paymentService from "@/lib/payments/razorpay";
+import { zohoQueueService } from "@/lib/integrations/zoho/queue-service"; // Import the queue service
 
 export async function POST(req: NextRequest) {
   try {
@@ -70,6 +71,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
     }
 
+    // Queue new order for Zoho Books sync as Invoice
+    await zohoQueueService.addToQueue({
+      entity_type: 'order',
+      entity_id: order.id,
+      operation: 'create',
+      zoho_service: 'books',
+      zoho_entity_type: 'Invoice'
+    });
+
     // 5. Create Order Items
     const orderItems = quote.b2b_quote_items.map((item: any) => ({
       order_id: order.id,
@@ -123,6 +133,15 @@ export async function POST(req: NextRequest) {
       console.error("Quote update failed:", updateQuoteError);
       return NextResponse.json({ error: "Failed to update quote status" }, { status: 500 });
     }
+
+    // Queue approved quote for Zoho Books sync as Estimate
+    await zohoQueueService.addToQueue({
+      entity_type: 'b2b_quote',
+      entity_id: quote.id,
+      operation: 'update', // or 'create' if it's the first time
+      zoho_service: 'books',
+      zoho_entity_type: 'Estimate'
+    });
 
     if (paymentLinkUrl) {
       await supabaseAdmin

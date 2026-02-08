@@ -5,6 +5,7 @@
 
 import { zohoAuth } from './auth';
 import { supabase } from '@/lib/supabase';
+import { maskPII } from '@/lib/utils';
 
 export interface ZohoContact {
   First_Name: string;
@@ -80,7 +81,7 @@ class ZohoCRMClient {
    */
   async createContact(contact: ZohoContact): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
-      console.log(`[Zoho CRM] Creating contact for email: ${contact.Email}`);
+      console.log(`[Zoho CRM] Creating contact for email: ${contact.Email.replace(/(.{2}).+(@.+)/, "$1***$2")}`);
 
       const response: ZohoCRMResponse = await this.makeRequest('/Contacts', {
         method: 'POST',
@@ -165,7 +166,7 @@ class ZohoCRMClient {
    */
   async createLead(lead: ZohoLead): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
-      console.log(`[Zoho CRM] Creating lead for email: ${lead.Email}`);
+      console.log(`[Zoho CRM] Creating lead for email: ${lead.Email.replace(/(.{2}).+(@.+)/, "$1***$2")}`);
 
       const response: ZohoCRMResponse = await this.makeRequest('/Leads', {
         method: 'POST',
@@ -206,7 +207,7 @@ class ZohoCRMClient {
    */
   async getContactByEmail(email: string): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
-      console.log(`[Zoho CRM] Searching for contact with email: ${email}`);
+      console.log(`[Zoho CRM] Searching for contact with email: ${email.replace(/(.{2}).+(@.+)/, "$1***$2")}`);
 
       const response: ZohoCRMResponse = await this.makeRequest(`/Contacts/search?email=${encodeURIComponent(email)}`);
 
@@ -217,7 +218,7 @@ class ZohoCRMClient {
           data: response.data[0]
         };
       } else {
-        console.log(`[Zoho CRM] No contact found for email: ${email}`);
+        console.log(`[Zoho CRM] No contact found for email: ${email.replace(/(.{2}).+(@.+)/, "$1***$2")}`);
         return {
           success: false,
           error: 'Contact not found'
@@ -261,8 +262,8 @@ class ZohoCRMClient {
         attempt_count: 1,
         max_attempts: 5,
         error_message: errorMessage,
-        request_payload: requestPayload,
-        response_payload: responsePayload,
+        request_payload: maskPII(requestPayload),
+        response_payload: maskPII(responsePayload),
       });
     } catch (error) {
       console.error('[Zoho CRM] Failed to log sync operation:', error);

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, Mail, Lock, User, Phone, Building } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast"; // Assuming a toast notification system exists
 
 export function AuthForm() {
   const [loading, setLoading] = useState(false);
@@ -52,44 +52,39 @@ export function AuthForm() {
     setLoading(true);
 
     try {
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            phone: formData.phone,
-            role: (['customer', 'b2b_client'].includes(formData.role) ? formData.role : 'customer') as "customer" | "b2b_client",
-            company_name: formData.companyName,
-            gst_number: formData.gstNumber,
-          },
+      // Call the new API route for registration
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          companyName: formData.companyName,
+          gstNumber: formData.gstNumber,
+          role: formData.role,
+        }),
       });
 
-      if (authError) throw authError;
+      const data = await response.json();
 
-      // Create user profile in users table
-      if (authData.user) {
-        const { error: profileError } = await supabase.from("users").insert({
-          id: authData.user.id,
-          email: formData.email,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          phone: formData.phone,
-          role: formData.role,
-          company_name: formData.companyName,
-          gst_number: formData.gstNumber,
-        });
-
-        if (profileError) throw profileError;
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
       }
 
       // Show success message and redirect
       router.push("/auth/success");
     } catch (error: any) {
       console.error("Sign up error:", error.message);
-      // Show toast notification
+      toast({
+        title: "Sign Up Failed",
+        description: error.message || "An unexpected error occurred.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

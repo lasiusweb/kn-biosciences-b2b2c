@@ -4,10 +4,11 @@ import React from "react";
 
 interface AlertProps {
   variant?: "default" | "destructive";
+  className?: string;
   children: React.ReactNode;
 }
 
-export function Alert({ variant = "default", children }: AlertProps) {
+export function Alert({ variant = "default", className, children }: AlertProps) {
   const baseClasses = "p-4 rounded-lg border";
   const variantClasses = {
     default: "bg-blue-50 border-blue-200 text-blue-800",
@@ -15,7 +16,7 @@ export function Alert({ variant = "default", children }: AlertProps) {
   };
 
   return (
-    <div className={`${baseClasses} ${variantClasses[variant]}`}>
+    <div className={`${baseClasses} ${variantClasses[variant]} ${className || ""}`}>
       {children}
     </div>
   );

@@ -5,6 +5,7 @@
 
 import { zohoAuth } from './auth';
 import { supabase } from '@/lib/supabase';
+import { maskPII } from '@/lib/utils';
 
 export interface ZohoBooksContact {
   contact_id?: string;
@@ -182,6 +183,7 @@ class ZohoBooksClient {
     try {
       // First try to find existing contact by email
       if (contactData.email) {
+        console.log(`[Zoho Books] Searching for contact with email: ${contactData.email.replace(/(.{2}).+(@.+)/, "$1***$2")}`);
         const searchResponse: ZohoBooksResponse = await this.makeRequest(`/contacts?email=${encodeURIComponent(contactData.email)}`);
         
         if (searchResponse.code === 0 && searchResponse.contacts && searchResponse.contacts.length > 0) {
@@ -550,8 +552,8 @@ class ZohoBooksClient {
         attempt_count: 1,
         max_attempts: 5,
         error_message: errorMessage,
-        request_payload: requestPayload,
-        response_payload: responsePayload,
+        request_payload: maskPII(requestPayload),
+        response_payload: maskPII(responsePayload),
       });
     } catch (error) {
       console.error('[Zoho Books] Failed to log sync operation:', error);
