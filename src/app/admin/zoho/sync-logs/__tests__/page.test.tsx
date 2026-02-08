@@ -1,5 +1,5 @@
 // src/app/admin/zoho/sync-logs/__tests__/page.test.tsx
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import ZohoSyncLogsPage from '../page';
 import '@testing-library/jest-dom';
 
@@ -77,13 +77,17 @@ describe('ZohoSyncLogsPage', () => {
   });
 
   it('renders the Zoho Sync Logs title', async () => {
-    render(<ZohoSyncLogsPage />);
+    await act(async () => {
+      render(<ZohoSyncLogsPage />);
+    });
     expect(screen.getByText('Zoho Sync Logs')).toBeInTheDocument();
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
   });
 
   it('displays sync logs in a table', async () => {
-    render(<ZohoSyncLogsPage />);
+    await act(async () => {
+      render(<ZohoSyncLogsPage />);
+    });
     await waitFor(() => {
       expect(screen.getByText('ID')).toBeInTheDocument();
       expect(screen.getByText('Entity')).toBeInTheDocument();
@@ -97,9 +101,9 @@ describe('ZohoSyncLogsPage', () => {
 
       expect(screen.getByText('log-1'.substring(0, 8) + '...')).toBeInTheDocument();
       expect(screen.getByText('user-1'.substring(0, 8) + '...')).toBeInTheDocument();
-      expect(screen.getByText('create')).toBeInTheDocument();
+      expect(screen.getAllByText('create')[0]).toBeInTheDocument(); // Use getAllByText for 'create'
       expect(screen.getByText('crm')).toBeInTheDocument();
-      expect(screen.getAllByText('success')[0]).toBeInTheDocument(); // Use getAllByText as "success" might appear multiple times
+      expect(screen.getAllByText('success')[0]).toBeInTheDocument();
       expect(screen.getByText('1/5')).toBeInTheDocument();
       expect(screen.getByText('-')).toBeInTheDocument();
 
@@ -111,7 +115,9 @@ describe('ZohoSyncLogsPage', () => {
   });
 
   it('filters logs by status', async () => {
-    render(<ZohoSyncLogsPage />);
+    await act(async () => {
+      render(<ZohoSyncLogsPage />);
+    });
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
 
     fireEvent.click(screen.getByRole('combobox', { name: 'Filter by Status' }));
@@ -139,7 +145,9 @@ describe('ZohoSyncLogsPage', () => {
         json: () => Promise.resolve({ data: mockLogs, count: mockLogs.length, page: 1, pageSize: 10 }), // Refetch logs
       });
 
-    render(<ZohoSyncLogsPage />);
+    await act(async () => {
+      render(<ZohoSyncLogsPage />);
+    });
     await waitFor(() => screen.getByText('API rate limit exceeded'));
 
     const retryButton = screen.getByRole('button', { name: 'Retry' });

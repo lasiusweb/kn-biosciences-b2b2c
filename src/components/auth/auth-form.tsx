@@ -15,6 +15,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, Mail, Lock, User, Phone, Building } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast"; // Assuming a toast notification system exists
+import { supabase } from "@/lib/supabase";
 
 export function AuthForm() {
   const [loading, setLoading] = useState(false);
@@ -80,6 +81,7 @@ export function AuthForm() {
       router.push("/auth/success");
     } catch (error: any) {
       console.error("Sign up error:", error.message);
+      const { toast } = useToast();
       toast({
         title: "Sign Up Failed",
         description: error.message || "An unexpected error occurred.",
@@ -105,7 +107,12 @@ export function AuthForm() {
       router.push("/dashboard");
     } catch (error: any) {
       console.error("Sign in error:", error);
-      // Show toast notification
+      const { toast } = useToast();
+      toast({
+        title: "Sign In Failed",
+        description: error.message || "An unexpected error occurred.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }

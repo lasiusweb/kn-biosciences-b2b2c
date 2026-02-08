@@ -19,19 +19,22 @@ describe('Import Parser', () => {
   });
 
   describe('parseExcel', () => {
-    it('should parse Excel buffer', () => {
-      // Create a minimal XLSX workbook
-      const XLSX = require('xlsx');
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet([
-        { name: 'XLSX P1', price: 500, segment: 'seeds' }
-      ]);
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    it('should parse Excel buffer', async () => {
+      // Create a minimal XLSX workbook using exceljs
+      const ExcelJS = require('exceljs');
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Sheet1');
+      worksheet.columns = [
+        { header: 'name', key: 'name', width: 10 },
+        { header: 'price', key: 'price', width: 10 },
+        { header: 'segment', key: 'segment', width: 10 },
+      ];
+      worksheet.addRow({ name: 'ExcelJS P1', price: 500, segment: 'seeds' });
+      const buffer = await workbook.xlsx.writeBuffer();
 
-      const result = parseExcel(buffer);
+      const result = await parseExcel(buffer);
       expect(result).toHaveLength(1);
-      expect(result[0].name).toBe('XLSX P1');
+      expect(result[0].name).toBe('ExcelJS P1');
     });
   });
 });

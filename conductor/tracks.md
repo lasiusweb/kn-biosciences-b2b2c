@@ -50,7 +50,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Replace Vulnerable XLSX Library**
+- [~] **Track: Replace Vulnerable XLSX Library**
   *Link: [./tracks/replace_vulnerable_xlsx_library/](./tracks/replace_vulnerable_xlsx_library/)*
 
 ---

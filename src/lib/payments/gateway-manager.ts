@@ -54,17 +54,17 @@ class PaymentGatewayManager {
       razorpay: {
         keyId: process.env.RAZORPAY_KEY_ID || '',
         keySecret: process.env.RAZORPAY_KEY_SECRET || '',
-        isConfigured: !!(process.env.RAZORPAY_KEY_ID === '' || process.env.RAZORPAY_KEY_SECRET === ''),
+        isConfigured: !!(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET),
       },
       payu: {
         merchantKey: process.env.PAYU_MERCHANT_KEY || '',
         salt: process.env.PAYU_SALT || '',
-        isConfigured: !!(process.env.PAYU_MERCHANT_KEY === '' || process.env.PAYU_SALT === ''),
+        isConfigured: !!(process.env.PAYU_MERCHANT_KEY && process.env.PAYU_SALT),
       },
       easebuzz: {
         merchantKey: process.env.EASEBUZZ_KEY || '',
         salt: process.env.EASEBUZZ_SALT || '',
-        isConfigured: !!(process.env.EASEBUZZ_KEY === '' || process.env.EASEBUZZ_SALT === ''),
+        isConfigured: !!(process.env.EASEBUZZ_KEY && process.env.EASEBUZZ_SALT),
       },
     };
   }

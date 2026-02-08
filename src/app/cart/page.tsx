@@ -76,33 +76,63 @@ export default function CartPage() {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         router.push('/auth?redirect=/cart');
         return;
       }
 
-      const { data, error } = await supabase
+      // First, get cart items
+      const { data: cartData, error: cartError } = await supabase
         .from("cart_items")
         .select(`
-          *,
-          product_variants (
-            *,
-            products (
-              id,
-              name,
-              slug,
-              images,
-              description,
-              category_id
-            )
-          )
+          id,
+          variant_id,
+          quantity,
+          added_at,
+          user_id
         `)
         .eq("user_id", user.id)
         .order("added_at", { ascending: false });
 
-      if (error) throw error;
-      setCartItems(data || []);
+      if (cartError) throw cartError;
+
+      if (!cartData || cartData.length === 0) {
+        setCartItems([]);
+        return;
+      }
+
+      // Extract variant IDs to fetch details in a single query
+      const variantIds = cartData.map(item => item.variant_id);
+      
+      // Fetch product variants and associated products in a single query
+      const { data: variantsData, error: variantsError } = await supabase
+        .from("product_variants")
+        .select(`
+          *,
+          products (
+            id,
+            name,
+            slug,
+            images,
+            description,
+            category_id
+          )
+        `)
+        .in("id", variantIds);
+
+      if (variantsError) throw variantsError;
+
+      // Combine cart items with variant/product data
+      const combinedData = cartData.map(cartItem => {
+        const variantData = variantsData.find(v => v.id === cartItem.variant_id);
+        return {
+          ...cartItem,
+          product_variants: variantData
+        };
+      });
+
+      setCartItems(combinedData);
     } catch (error) {
       console.error("Error fetching cart:", error);
     } finally {

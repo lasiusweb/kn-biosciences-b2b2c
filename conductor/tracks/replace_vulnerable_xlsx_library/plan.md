@@ -8,7 +8,7 @@
 - [x] Task: Conductor - User Manual Verification 'Alternative Library Selection' (Protocol in workflow.md)
 
 ## Phase 2: Integration & Testing
-- [ ] Task: Implement New Parser in `import-parser.ts`
+- [~] Task: Implement New Parser in `import-parser.ts`
     - [ ] Replace `xlsx` calls with the chosen library's API.
     - [ ] Ensure data mapping to existing output structure.
 - [ ] Task: Update Unit Tests
