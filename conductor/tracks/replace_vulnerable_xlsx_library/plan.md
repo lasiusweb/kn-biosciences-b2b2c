@@ -1,6 +1,6 @@
 # Implementation Plan: Replace Vulnerable XLSX Library
 
-## Phase 1: Research & Selection
+## Phase 1: Research & Selection [checkpoint: 47cde2b]
 - [x] Task: Research Alternative Libraries
     - [x] Evaluate `exceljs`, `read-excel-file`, and other suitable candidates.
     - [x] Compare features, performance, documentation, and security posture.
