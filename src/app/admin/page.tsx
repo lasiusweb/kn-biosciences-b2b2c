@@ -5,6 +5,7 @@ import { SecurityDashboard } from "@/components/admin/security-dashboard";
 import { CDNDashboard } from "@/components/admin/cdn-dashboard";
 import { CacheDashboard } from "@/components/admin/cache-dashboard";
 import { MicroservicesDashboard } from "@/components/admin/microservices-dashboard";
+import { SafetyComplianceDashboard } from "@/components/admin/safety-compliance-dashboard";
 import {
   Activity,
   BarChart3,
@@ -12,6 +13,7 @@ import {
   Cloud,
   Database,
   Server,
+  AlertTriangle,
 } from "lucide-react";
 
 export default function AdminPage() {
@@ -23,13 +25,20 @@ export default function AdminPage() {
       </div>
 
       <Tabs defaultValue="analytics" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger
             value="analytics"
             className="flex items-center space-x-2"
           >
             <BarChart3 className="h-4 w-4" />
             <span>Analytics</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="safety-compliance"
+            className="flex items-center space-x-2"
+          >
+            <Shield className="h-4 w-4" />
+            <span>Safety & Compliance</span>
           </TabsTrigger>
           <TabsTrigger
             value="performance"
@@ -58,6 +67,10 @@ export default function AdminPage() {
 
         <TabsContent value="analytics">
           <EnhancedAnalyticsDashboard />
+        </TabsContent>
+
+        <TabsContent value="safety-compliance">
+          <SafetyComplianceDashboard />
         </TabsContent>
 
         <TabsContent value="performance">

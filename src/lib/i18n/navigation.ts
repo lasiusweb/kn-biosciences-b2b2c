@@ -352,6 +352,13 @@ export function getLocale() {
   return config.locale;
 }
 
-export function getMessages() {
-  return import("../messages/[locale]/translation.json");
+export async function getMessages(locale: string = defaultLocale) {
+  try {
+    // Dynamically import the translation file based on the locale
+    return await import(`../messages/${locale}/translation.json`);
+  } catch (error) {
+    console.warn(`Translation file not found for locale: ${locale}, falling back to default`);
+    // Fallback to English if specific locale file is not found
+    return await import(`../messages/en/translation.json`);
+  }
 }

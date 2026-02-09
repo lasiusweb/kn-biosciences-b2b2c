@@ -2,8 +2,10 @@ import { HeroSection } from '@/components/home/hero-section'
 import { FeaturedProducts } from '@/components/home/featured-products'
 import { CategoryShowcase } from '@/components/home/category-showcase'
 import { FarmingSolutions } from '@/components/home/farming-solutions'
-import { Testimonials } from '@/components/home/testimonials'
+import { EnhancedTestimonials } from '@/components/home/enhanced-testimonials'
 import { NewsletterSection } from '@/components/home/newsletter-section'
+import { TrustIndicators } from '@/components/home/trust-indicators'
+import { KnowledgeCenterPreview } from '@/components/home/knowledge-center-preview'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Leaf, Users, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
@@ -13,7 +15,10 @@ export default function HomePage() {
   return (
     <div className="space-y-16">
       <HeroSection />
-      
+
+      {/* Trust Indicators Section */}
+      <TrustIndicators />
+
       {/* Quick Access Section */}
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,7 +30,7 @@ export default function HomePage() {
               Get started with personalized recommendations or explore our comprehensive range of crop solutions.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <Link href="/discover">
               <Button size="lg" className="bg-organic-500 hover:bg-organic-600 text-white h-24 flex flex-col items-center justify-center group">
@@ -35,7 +40,7 @@ export default function HomePage() {
                 <ArrowRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            
+
             <Link href="/segments">
               <Button size="lg" variant="outline" className="h-24 flex flex-col items-center justify-center group border-2 border-organic-500 hover:border-organic-600 text-organic-600 hover:bg-organic-50">
                 <Users className="w-12 h-12 mb-4 text-organic-600" />
@@ -44,7 +49,7 @@ export default function HomePage() {
                 <ArrowRight className="w-6 h-6 text-organic-600 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            
+
             <Link href="/knowledge">
               <Button size="lg" variant="outline" className="h-24 flex flex-col items-center justify-center group border-2 border-green-600 hover:border-green-700 text-green-600 hover:bg-green-50">
                 <CheckCircle className="w-12 h-12 mb-4 text-green-600" />
@@ -56,11 +61,12 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      
+
       <CategoryShowcase />
       <FeaturedProducts />
       <FarmingSolutions />
-      <Testimonials />
+      <EnhancedTestimonials />
+      <KnowledgeCenterPreview />
       <NewsletterSection />
     </div>
   )

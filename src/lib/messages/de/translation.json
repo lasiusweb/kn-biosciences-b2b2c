@@ -1,0 +1,38 @@
+{
+  "common": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "knowledge": "Knowledge Center",
+    "login": "Login",
+    "register": "Register",
+    "profile": "Profile",
+    "logout": "Logout",
+    "cart": "Cart",
+    "orders": "Orders",
+    "admin": "Admin",
+    "b2b": "B2B Portal",
+    "analytics": "Analytics"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "company": "Company",
+    "gstNumber": "GST Number",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot Password?",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "loginSuccess": "Login Successful",
+    "loginFailed": "Login Failed",
+    "invalidCredentials": "Invalid Login Credentials",
+    "accountCreated": "Account Created Successfully",
+    "welcomeBack": "Welcome Back"
+  }
+}

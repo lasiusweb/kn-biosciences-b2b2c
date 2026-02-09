@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Play, CheckCircle, Leaf, Sprout, Users, TrendingUp } from 'lucide-react'
+import { ArrowRight, Play, CheckCircle, Leaf, Sprout, Users, TrendingUp, User, Building2 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -33,6 +33,7 @@ interface HeroSectionProps {
 export function HeroSection({ className }: HeroSectionProps) {
   const heroRef = useRef<HTMLDivElement>(null)
   const [activeSegment, setActiveSegment] = useState<string>('cereals')
+  const [activeUserType, setActiveUserType] = useState<'b2c' | 'b2b'>('b2c')
 
   const segments: SegmentHighlight[] = [
     {
@@ -138,7 +139,7 @@ export function HeroSection({ className }: HeroSectionProps) {
         duration: 1,
         ease: 'power3.out'
       })
-      
+
       gsap.from('.hero-subtitle', {
         opacity: 0,
         y: 30,
@@ -146,7 +147,15 @@ export function HeroSection({ className }: HeroSectionProps) {
         delay: 0.2,
         ease: 'power3.out'
       })
-      
+
+      gsap.from('.hero-user-type-selector', {
+        opacity: 0,
+        y: 20,
+        duration: 0.8,
+        delay: 0.3,
+        ease: 'power3.out'
+      })
+
       gsap.from('.hero-segments', {
         opacity: 0,
         y: 40,
@@ -154,7 +163,7 @@ export function HeroSection({ className }: HeroSectionProps) {
         delay: 0.4,
         ease: 'power3.out'
       })
-      
+
       gsap.from('.hero-cta', {
         opacity: 0,
         y: 20,
@@ -162,7 +171,7 @@ export function HeroSection({ className }: HeroSectionProps) {
         delay: 0.6,
         ease: 'power3.out'
       })
-      
+
       gsap.from('.hero-stats', {
         opacity: 0,
         scale: 0.9,
@@ -177,14 +186,14 @@ export function HeroSection({ className }: HeroSectionProps) {
 
   const handleSegmentHover = (segmentId: string) => {
     setActiveSegment(segmentId)
-    
+
     // Update active segment preview
     gsap.to('.segment-preview', {
       opacity: 0.7,
       duration: 0.3,
       ease: 'power2.out'
     })
-    
+
     setTimeout(() => {
       gsap.to('.segment-preview', {
         opacity: 1,
@@ -209,7 +218,7 @@ export function HeroSection({ className }: HeroSectionProps) {
       {/* Background with animated gradient */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-organic-600 via-green-700 to-emerald-800 opacity-90"></div>
-        
+
         {/* Animated background elements */}
         <div className="absolute top-20 left-10 w-32 h-32 bg-organic-500 rounded-full opacity-10 blur-3xl"></div>
         <div className="absolute top-40 right-20 w-48 h-48 bg-green-500 rounded-full opacity-10 blur-3xl"></div>
@@ -243,37 +252,81 @@ export function HeroSection({ className }: HeroSectionProps) {
             </div>
           </div>
 
+          {/* User Type Selector */}
+          <div className="hero-user-type-selector flex justify-center mb-8">
+            <div className="inline-flex rounded-full bg-white/90 backdrop-blur-sm p-1">
+              <button
+                onClick={() => setActiveUserType('b2c')}
+                className={cn(
+                  'px-6 py-3 text-sm font-medium rounded-full transition-all duration-300 flex items-center',
+                  {
+                    'bg-organic-500 text-white': activeUserType === 'b2c',
+                    'bg-transparent text-gray-700 hover:text-organic-600': activeUserType !== 'b2c',
+                  }
+                )}
+              >
+                <User className="w-4 h-4 mr-2" />
+                Individual Farmer
+              </button>
+              <button
+                onClick={() => setActiveUserType('b2b')}
+                className={cn(
+                  'px-6 py-3 text-sm font-medium rounded-full transition-all duration-300 flex items-center',
+                  {
+                    'bg-organic-500 text-white': activeUserType === 'b2b',
+                    'bg-transparent text-gray-700 hover:text-organic-600': activeUserType !== 'b2b',
+                  }
+                )}
+              >
+                <Building2 className="w-4 h-4 mr-2" />
+                Business Distributor
+              </button>
+            </div>
+          </div>
+
           {/* Hero Content */}
           <div className="text-center space-y-8">
             <div className="hero-title text-5xl md:text-7xl font-bold text-white mb-4">
-              <span className="block mb-2">Agricultural Excellence</span>
-              <span className="text-3xl md:text-4xl text-organic-200">For Every Farm</span>
+              {activeUserType === 'b2c' ? (
+                <>
+                  <span className="block mb-2">Premium Agricultural Solutions</span>
+                  <span className="text-3xl md:text-4xl text-organic-200">For Individual Farmers</span>
+                </>
+              ) : (
+                <>
+                  <span className="block mb-2">Wholesale Agricultural Solutions</span>
+                  <span className="text-3xl md:text-4xl text-organic-200">For Business Distributors</span>
+                </>
+              )}
             </div>
-            
+
             <p className="hero-subtitle text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-8">
-              Premium solutions for {featuredSegment?.name || 'crop'} management with 
-              expert guidance and sustainable practices.
+              {activeUserType === 'b2c'
+                ? 'Access premium bio-fertilizers, pre-probiotics, and sustainable farming solutions tailored for individual farmers.'
+                : 'Access wholesale pricing, bulk ordering, and business-grade agricultural solutions for your distribution network.'}
             </p>
 
             {/* Featured Segment CTA */}
             <div className="hero-cta flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                asChild 
-                size="lg" 
+              <Button
+                asChild
+                size="lg"
                 className="bg-white text-organic-600 hover:bg-gray-50 font-semibold"
               >
                 <Link href={featuredSegment?.ctaLink || '#'} className="flex items-center">
-                  {featuredSegment?.ctaText || 'Explore Solutions'}
+                  {activeUserType === 'b2c'
+                    ? 'Shop Individual Products'
+                    : 'Explore Wholesale Options'}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="border-2 border-white/30 text-white hover:bg-white hover:bg-organic-600 font-semibold"
               >
-                <Link href="/discover" className="flex items-center">
+                <Link href={activeUserType === 'b2c' ? '/discover' : '/b2b'} className="flex items-center">
                   <Play className="mr-2 h-5 w-5" />
-                  Get Personalized Advice
+                  {activeUserType === 'b2c' ? 'Get Personalized Advice' : 'Request Business Quote'}
                 </Link>
               </Button>
             </div>
@@ -358,8 +411,8 @@ export function HeroSection({ className }: HeroSectionProps) {
 
           {/* Quick Links */}
           <div className="flex justify-center space-x-6">
-            <Link 
-              href="/knowledge" 
+            <Link
+              href="/knowledge"
               className="text-white/90 hover:text-white transition-colors"
             >
               <span className="flex items-center">
@@ -367,8 +420,8 @@ export function HeroSection({ className }: HeroSectionProps) {
                 Knowledge Center
               </span>
             </Link>
-            <Link 
-              href="/segments" 
+            <Link
+              href="/segments"
               className="text-white/90 hover:text-white transition-colors"
             >
               <span className="flex items-center">

@@ -220,4 +220,5 @@ export const validatePhone = (phone: string, countryCode: string = 'IN') => Inpu
 export const validateGSTNumber = (gstNumber: string) => InputValidator.validateGSTNumber(gstNumber);
 export const validateQuantity = (quantity: number, maxAllowed?: number) => InputValidator.validateQuantity(quantity, maxAllowed);
 export const validatePinCode = (pinCode: string) => InputValidator.validatePinCode(pinCode);
+export const validateTextField = (value: string, fieldName: string, options: { minLength?: number; maxLength?: number; required?: boolean; allowedChars?: RegExp; } = {}) => InputValidator.validateTextField(value, fieldName, options);
 export const sanitizeInput = (input: string) => InputValidator.sanitizeInput(input);

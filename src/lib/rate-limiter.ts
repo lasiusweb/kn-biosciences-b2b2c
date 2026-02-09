@@ -1,11 +1,13 @@
-import { kv } from '@vercel/kv'; // Using Vercel KV for distributed rate limiting
-
 interface RateLimitResult {
   allowed: boolean;
   remaining: number;
   resetTime: number;
   error?: string;
 }
+
+// In-memory store for rate limiting (client-side compatible)
+// Note: This is reset when the page refreshes, but works for session-based rate limiting
+const rateLimitStore = new Map<string, { requests: number[] }>();
 
 export class RateLimiter {
   private readonly windowMs: number;
@@ -18,34 +20,47 @@ export class RateLimiter {
     this.prefix = prefix;
   }
 
-  async check(identifier: string): Promise<RateLimitResult> {
+  check(identifier: string): RateLimitResult {
     try {
       const key = `${this.prefix}${identifier}`;
       const now = Date.now();
       const windowStart = now - this.windowMs;
 
-      // Use a sorted set to track requests within the time window
-      const pipeline = kv.pipeline();
+      // Get or create entry for this identifier
+      let entry = rateLimitStore.get(key);
+      if (!entry) {
+        entry = { requests: [] };
+        rateLimitStore.set(key, entry);
+      }
+
+      // Filter requests within the current window
+      const recentRequests = entry.requests.filter(timestamp => timestamp > windowStart);
+
+      if (recentRequests.length >= this.maxRequests) {
+        // Rate limit exceeded
+        const oldestRequest = Math.min(...recentRequests);
+        const resetTime = oldestRequest + this.windowMs;
+
+        return {
+          allowed: false,
+          remaining: 0,
+          resetTime
+        };
+      }
+
+      // Add current request to list
+      entry.requests.push(now);
       
-      // Clean old entries
-      pipeline.zremrangebyscore(key, 0, windowStart);
-      
-      // Get current count
-      pipeline.zcard(key);
-      
-      // Add current request
-      pipeline.zadd(key, { score: now, member: now.toString() });
-      
-      // Set expiration for the key
-      pipeline.expire(key, Math.ceil(this.windowMs / 1000));
-      
-      const [_, currentCount] = await pipeline.exec() as [any, number];
-      
-      const remaining = Math.max(0, this.maxRequests - currentCount);
+      // Clean up old requests periodically to prevent memory leaks
+      if (recentRequests.length < entry.requests.length) {
+        entry.requests = recentRequests;
+      }
+
+      const remaining = Math.max(0, this.maxRequests - recentRequests.length - 1);
       const resetTime = now + this.windowMs;
 
       return {
-        allowed: currentCount <= this.maxRequests,
+        allowed: recentRequests.length < this.maxRequests,
         remaining,
         resetTime
       };

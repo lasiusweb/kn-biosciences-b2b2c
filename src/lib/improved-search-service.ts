@@ -11,6 +11,17 @@ export interface SearchFilters {
   maxPrice?: number;
   inStock?: boolean;
   category?: string;
+  
+  // New filters for enhanced product attributes
+  brandName?: string;
+  gtin?: string;
+  countryOfOrigin?: string;
+  chemicalComposition?: string;
+  safetyWarnings?: string;
+  cbircCompliance?: string;
+  manufacturingLicense?: string;
+  marketBy?: string;
+  netContent?: string;
 }
 
 export interface SearchOptions {
@@ -30,6 +41,12 @@ export interface SearchResult {
     categories: { category: string; count: number }[];
     priceRanges: { range: string; count: number }[];
     crops: { crop: string; count: number }[];
+    
+    // New facets for enhanced product attributes
+    brands: { brand: string; count: number }[];
+    countriesOfOrigin: { country: string; count: number }[];
+    certifications: { certification: string; count: number }[];
+    manufacturers: { manufacturer: string; count: number }[];
   };
   hasMore: boolean;
 }
@@ -74,20 +91,55 @@ export class ImprovedSearchService {
       let dbQuery = supabase
         .from('products')
         .select(`
-          *,
+          id,
+          name,
+          slug,
+          description,
+          short_description,
+          category_id,
+          segment,
+          status,
+          featured,
+          meta_title,
+          meta_description,
+          created_at,
+          updated_at,
+          featured_image,
+          brand_name,
+          gtin,
+          country_of_origin,
+          chemical_composition,
+          safety_warnings,
+          antidote_statement,
+          directions_of_use,
+          precautions,
+          recommendations,
+          cbirc_compliance,
+          manufacturing_license,
+          customer_care_details,
+          market_by,
+          net_content,
+          leaflet_urls,
           product_variants!inner(
             id,
             product_id,
             sku,
-            price,
-            stock_quantity,
             weight,
             weight_unit,
             packing_type,
             form,
+            price,
+            compare_price,
+            cost_price,
+            stock_quantity,
+            low_stock_threshold,
+            track_inventory,
             image_urls,
             created_at,
-            updated_at
+            updated_at,
+            net_weight,
+            gross_weight,
+            net_content as variant_net_content
           )
         `, { count: 'exact' })
         .eq('status', 'active');
@@ -134,6 +186,43 @@ export class ImprovedSearchService {
         if (includeVariants) {
           dbQuery = dbQuery.gt('product_variants.stock_quantity', 0);
         }
+      }
+
+      // Apply new filters for enhanced product attributes
+      if (filters.brandName) {
+        dbQuery = dbQuery.ilike('brand_name', `%${filters.brandName}%`);
+      }
+
+      if (filters.gtin) {
+        dbQuery = dbQuery.ilike('gtin', `%${filters.gtin}%`);
+      }
+
+      if (filters.countryOfOrigin) {
+        dbQuery = dbQuery.ilike('country_of_origin', `%${filters.countryOfOrigin}%`);
+      }
+
+      if (filters.chemicalComposition) {
+        dbQuery = dbQuery.ilike('chemical_composition', `%${filters.chemicalComposition}%`);
+      }
+
+      if (filters.safetyWarnings) {
+        dbQuery = dbQuery.ilike('safety_warnings', `%${filters.safetyWarnings}%`);
+      }
+
+      if (filters.cbircCompliance) {
+        dbQuery = dbQuery.ilike('cbirc_compliance', `%${filters.cbircCompliance}%`);
+      }
+
+      if (filters.manufacturingLicense) {
+        dbQuery = dbQuery.ilike('manufacturing_license', `%${filters.manufacturingLicense}%`);
+      }
+
+      if (filters.marketBy) {
+        dbQuery = dbQuery.ilike('market_by', `%${filters.marketBy}%`);
+      }
+
+      if (filters.netContent) {
+        dbQuery = dbQuery.ilike('net_content', `%${filters.netContent}%`);
       }
 
       // Apply sorting
@@ -191,7 +280,22 @@ export class ImprovedSearchService {
           meta_description: row.meta_description,
           created_at: row.created_at,
           updated_at: row.updated_at,
-          featured_image: row.featured_image
+          featured_image: row.featured_image,
+          brand_name: row.brand_name,
+          gtin: row.gtin,
+          country_of_origin: row.country_of_origin,
+          chemical_composition: row.chemical_composition,
+          safety_warnings: row.safety_warnings,
+          antidote_statement: row.antidote_statement,
+          directions_of_use: row.directions_of_use,
+          precautions: row.precautions,
+          recommendations: row.recommendations,
+          cbirc_compliance: row.cbirc_compliance,
+          manufacturing_license: row.manufacturing_license,
+          customer_care_details: row.customer_care_details,
+          market_by: row.market_by,
+          net_content: row.net_content,
+          leaflet_urls: row.leaflet_urls
         };
 
         productsMap.set(product.id, product);
@@ -214,7 +318,10 @@ export class ImprovedSearchService {
             track_inventory: v.track_inventory,
             image_urls: v.image_urls,
             created_at: v.created_at,
-            updated_at: v.updated_at
+            updated_at: v.updated_at,
+            net_weight: v.net_weight,
+            gross_weight: v.gross_weight,
+            net_content: v.variant_net_content
           })));
           variantsMap.set(product.id, variants);
         }
@@ -241,14 +348,18 @@ export class ImprovedSearchService {
 
   private async generateFacets(query: string, filters: SearchFilters) {
     // This would typically aggregate data from the database
-    // For now, returning empty facets - in a real implementation, 
+    // For now, returning empty facets - in a real implementation,
     // this would make separate queries to generate facet counts
-    
+
     const facetsQuery = supabase
       .from('products')
       .select(`
         segment,
-        category_id
+        category_id,
+        brand_name,
+        country_of_origin,
+        cbirc_compliance,
+        market_by
       `)
       .eq('status', 'active');
 
@@ -266,23 +377,45 @@ export class ImprovedSearchService {
         segments: [],
         categories: [],
         priceRanges: [],
-        crops: []
+        crops: [],
+        brands: [],
+        countriesOfOrigin: [],
+        certifications: [],
+        manufacturers: []
       };
     }
 
     // Aggregate segments
     const segmentCounts: Record<string, number> = {};
+    // Aggregate categories
+    const categoryCounts: Record<string, number> = {};
+    // Aggregate brands
+    const brandCounts: Record<string, number> = {};
+    // Aggregate countries of origin
+    const countryCounts: Record<string, number> = {};
+    // Aggregate certifications
+    const certificationCounts: Record<string, number> = {};
+    // Aggregate manufacturers
+    const manufacturerCounts: Record<string, number> = {};
+
     data?.forEach(item => {
       if (item.segment) {
         segmentCounts[item.segment] = (segmentCounts[item.segment] || 0) + 1;
       }
-    });
-
-    // Aggregate categories
-    const categoryCounts: Record<string, number> = {};
-    data?.forEach(item => {
       if (item.category_id) {
         categoryCounts[item.category_id] = (categoryCounts[item.category_id] || 0) + 1;
+      }
+      if (item.brand_name) {
+        brandCounts[item.brand_name] = (brandCounts[item.brand_name] || 0) + 1;
+      }
+      if (item.country_of_origin) {
+        countryCounts[item.country_of_origin] = (countryCounts[item.country_of_origin] || 0) + 1;
+      }
+      if (item.cbirc_compliance) {
+        certificationCounts[item.cbirc_compliance] = (certificationCounts[item.cbirc_compliance] || 0) + 1;
+      }
+      if (item.market_by) {
+        manufacturerCounts[item.market_by] = (manufacturerCounts[item.market_by] || 0) + 1;
       }
     });
 
@@ -295,7 +428,11 @@ export class ImprovedSearchService {
         { range: '₹1000 - ₹2000', count: 0 },
         { range: 'Over ₹2000', count: 0 }
       ], // Placeholder - would be calculated from variants
-      crops: [] // Placeholder - would be calculated from crop associations
+      crops: [], // Placeholder - would be calculated from crop associations
+      brands: Object.entries(brandCounts).map(([brand, count]) => ({ brand, count })),
+      countriesOfOrigin: Object.entries(countryCounts).map(([country, count]) => ({ country, count })),
+      certifications: Object.entries(certificationCounts).map(([certification, count]) => ({ certification, count })),
+      manufacturers: Object.entries(manufacturerCounts).map(([manufacturer, count]) => ({ manufacturer, count }))
     };
   }
 

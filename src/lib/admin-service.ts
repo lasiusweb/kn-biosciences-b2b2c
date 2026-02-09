@@ -102,6 +102,8 @@ export async function createBlogPost(post: Partial<BlogPost>): Promise<void> {
 }
 
 export async function bulkImportProducts(data: any[]): Promise<BulkImportResult> {
+  // For now, using the Supabase insert directly
+  // In a real implementation, this would call the new API endpoint
   const { data: result, error } = await supabase.from('products').insert(data);
 
   if (error) {
@@ -117,6 +119,21 @@ export async function bulkImportProducts(data: any[]): Promise<BulkImportResult>
     success: true,
     importedCount: data.length,
     errors: []
+  };
+}
+
+export async function getProducts(): Promise<{ products: any[], variants: any[] }> {
+  const response = await fetch('/admin/api/products/get');
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to fetch products');
+  }
+  
+  const result = await response.json();
+  return {
+    products: result.products,
+    variants: result.variants
   };
 }
 

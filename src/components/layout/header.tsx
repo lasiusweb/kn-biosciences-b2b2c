@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Menu, X, ShoppingCart, User, Search } from 'lucide-react'
 import { useEnterpriseCart } from '@/hooks/use-enterprise-cart'
 import { MiniCart } from '@/components/shop/mini-cart'
+import { SearchWithSuggestions } from '@/components/ui/search-with-suggestions'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -31,6 +32,11 @@ export function Header() {
     { name: 'Testing Lab', href: '/shop/testing-lab' },
     { name: 'Oilpalm', href: '/shop/oilpalm' },
   ]
+
+  const handleSearch = (query: string) => {
+    // Navigate to search results page
+    window.location.href = `/search?query=${encodeURIComponent(query)}`;
+  }
 
   return (
     <header className="bg-white shadow-sm border-b">
@@ -79,16 +85,19 @@ export function Header() {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
+            <div className="hidden md:block w-64">
+              <SearchWithSuggestions onSearch={handleSearch} />
+            </div>
+            <Button variant="ghost" size="icon" className="md:hidden">
               <Search className="h-5 w-5" />
             </Button>
             <Button variant="ghost" size="icon">
               <User className="h-5 w-5" />
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="relative" 
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
               onClick={toggleMiniCart}
             >
               <ShoppingCart className="h-5 w-5" />
@@ -98,7 +107,7 @@ export function Header() {
                 </span>
               )}
             </Button>
-            
+
             {/* Mobile menu button */}
             <Button
               variant="ghost"
@@ -164,7 +173,7 @@ export function Header() {
           </div>
         </div>
       )}
-      
+
       {/* Mini Cart */}
       <MiniCart />
     </header>

@@ -1,33 +1,199 @@
-# KN Biosciences E-commerce Platform
+# KN Biosciences E-commerce Platform - Optimized Edition
 
-A comprehensive B2C/B2B e-commerce platform for agricultural and aquaculture products including bio-fertilizers and pre-probiotics.
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=kn-biosciences&metric=security_rating)](https://sonarcloud.io/dashboard?id=kn-biosciences)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=kn-biosciences&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=kn-biosciences)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=kn-biosciences&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=kn-biosciences)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=kn-biosciences&metric=ncloc)](https://sonarcloud.io/dashboard?id=kn-biosciences)
 
-## 🌱 Project Overview
+## Overview
 
-KN Biosciences is a modern e-commerce platform built with Next.js, React, TypeScript, and Tailwind CSS. It serves both individual farmers (B2C) and business distributors (B2B) with a complete range of agricultural and aquaculture solutions.
+This is the optimized edition of the KN Biosciences e-commerce platform - a comprehensive B2C/B2B e-commerce solution for agricultural and aquaculture products including bio-fertilizers and pre-probiotics. This platform serves both individual farmers (B2C) and business distributors (B2B) with a complete range of agricultural and aquaculture solutions.
 
-## 🚀 Tech Stack
+## Key Improvements
+
+### 🔐 Enhanced Security
+- **Multi-layered Security**: Input validation, sanitization, CSRF protection, and rate limiting
+- **Authentication Hardening**: Enhanced JWT validation and secure session management
+- **SQL Injection Prevention**: Parameterized queries and input sanitization
+- **Security Headers**: Comprehensive security headers implementation
+- **Vulnerability Management**: Automated scanning and patch management
+
+### ⚡ Performance Optimizations
+- **Caching Strategy**: Distributed caching using Vercel KV with cache-aside pattern
+- **Database Optimization**: Query optimization and connection pooling
+- **Asset Optimization**: Image optimization with responsive loading
+- **Performance Utilities**: Memoization, debouncing, and virtual scrolling
+- **Bundle Optimization**: Tree-shaking and code splitting improvements
+
+### 📊 Comprehensive Monitoring
+- **Real-time Metrics**: Response time, throughput, error rates, and resource usage
+- **Alerting System**: Automated alerts with severity levels and notification channels
+- **Performance Dashboard**: Visual representation of key performance indicators
+- **Health Checks**: Comprehensive system health monitoring
+- **Audit Logging**: Detailed security and operational event logging
+
+### 🛠️ Robust Operations
+- **CI/CD Pipelines**: Automated testing, building, and deployment
+- **Maintenance Procedures**: Daily, weekly, and monthly operational tasks
+- **Incident Response**: Structured response procedures for security and operational incidents
+- **Backup and Recovery**: Comprehensive backup strategies and recovery procedures
+- **Change Management**: Controlled process for system modifications
+
+### ♿ Accessibility Improvements
+- **ARIA Labels**: Proper ARIA attributes for screen readers
+- **Keyboard Navigation**: Full keyboard operability
+- **Focus Management**: Proper focus handling and focus traps
+- **Semantic HTML**: Proper heading hierarchy and semantic elements
+- **Screen Reader Support**: Proper announcements and navigation
+
+## Tech Stack
 
 ### Frontend
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript
+- **Framework**: Next.js 16 with App Router
+- **Language**: TypeScript with strict mode
 - **Styling**: Tailwind CSS with shadcn/ui components
 - **Animations**: GSAP, Lottie, Framer Motion
 - **State Management**: React Hooks, Apollo Client (GraphQL)
 
 ### Backend & Database
-- **Database**: Supabase (PostgreSQL)
+- **Database**: Supabase (PostgreSQL) with Row Level Security
 - **Authentication**: Supabase Auth
 - **API**: Hasura GraphQL Engine
 - **File Storage**: Supabase Storage
 
 ### Integrations
-- **Payments**: Razorpay, PayU, Easebuzz
+- **Payment Gateways**: Razorpay, PayU, Easebuzz
 - **Shipping**: Delhivery API
-- **CRM**: Zoho CRM
-- **Accounting**: Zoho Books
+- **CRM/Accounting**: Zoho CRM and Books
+- **Email**: Nodemailer with SMTP
 
-## 📦 Features
+## Project Structure
+
+```
+kn-biosciences/
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── (auth)/            # Authentication routes
+│   │   ├── admin/             # Admin dashboard
+│   │   ├── b2b/               # B2B portal
+│   │   ├── shop/              # E-commerce store
+│   │   └── api/               # API routes
+│   ├── components/            # Reusable components
+│   │   ├── ui/                # shadcn/ui components
+│   │   ├── auth/              # Authentication components
+│   │   ├── admin/             # Admin components
+│   │   ├── b2b/               # B2B components
+│   │   ├── home/              # Homepage components
+│   │   ├── layout/            # Layout components
+│   │   └── shop/              # Shop components
+│   ├── lib/                   # Utility libraries
+│   │   ├── supabase.ts        # Supabase client
+│   │   ├── apollo.ts          # Apollo GraphQL client
+│   │   ├── utils.ts           # Helper functions
+│   │   ├── perf-utils.ts      # Performance utilities
+│   │   ├── security-enhancements.ts # Security utilities
+│   │   ├── monitoring-system.ts # Monitoring utilities
+│   │   └── accessibility.tsx  # Accessibility utilities
+│   ├── types/                 # TypeScript type definitions
+│   │   ├── index.ts           # Main types
+│   │   └── database.ts        # Database types
+│   ├── hooks/                 # Custom React hooks
+│   └── middleware.ts          # Next.js middleware
+├── database/
+│   └── schema.sql             # Database schema
+├── docs/                      # Documentation
+│   ├── security-procedures.md # Security procedures
+│   ├── testing-strategy.md    # Testing strategy
+│   ├── maintenance-procedures.md # Maintenance procedures
+│   ├── ci-cd-best-practices.md # CI/CD best practices
+│   ├── backup-recovery-procedures.md # Backup & recovery procedures
+│   └── optimization-summary.md # Complete optimization summary
+├── public/                    # Static assets
+└── scripts/                   # Build and deployment scripts
+```
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Supabase account
+- Hasura account (optional, for GraphQL)
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd kn-biosciences
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+# Edit .env.local with your actual values
+```
+
+4. Run the development server:
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Environment Variables
+
+The application requires several environment variables for proper operation:
+
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Hasura GraphQL (Optional)
+NEXT_PUBLIC_HASURA_URL=your_hasura_url
+NEXT_PUBLIC_HASURA_ADMIN_SECRET=your_hasura_admin_secret
+
+# Payment Gateway Configuration
+RAZORPAY_KEY_ID=your_razorpay_key_id
+RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+
+PAYU_MERCHANT_KEY=your_payu_merchant_key
+PAYU_SALT=your_payu_salt
+
+EASEBUZZ_KEY=your_easebuzz_key
+EASEBUZZ_SALT=your_easebuzz_salt
+
+# Shipping Configuration
+DELHIVERY_API_KEY=your_delhivery_api_key
+DELHIVERY_API_SECRET=your_delhivery_api_secret
+
+# Zoho Integration
+ZOHO_CLIENT_ID=your_zoho_client_id
+ZOHO_CLIENT_SECRET=your_zoho_client_secret
+ZOHO_REFRESH_TOKEN=your_zoho_refresh_token
+
+# Application Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NODE_ENV=development
+
+# Security
+SESSION_SECRET=your-super-secret-session-key-here
+NEXTAUTH_SECRET=your-nextauth-secret-here
+
+# Vercel KV (for caching)
+KV_URL=redis://localhost:6379
+KV_REST_API_URL=http://localhost:6379
+KV_REST_API_TOKEN=your_redis_token
+```
+
+## Key Features
 
 ### 🛍️ Unified Sales Channels
 - **B2C Storefront**: Retail purchases with dynamic catalog
@@ -56,145 +222,23 @@ KN Biosciences is a modern e-commerce platform built with Next.js, React, TypeSc
 - **Blog/Knowledge Center**: Content marketing hub
 - **WhatsApp Integration**: Customer support and notifications
 
-## 🎨 Design Specifications
+## Security Features
 
-### Visual Identity
-- **Voice**: Professional, trustworthy, expert
-- **Colors**: 
-  - Primary: Organic Green (#8BC34A)
-  - Secondary: Earth Brown (#795548)
-  - Background: Beige (#F5F5DC)
-- **Typography**: Montserrat sans-serif
-- **Layout**: Three-column dashboards, grid galleries, hero sections
+### Authentication & Authorization
+- Supabase Auth integration
+- JWT token-based authentication
+- Row Level Security (RLS)
+- Protected API routes
+- Secure payment processing
 
-### Animations
-- **Libraries**: GSAP for complex animations, Lottie for illustrated animations
-- **Effects**: Scale, rotate, translate transitions
-- **Interactions**: Hover states, loading animations, micro-interactions
-
-## 🏗️ Architecture
-
-```
-Next.js Frontend → Hasura GraphQL → Supabase Database
-                    ↓
-Next.js Frontend → Supabase Auth
-                    ↓
-Hasura → Zoho CRM/Books, Payment Gateways, Shipping APIs
-```
-
-## 📁 Project Structure
-
-```
-kn-biosciences/
-├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── (auth)/            # Authentication routes
-│   │   ├── admin/             # Admin dashboard
-│   │   ├── b2b/               # B2B portal
-│   │   ├── shop/              # E-commerce store
-│   │   └── api/               # API routes
-│   ├── components/            # Reusable components
-│   │   ├── ui/                # shadcn/ui components
-│   │   ├── auth/              # Authentication components
-│   │   ├── admin/             # Admin components
-│   │   ├── b2b/               # B2B components
-│   │   ├── home/              # Homepage components
-│   │   ├── layout/            # Layout components
-│   │   └── shop/              # Shop components
-│   ├── lib/                   # Utility libraries
-│   │   ├── supabase.ts        # Supabase client
-│   │   ├── apollo.ts          # Apollo GraphQL client
-│   │   └── utils.ts           # Helper functions
-│   ├── types/                 # TypeScript type definitions
-│   │   ├── index.ts           # Main types
-│   │   └── database.ts        # Database types
-│   └── hooks/                 # Custom React hooks
-├── database/
-│   └── schema.sql             # Database schema
-├── public/                    # Static assets
-└── docs/                      # Documentation
-```
-
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Supabase account
-- Hasura account (optional, for GraphQL)
-
-### 1. Clone and Install
-```bash
-git clone <repository-url>
-cd kn-biosciences
-npm install
-```
-
-### 2. Environment Setup
-Create a `.env.local` file with the following variables:
-
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-# Hasura (optional)
-NEXT_PUBLIC_HASURA_URL=your_hasura_url
-NEXT_PUBLIC_HASURA_ADMIN_SECRET=your_hasura_admin_secret
-
-# Payment Gateways
-RAZORPAY_KEY_ID=your_razorpay_key_id
-RAZORPAY_KEY_SECRET=your_razorpay_key_secret
-PAYU_MERCHANT_KEY=your_payu_merchant_key
-PAYU_SALT=your_payu_salt
-
-# Shipping
-DELHIVERY_API_KEY=your_delhivery_api_key
-DELHIVERY_API_SECRET=your_delhivery_api_secret
-
-# Zoho Integration
-ZOHO_CLIENT_ID=your_zoho_client_id
-ZOHO_CLIENT_SECRET=your_zoho_client_secret
-ZOHO_REFRESH_TOKEN=your_zoho_refresh_token
-
-# Application
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-### 3. Database Setup
-1. Create a new Supabase project
-2. Run the SQL schema from `database/schema.sql`
-3. Enable Row Level Security (RLS) policies
-4. Set up authentication providers
-
-### 4. Run Development Server
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 🗄️ Database Schema
-
-### Core Tables
-- **users**: Customer and user management
-- **products**: Product catalog
-- **product_variants**: Product variants with pricing
-- **product_batches**: Batch tracking and expiry
-- **orders**: Order management
-- **b2b_quotes**: B2B quote requests
-- **carts/cart_items**: Shopping cart functionality
-- **addresses**: Customer addresses
-- **coupons**: Discount and promotion management
-
-### Features
-- Row Level Security (RLS) for data protection
-- Automatic timestamps with triggers
-- Comprehensive indexing for performance
-- JSON fields for flexible data storage
-
-## 🔐 Authentication & Authorization
+### Security Measures
+- Input validation and sanitization
+- CSRF protection
+- Rate limiting
+- SQL injection prevention
+- XSS protection
+- Security headers
+- Regular security audits
 
 ### User Roles
 - **customer**: Individual B2C shoppers
@@ -202,28 +246,60 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **admin**: Full administrative access
 - **staff**: Limited administrative access
 
-### Security Features
-- Supabase Auth integration
-- JWT token-based authentication
-- Row Level Security (RLS)
-- Protected API routes
-- Secure payment processing
+## Performance Optimizations
 
-## 📱 Responsive Design
+### Caching Strategy
+- Distributed caching using Vercel KV
+- Cache-aside pattern with TTL and stale-while-revalidate
+- Specific caching for products, categories, search results, and user carts
+- Cache invalidation mechanisms for data updates
 
-### Breakpoints
-- Mobile: 320px - 768px
-- Tablet: 768px - 1024px
-- Desktop: 1024px - 1280px
-- Large Desktop: 1280px+
+### Database Optimizations
+- Comprehensive indexing for performance
+- Query optimization
+- Connection pooling
+- Caching strategies
 
-### Mobile-First Approach
-- Touch-friendly interfaces
-- Optimized navigation
-- Progressive enhancement
-- Performance optimization
+### Asset Optimizations
+- Image optimization with responsive loading
+- Bundle size analysis
+- Code splitting
+- Resource hinting
 
-## 🚀 Deployment
+## Monitoring & Analytics
+
+### Performance Metrics
+- Response time tracking
+- Throughput monitoring
+- Error rate analysis
+- Database query performance
+- Cache hit/miss ratios
+- System resource usage
+
+### Alerting System
+- Automated alerts with severity levels
+- Email and webhook notifications
+- Performance threshold monitoring
+- Error rate tracking
+- System health monitoring
+
+## Testing Strategy
+
+### Test Types
+- Unit tests for components and utilities
+- Integration tests for API routes and database interactions
+- End-to-end tests for critical user journeys
+- Performance tests for load and stress scenarios
+- Security tests for vulnerabilities
+- Accessibility tests for WCAG compliance
+
+### Quality Gates
+- Test coverage minimum of 80%
+- All tests must pass before merging
+- Performance benchmarks met
+- Security scans clear
+
+## Deployment
 
 ### Vercel (Recommended)
 ```bash
@@ -238,52 +314,23 @@ docker run -p 3000:3000 kn-biosciences
 ```
 
 ### Environment Variables
-Ensure all environment variables are set in your hosting platform.
+Ensure all required environment variables are set in your deployment environment.
 
-## 🧪 Testing
-
-### Unit Tests
-```bash
-npm run test
-```
-
-### Integration Tests
-```bash
-npm run test:integration
-```
-
-### E2E Tests
-```bash
-npm run test:e2e
-```
-
-## 📊 Performance Optimization
-
-### Next.js Optimizations
-- Automatic code splitting
-- Image optimization with next/image
-- Font optimization
-- Static generation where possible
-
-### Database Optimizations
-- Comprehensive indexing
-- Query optimization
-- Connection pooling
-- Caching strategies
-
-## 🔧 Development Guidelines
+## Development Guidelines
 
 ### Code Style
-- TypeScript for type safety
+- TypeScript for type safety (strict mode enabled)
 - ESLint for code quality
 - Prettier for formatting
 - Conventional commits
+- Google Style Guide naming conventions
 
 ### Component Guidelines
 - Reusable UI components
 - Proper TypeScript typing
 - Accessibility compliance
 - Mobile-responsive design
+- Prefer functional components
 
 ### Git Workflow
 - Feature branches
@@ -291,7 +338,7 @@ npm run test:e2e
 - Code reviews
 - Automated testing
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -299,41 +346,26 @@ npm run test:e2e
 4. Add tests if applicable
 5. Submit a pull request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
+## Support
 
 For support and questions:
-- Email: info@knbiosciences.com
-- Phone: 1800-XXX-XXXX
 - Documentation: [docs/](docs/)
 - Issues: [GitHub Issues](https://github.com/your-repo/issues)
 
-## 🌟 Future Roadmap
+## License
 
-### Phase 1: Core Platform ✅
-- [x] Basic e-commerce functionality
-- [x] User authentication
-- [x] Product catalog
-- [x] Shopping cart
-- [x] Order management
-
-### Phase 2: Advanced Features
-- [ ] B2B portal with quote management
-- [ ] Advanced analytics dashboard
-- [ ] Mobile app (React Native)
-- [ ] Multi-vendor marketplace
-- [ ] AI-powered recommendations
-
-### Phase 3: Scale & Optimization
-- [ ] Microservices architecture
-- [ ] Advanced caching strategies
-- [ ] CDN implementation
-- [ ] Load balancing
-- [ ] International expansion
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-Built with ❤️ for sustainable agriculture and aquaculture.
+## Optimization Summary
+
+This optimized edition of the KN Biosciences platform includes comprehensive improvements across security, performance, maintainability, and operations. The platform now features:
+
+- **Enhanced Security**: Multiple layers of security controls including input validation, authentication hardening, and monitoring
+- **Improved Performance**: Significant performance gains through caching, optimization, and efficient resource usage
+- **Robust Operations**: Well-defined procedures for maintenance, incident response, and system management
+- **Better Maintainability**: Improved architecture, documentation, and code quality
+- **Compliance Ready**: Framework for regulatory compliance and security standards
+
+The platform is now well-positioned to handle increased traffic, protect against security threats, and provide an excellent user experience while maintaining high standards of data protection and operational excellence.

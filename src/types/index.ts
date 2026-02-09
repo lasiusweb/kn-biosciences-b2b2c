@@ -200,6 +200,23 @@ export interface Product {
   created_at: string;
   updated_at: string;
   featured_image?: string;
+  
+  // Additional fields for regulatory and safety information
+  brand_name?: string;
+  gtin?: string; // GTIN/EAN/UPC
+  country_of_origin?: string;
+  chemical_composition?: string;
+  safety_warnings?: string;
+  antidote_statement?: string;
+  directions_of_use?: string;
+  precautions?: string;
+  recommendations?: string;
+  cbirc_compliance?: string;
+  manufacturing_license?: string;
+  customer_care_details?: string;
+  market_by?: string;
+  net_content?: string; // Different from weight
+  leaflet_urls?: string[]; // PDF download links
 }
 
 export interface ProductVariant {
@@ -219,6 +236,11 @@ export interface ProductVariant {
   image_urls: string[];
   created_at: string;
   updated_at: string;
+  
+  // Additional fields for detailed specifications
+  net_weight?: number;
+  gross_weight?: number;
+  net_content?: string; // Volume for liquids
 }
 
 export interface ProductCategory {
@@ -417,6 +439,7 @@ export interface Shipment {
   estimated_delivery: string;
   delivered_at?: string;
 }
+
 // Logistics and Shipping types
 export type LogisticsType = "COURIER" | "TRANSPORT";
 
@@ -440,3 +463,6 @@ export const TRANSPORT_CARRIERS = [
 ] as const;
 
 export type TransportCarrier = (typeof TRANSPORT_CARRIERS)[number];
+
+// Export all enhanced types
+export * from './enhanced-types';

@@ -4,6 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ShoppingCart, ShieldCheck, Truck } from "lucide-react";
+import { ProductSafetyInfo } from "@/components/shop/product-safety-info";
+import { ProductComplianceInfo } from "@/components/shop/product-compliance-info";
+import { ProductIdentityInfo } from "@/components/shop/product-identity-info";
+import { ProductDocuments } from "@/components/shop/product-documents";
+import { ExtendedProductSpecs } from "@/components/shop/extended-product-specs";
 
 interface ProductPageProps {
   params: {
@@ -101,6 +106,67 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             </Button>
           </div>
         </div>
+      </div>
+      
+      {/* Additional Product Information Sections */}
+      <div className="mt-12">
+        {/* Safety Information */}
+        <ProductSafetyInfo product={product} />
+        
+        {/* Compliance Information */}
+        <ProductComplianceInfo product={product} />
+        
+        {/* Identity Information */}
+        <ProductIdentityInfo product={product} />
+        
+        {/* Documents */}
+        <ProductDocuments product={product} />
+        
+        {/* Extended Specifications */}
+        {variants.length > 0 && (
+          <ExtendedProductSpecs
+            productId={product.id}
+            specs={{
+              weight: `${mainVariant?.weight || 0} ${mainVariant?.weight_unit || ''}`,
+              dimensions: '12 x 8 x 6 inches',
+              form: mainVariant?.form || '',
+              packingType: mainVariant?.packing_type || '',
+              shelfLife: product.shelf_life || '24 months from manufacturing date',
+              netWeight: mainVariant?.net_weight ? `${mainVariant?.net_weight} ${mainVariant?.weight_unit || ''}` : undefined,
+              grossWeight: mainVariant?.gross_weight ? `${mainVariant?.gross_weight} ${mainVariant?.weight_unit || ''}` : undefined,
+              netContent: mainVariant?.net_content || product.net_content,
+              ingredients: ['Organic matter', 'Beneficial microorganisms', 'Humic acid', 'Vermicompost'],
+              benefits: [
+                'Improves soil fertility and structure',
+                'Enhances nutrient uptake by plants',
+                'Promotes beneficial microbial activity',
+                'Reduces dependency on chemical fertilizers',
+                'Safe for environment and humans'
+              ],
+              applicationGuides: [
+                {
+                  crop: 'Wheat',
+                  dosage: '25-30 kg/hectare',
+                  timing: 'During sowing and tillering stage',
+                  method: 'Mix evenly in top 15 cm of soil'
+                },
+                {
+                  crop: 'Rice',
+                  dosage: '30-35 kg/hectare',
+                  timing: 'Before transplanting',
+                  method: 'Apply to nursery beds and main field'
+                },
+                {
+                  crop: 'Vegetables',
+                  dosage: '20-25 kg/hectare',
+                  timing: 'During land preparation',
+                  method: 'Broadcast and incorporate in soil'
+                }
+              ]
+            }}
+            variants={variants}
+          />
+        )}
       </div>
     </div>
   );

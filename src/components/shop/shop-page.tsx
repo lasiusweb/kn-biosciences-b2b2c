@@ -2,46 +2,48 @@
 
 import { useState, useEffect } from "react";
 import { Product, ProductVariant, ProductCategory } from "@/types";
-import { getProducts } from "@/lib/product-service";
+import { improvedSearchService } from "@/lib/improved-search-service";
 import { ProductGrid } from "./product-grid";
-import { ProductFilters } from "./product-filters";
+import { AdvancedSearchFilters } from "@/components/ui/advanced-search-filters";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
-  const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const [facets, setFacets] = useState<any>({});
   const [loading, setLoading] = useState(true);
-  
+
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSegments, setSelectedSegments] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [maxPrice, setMaxPrice] = useState<number>(5000);
+  const [filters, setFilters] = useState({
+    segment: "",
+    category: "",
+    minPrice: undefined as number | undefined,
+    maxPrice: undefined as number | undefined,
+    inStock: false,
+    brandName: "",
+    gtin: "",
+    countryOfOrigin: "",
+    chemicalComposition: "",
+    safetyWarnings: "",
+    cbircCompliance: "",
+    manufacturingLicense: "",
+    marketBy: "",
+    netContent: ""
+  });
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch products and variants
-        const productsData = await getProducts();
-        setProducts(productsData);
-        
-        // For now, we'll fetch variants from an API or extract from combined data
-        // Assuming we have an API for variants or they come with products
-        const variantsResponse = await fetch("/api/products/variants");
-        if (variantsResponse.ok) {
-          const variantsData = await variantsResponse.json();
-          setVariants(variantsData);
-        }
-
-        // Fetch categories
-        const categoriesResponse = await fetch("/api/categories");
-        if (categoriesResponse.ok) {
-          const categoriesData = await categoriesResponse.json();
-          setCategories(categoriesData);
-        }
+        // Perform initial search with no filters
+        const results = await improvedSearchService.search("", {});
+        setProducts(results.products);
+        setVariants(results.variants);
+        setFacets(results.facets);
       } catch (error) {
         console.error("Error fetching shop data:", error);
       } finally {
@@ -52,20 +54,42 @@ export function ShopPage() {
     fetchData();
   }, []);
 
-  const handleSegmentChange = (segment: string) => {
-    setSelectedSegments((prev) =>
-      prev.includes(segment)
-        ? prev.filter((s) => s !== segment)
-        : [...prev, segment]
-    );
-  };
+  useEffect(() => {
+    const performSearch = async () => {
+      try {
+        setLoading(true);
+        const results = await improvedSearchService.search(searchTerm, {
+          segment: filters.segment || undefined,
+          category: filters.category || undefined,
+          minPrice: filters.minPrice,
+          maxPrice: filters.maxPrice,
+          inStock: filters.inStock || undefined,
+          brandName: filters.brandName || undefined,
+          gtin: filters.gtin || undefined,
+          countryOfOrigin: filters.countryOfOrigin || undefined,
+          chemicalComposition: filters.chemicalComposition || undefined,
+          safetyWarnings: filters.safetyWarnings || undefined,
+          cbircCompliance: filters.cbircCompliance || undefined,
+          manufacturingLicense: filters.manufacturingLicense || undefined,
+          marketBy: filters.marketBy || undefined,
+          netContent: filters.netContent || undefined
+        });
+        
+        setProducts(results.products);
+        setVariants(results.variants);
+        setFacets(results.facets);
+      } catch (error) {
+        console.error("Error performing search:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleCategoryChange = (categoryId: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((id) => id !== categoryId)
-        : [...prev, categoryId]
-    );
+    performSearch();
+  }, [filters]);
+
+  const handleFilterChange = (newFilters: any) => {
+    setFilters(newFilters);
   };
 
   const segments = [
@@ -81,60 +105,65 @@ export function ShopPage() {
     "oilpalm",
   ];
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSegment = selectedSegments.length === 0 || selectedSegments.includes(product.segment);
-    const matchesCategory = selectedCategories.length === 0 || (product.category_id && selectedCategories.includes(product.category_id));
-    
-    const variant = variants.find(v => v.product_id === product.id);
-    const matchesPrice = !variant || variant.price <= maxPrice;
-
-    return matchesSearch && matchesSegment && matchesCategory && matchesPrice;
-  });
-
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-earth-900 mb-2">Shop Products</h1>
-        <p className="text-earth-600">
-          Browse our complete range of agricultural solutions
-        </p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-earth-900">Shop Products</h1>
+            <p className="text-earth-600">
+              Browse our complete range of agricultural solutions
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              {showAdvancedFilters ? 'Hide Filters' : 'Show Filters'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-earth-400" />
+          <Input
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 border border-earth-200 rounded-lg focus:ring-2 focus:ring-organic-500 focus:border-transparent"
+          />
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Filters Sidebar */}
-        <aside className="w-full lg:w-64 space-y-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-5 w-5 text-earth-400" />
-            <Input
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 border-earth-100 focus:ring-organic-500"
-            />
-          </div>
-
-          <ProductFilters
-            segments={segments}
-            categories={categories}
-            selectedSegments={selectedSegments}
-            selectedCategories={selectedCategories}
-            onSegmentChange={handleSegmentChange}
-            onCategoryChange={handleCategoryChange}
-            onPriceChange={setMaxPrice}
-            currentMaxPrice={maxPrice}
+        <aside className={`w-full lg:w-80 ${showAdvancedFilters ? 'block' : 'hidden lg:block'}`}>
+          <AdvancedSearchFilters
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            segments={facets.segments || []}
+            categories={facets.categories || []}
+            brands={facets.brands || []}
+            countriesOfOrigin={facets.countriesOfOrigin || []}
+            certifications={facets.certifications || []}
+            manufacturers={facets.manufacturers || []}
           />
         </aside>
 
         {/* Product Grid */}
         <main className="flex-1">
           <div className="mb-6 flex justify-between items-center text-sm text-earth-600">
-            <span>Showing {filteredProducts.length} products</span>
+            <span>Showing {products.length} products</span>
           </div>
 
           <ProductGrid
-            products={filteredProducts}
+            products={products}
             variants={variants}
             isLoading={loading}
           />
